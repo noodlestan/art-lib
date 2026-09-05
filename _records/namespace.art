@@ -1,12 +1,12 @@
 # Module
 
-## Namespace: Art Cli
+## Namespace: Art Lib
 
-**Purpose:** Build high quality, consistent, CLI experiences from composable units.
+**Purpose:** Build high quality, consistent, Cli and Tool experiences from composable units.
 
-**Description:** Shared libraries and tools for building CLIs.
+**Description:** Shared libraries and tools for building CLIs and Tools.
 
-**Owner:** Project: Art Cli
+**Owner:** Project: Art Lib
 
 **Author:** Noodlestan Collective
 

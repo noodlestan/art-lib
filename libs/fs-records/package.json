@@ -1,7 +1,7 @@
 {
-  "name": "@art-cli/lib-records",
+  "name": "@art-lib/fs-records",
   "version": "0.0.1",
-  "description": "Generic Art MD record read/write modules for Clis.",
+  "description": "Generic Art MD record read/write modules for CLIs.",
   "author": "Noodlestan Collective",
   "license": "MIT",
   "private": false,

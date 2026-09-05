@@ -1,14 +1,14 @@
 import { readRecordFileContent } from '../readRecordFileContent';
-import type { RecordFile } from '../types';
+import type { FSRecordFile } from '../types';
 
 function escapeRegExp(value: string): string {
 	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 export async function filterFilenamesByKinds(
-	files: RecordFile[],
+	files: FSRecordFile[],
 	kinds: string[],
-): Promise<RecordFile[]> {
+): Promise<FSRecordFile[]> {
 	if (kinds.length === 0) {
 		return files;
 	}
@@ -30,5 +30,5 @@ export async function filterFilenamesByKinds(
 		}),
 	);
 
-	return matchingFiles.filter((file): file is RecordFile => file !== null);
+	return matchingFiles.filter((file): file is FSRecordFile => file !== null);
 }

@@ -1,4 +1,4 @@
-export interface RecordsPath {
+export interface FSRecordsPath {
 	base: string;
 	pattern: string | string[];
 	ignored: string[];
@@ -6,11 +6,11 @@ export interface RecordsPath {
 	gitignore: boolean;
 }
 
-export interface RecordsConfig {
-	paths: RecordsPath[];
+export interface FSRecordsConfig {
+	paths: FSRecordsPath[];
 }
 
-export interface RecordFile {
+export interface FSRecordFile {
 	filename: string;
 	searchPath: string;
 	path: string;

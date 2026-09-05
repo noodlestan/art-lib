@@ -1,8 +1,8 @@
-# Guide: Art Cli
+# Guide: Art Lib
 
-> Host and manage the Art Cli shared libraries and tools, and their planning artefacts.
+> Host and manage the Art Lib shared libraries and tools, and their planning artefacts.
 
-Monorepo containing the Art Cli roadmap, library source code, and their backlogs.
+Monorepo containing the Art Lib roadmap, library source code, and their backlogs.
 
 Uses Workflow: Planning Work with one backlog per package, coordinating with Workflow: Roadmapping from one project-wide roadmap.
 

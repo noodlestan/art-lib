@@ -2,13 +2,13 @@ import { createRecordFile } from './private/createRecordFile';
 import { directoryExists } from './private/directoryExists';
 import { filterFilenamesByKinds } from './private/filterByKinds';
 import { findRecordFilesInPath } from './private/findRecordFilesInPath';
-import type { RecordFile, RecordsConfig } from './types';
+import type { FSRecordFile, FSRecordsConfig } from './types';
 
 export async function findRecordFiles(
-	recordsConfig: RecordsConfig,
+	recordsConfig: FSRecordsConfig,
 	searchPath: string,
 	kinds: string | string[] = [],
-): Promise<RecordFile[]> {
+): Promise<FSRecordFile[]> {
 	if (!directoryExists(searchPath)) {
 		return [];
 	}

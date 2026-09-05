@@ -1,11 +1,11 @@
-import type { RecordsPath } from '../types';
+import type { FSRecordsPath } from '../types';
 
 import { getGitIgnoredSet } from './getGitIgnoredSet';
 import { globPath } from './globPath';
 
 export async function findRecordFilesInPath(
 	searchPath: string,
-	path: RecordsPath,
+	path: FSRecordsPath,
 ): Promise<string[]> {
 	const candidates = await globPath(searchPath, path);
 

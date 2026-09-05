@@ -1,4 +1,4 @@
-# Parking Lot: Art Cli Roadmap
+# Parking Lot: Art Lib Roadmap
 
 WIP tracker for the roadmap, structured like the session parking lot: **ACTIONABLE** (in progress now), **pending** (waiting), **BLOCKER** (blocking work), **FOLLOW-UPS** (not in scope).
 

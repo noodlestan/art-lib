@@ -1,12 +1,12 @@
-# @art-cli/lib-records
+# @art-lib/fs-records
 
-> Generic Art MD record read/write modules for Clis.
+> Generic Art MD record read/write modules for CLIs.
 
-This package is part of the [Art Cli toolkit](../../README.md).
+This package is part of the [Art Lib toolkit](../../README.md).
 
 ## Development
 
-Make sure you read the [Art Cli README](../../README.md) first.
+Make sure you read the [Art Lib README](../../README.md) first.
 
 ### Build Targets
 

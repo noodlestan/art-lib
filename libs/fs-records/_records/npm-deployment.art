@@ -1,8 +1,8 @@
 # Module
 
-## NPM Package Deployment: Lib Records
+## NPM Package Deployment: Art Lib FS Records
 
-**Owner:** Package: Lib Records
+**Owner:** Package: Art Lib FS Records
 
 **Status:** `DEPLOYED`
 
@@ -10,7 +10,7 @@
 
 **Deploy:** Deployment Command: NPM Package CLI
 
-**Canonical Name:** `@art-work/cli`
+**Canonical Name:** `@art-lib/fs-records`
 
 **Registry:** `https://registry.npmjs.org`
 

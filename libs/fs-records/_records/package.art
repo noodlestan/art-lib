@@ -1,20 +1,20 @@
 # Module
 
-## Package: Lib Records
+## Package: Art Lib FS Records
 
 **Purpose:** Generic record read/write modules for Art MD record files.
 
 **Description:** Find, read, and filter Art MD record files across a search path, honoring gitignore and configured patterns.
 
-**Owner:** Project: Art Cli
+**Owner:** Project: Art Lib
 
-**Namespace:** Namespace: Art Cli
+**Namespace:** Namespace: Art Lib
 
 **Author:** Noodlestan Collective
 
-**Path:** `libs/records/`
+**Path:** `libs/fs-records/`
 
-**Canonical Name:** `@art-cli/lib-records`
+**Canonical Name:** `@art-lib/fs-records`
 
 **Published:** `true`
 

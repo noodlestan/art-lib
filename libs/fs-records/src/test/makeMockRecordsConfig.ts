@@ -1,6 +1,6 @@
-import type { RecordsConfig } from '../types';
+import type { FSRecordsConfig } from '../types';
 
-export function makeMockRecordsConfig(custom?: Partial<RecordsConfig>): RecordsConfig {
+export function makeMockRecordsConfig(custom?: Partial<FSRecordsConfig>): FSRecordsConfig {
 	return {
 		paths: [
 			{

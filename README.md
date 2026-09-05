@@ -1,8 +1,8 @@
-# Art Cli
+# Art Lib
 
-> Build high quality, consistent, CLI experiences from composable units.
+> Build high quality, consistent, Cli and Tool experiences from composable units.
 
-Shared libraries and tools for building CLIs.
+Shared libraries and tools for building CLIs and Tools.
 
 ## Packages
 

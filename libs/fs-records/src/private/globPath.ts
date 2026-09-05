@@ -1,12 +1,12 @@
 import { glob } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
-import type { RecordsPath } from '../types';
+import type { FSRecordsPath } from '../types';
 
 import { normalizeExcludes } from './normalizeExcludes';
 import { normalizePatterns } from './normalizePatterns';
 
-export async function globPath(searchPath: string, path: RecordsPath): Promise<string[]> {
+export async function globPath(searchPath: string, path: FSRecordsPath): Promise<string[]> {
 	const baseDir = join(searchPath, path.base);
 	const pattern = normalizePatterns(baseDir, path.pattern);
 	const exclude = normalizeExcludes(baseDir, [...path.ignored, ...path.excluded]);
