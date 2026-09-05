@@ -1,6 +1,6 @@
 # @art-cli/lib-records
 
-> Generic record read/write modules for Art MD record files.
+> Generic Art MD record read/write modules for Clis.
 
 This package is part of the [Art Cli toolkit](../../README.md).
 
