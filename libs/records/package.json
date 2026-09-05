@@ -1,0 +1,35 @@
+{
+  "name": "@art-cli/lib-records",
+  "version": "0.0.1",
+  "description": "Generic record read/write modules for Art MD record files.",
+  "author": "Noodlestan Collective",
+  "license": "MIT",
+  "private": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE-MIT",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc --emitDeclarationOnly && esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js --format=esm --packages=external",
+    "build:clean": "rm -rf dist",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "prettier . -c && eslint . && tsc --noEmit",
+    "lint:fix": "prettier . -c --write && eslint . --fix",
+    "ci": "npm run lint && npm run build && npm run test"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.3",
+    "esbuild": "^0.28.0",
+    "typescript": "5.9.3",
+    "vitest": "4.1.8"
+  }
+}

@@ -1,0 +1,33 @@
+# Module
+
+## Package: Lib Records
+
+**Purpose:** Generic record read/write modules for Art MD record files.
+
+**Description:** Find, read, and filter Art MD record files across a search path, honoring gitignore and configured patterns.
+
+**Owner:** Project: Art Cli
+
+**Namespace:** Namespace: Art Cli
+
+**Author:** Noodlestan Collective
+
+**Path:** `art-cli/libs/records/`
+
+**Canonical Name:** `@art-cli/lib-records`
+
+**Published:** `false`
+
+**Private:** `false`
+
+**Language:** TypeScript
+
+**Engines:**
+
+- Node: `>= 22`
+
+**PackageManager:** `npm@10.2.3`
+
+**PackageFile:** `package.json`
+
+**License:** License: Noodlestan 2026 MIT
