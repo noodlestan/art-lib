@@ -1,0 +1,25 @@
+# Module
+
+## Project: Art Cli
+
+**Purpose:** Build high quality, consistent, CLI experiences from composable units.
+
+**Description:** Shared libraries and tools for building CLIs.
+
+**Owner:** Project: Artificials
+
+**Author:** Noodlestan Collective
+
+**Repository:** Repository: Art Cli
+
+**Code:** https://github.com/noodlestan/art-cli
+
+**Resources:**
+
+- Package: Lib Records (PLANNED)
+
+**Private:** `false`
+
+**Management:** Uses Workflow: Planning Work with one backlog per package, coordinating with Workflow: Roadmapping from one project-wide roadmap.
+
+**License:** License: Noodlestan 2026 MIT

@@ -1,20 +1,16 @@
-# Art Cli
+# Module
 
-> Build high quality, consistent, CLI experiences from composable units.
+## License: Noodlestan 2026 MIT
 
-Shared libraries and tools for building CLIs.
+**Short:**
 
-## Packages
+Copyright (c) 2026 [Noodlestan](https://noodlestan.org/).
 
-## Scripts
+Published under a [MIT license](https://noodlestan.mit-license.org/).
 
-- **$** `npm run build` — Bundle all packages for production.
-- **$** `npm run lint` — Lint all packages.
-- **$** `npm run ci` — Full CI pass (lint + build + test).
+**Long:**
 
-## License
-
-MIT License
+MIT License https://noodlestan.mit-license.org/
 
 Copyright (c) 2026 Noodlestan https://noodlestan.org/
 

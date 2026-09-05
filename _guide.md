@@ -44,11 +44,17 @@ Projects in this repository use the following workflows:
 | **Executing Work** `$DOMAINS/work/workflows/executing-work/workflow.art`   | Organize work execution by sub-agents to produce completed, verified outcomes and feedback.       |
 | **Roadmapping** `$DOMAINS/roadmaps/workflows/roadmapping/workflow.art`     | Coordinate and align work milestones across projects and initiatives.                             |
 
+### Roadmapping
+
+- The roadmap lives at `_roadmap/` with subdirectories such as `/3-now` and `/4-next/`.
+- The short-term roadmapping focus is captured in `_roadmap/_parking-lot.md`.
+- The requirements, use cases, and principles are captured in `_roadmap/_architect.md`.
+
 ### Planning Work
 
 - The backlog lives at `_backlog/` with subdirectories such as `/3-now` and `/4-next/`.
 - The short-term focus is captured in `_backlog/_parking-lot.md`.
-- The roadmap lives at `_roadmap/` with the project-level parking lot at `_roadmap/_parking-lot.md`.
+- Planning coordination and constraints are captured in `_backlog/_architect.md`.
 
 ## Operating Instructions
 

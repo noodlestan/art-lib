@@ -1,0 +1,49 @@
+# Module
+
+## Repository: Art Cli
+
+**Purpose:** Host and manage the Art Cli shared libraries and tools, and their planning artefacts.
+
+**Description:** Monorepo containing the Art Cli shared libraries and tools, and their backlogs.
+
+**Owner:** Project: Art Cli
+
+**Author:** Noodlestan Collective
+
+**Remote:** `git@github.com:noodlestan/art-cli.git`
+
+**Consumers:** TBD
+
+**Private:** `false`
+
+**Workspaces:** None
+
+**Language:** TypeScript
+
+**Engines:**
+
+- Node: `>= 22`
+
+**PackageManager:** `npm@10.2.3`
+
+**PackageFile:** package.json
+
+**Dependencies:**
+
+- Runtime:
+  - TBD
+- Dev:
+  - TBD
+
+**Scripts:**
+
+- Package Script Set: Root Lifecycle
+
+**Scaffolders:**
+
+- Scaffolder Skeleton: Project Skeleton
+- Scaffolder Files: Project README
+- Scaffolder Files: Project Package Json
+- Scaffolder Files: Project Lefthook
+
+**License:** License: Noodlestan 2026 MIT

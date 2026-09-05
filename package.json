@@ -1,7 +1,7 @@
 {
   "name": "noodlestan/art-cli",
   "version": "0.0.1",
-  "description": "Shared libraries and tools for the Noodlestan ecosystem.",
+  "description": "Shared libraries and tools for building CLIs.",
   "author": "Noodlestan",
   "license": "MIT",
   "private": true,

@@ -1,0 +1,17 @@
+# Module
+
+## Namespace: Art Cli
+
+**Purpose:** Build high quality, consistent, CLI experiences from composable units.
+
+**Description:** Shared libraries and tools for building CLIs.
+
+**Owner:** Project: Art Cli
+
+**Author:** Noodlestan Collective
+
+**Scaffolders:**
+
+- None.
+
+**License:** License: Noodlestan 2026 MIT
