@@ -18,8 +18,11 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc --emitDeclarationOnly && esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js --format=esm --packages=external",
+    "dev": "esbuild-cli-watch",
     "build:clean": "rm -rf dist",
+    "build:types:esm": "tsc --project tsconfig.esm.json",
+    "build:types:cjs": "tsc --project tsconfig.cjs.json",
+    "build": "esbuild-cli",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "prettier . -c && eslint . && tsc --noEmit",
@@ -27,6 +30,7 @@
     "ci": "npm run lint && npm run build && npm run test"
   },
   "devDependencies": {
+    "@noodlestan/esbuild": "^0.0.13",
     "@types/node": "^25.9.3",
     "esbuild": "^0.28.0",
     "typescript": "5.9.3",
