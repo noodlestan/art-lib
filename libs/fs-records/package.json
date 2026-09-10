@@ -19,22 +19,16 @@
   ],
   "scripts": {
     "dev": "esbuild-cli-watch",
+    "lint": "prettier . -c && eslint . && tsc --noEmit",
+    "lint:fix": "prettier . -c --write && eslint . --fix",
+    "build": "esbuild-cli",
     "build:clean": "rm -rf dist",
     "build:types:esm": "tsc --project tsconfig.esm.json",
     "build:types:cjs": "tsc --project tsconfig.cjs.json",
-    "build": "esbuild-cli",
     "test": "vitest run",
+    "test:ci": "vitest run --coverage",
     "test:watch": "vitest",
-    "lint": "prettier . -c && eslint . && tsc --noEmit",
-    "lint:fix": "prettier . -c --write && eslint . --fix",
-    "ci": "npm run lint && npm run build && npm run test"
+    "ci": "npm run lint && npm run build && npm run test:ci"
   },
-  "devDependencies": {
-    "@noodlestan/esbuild": "^0.0.13",
-    "@noodlestan/tsconfig": "^0.0.12",
-    "@types/node": "^25.9.3",
-    "esbuild": "^0.28.0",
-    "typescript": "5.9.3",
-    "vitest": "4.1.8"
-  }
+  "devDependencies": {}
 }
