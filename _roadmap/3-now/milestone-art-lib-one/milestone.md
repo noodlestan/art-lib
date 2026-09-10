@@ -66,9 +66,9 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ### Phase: 1 — Establish Lib baseline
 
-**Goal:** Deliver the first use cases
+**Goal:** Deliver the first use cases from Art Work Cli.
 
-**Description:** Create the art-lib repository.
+**Description:** Create the art-lib repository, scaffolding tools and tests, and expose APIs as they surface during Art Work Cli development.
 
 **Status:** `WORKING`
 
@@ -104,10 +104,11 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ## Items:
 
-| Phase | Resource / Record                                                                          | Status     |
-| ----- | ------------------------------------------------------------------------------------------ | ---------- |
-| 1     | Plan: Workspace Split `_backlog/0-archive/2026-08-10-plan-workspace-split/plan.md`         | `ARCHIVED` |
-| 4     | Plan: Update Knowledge Resources `_backlog/6-plan/plan-update-knowledge-resources/plan.md` | `DRAFT`    |
+| Phase | Resource / Record                                                                                             | Status     |
+| ----- | ------------------------------------------------------------------------------------------------------------- | ---------- |
+| 1     | Plan: Create Art Cli Project and Repo `_backlog/1-done/plan-create-art-cli-project-repo/plan.md`              | `DONE`     |
+| 1     | Plan: Extract Read/Write Records to Art Cli `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`     |
+| 1     | Plan: Add FS Records Store `_backlog/4-next/add-fs-records-store/plan.md`                                     | `PLANNING` |
 
 ---
 

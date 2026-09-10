@@ -147,6 +147,10 @@ Refactor modules to separate responsibilities:
 - type `FSRecordFile` moves to `libs/fs-records/src/files/types.ts`
 - `libs/fs-records/src/findRecordFiles.ts` goes to `libs/fs-records/src/discover/discoverRecordFiles.ts`
 
+Refactor test helpers:
+
+- `libs/fs-records/src/test/makeMockRecordsConfig.ts` => `libs/fs-records/src/test/helpers/config/makeMockRecordsConfig.ts`
+
 In `libs/fs-records/src/files/types.ts`:
 
 ```ts
