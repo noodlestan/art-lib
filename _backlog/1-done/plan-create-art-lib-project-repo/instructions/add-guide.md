@@ -1,6 +1,6 @@
 # Instructions: `add-guide`
 
-**Plan:** `create-art-cli-project-repo`
+**Plan:** `create-art-lib-project-repo`
 
 **Iteration Id:** `add-guide`
 
@@ -18,7 +18,7 @@ This section describes how to report back to the delegator after completing the 
 
 1. Summarise the current context, asking: are you reporting completion or a BLOCKER?
 2. Gather the evidence of changes made and outcomes achieved, or the blocker error details.
-3. Use the `render-template` skill with the `.agents/domains/plans/templates/instructions-report.tart` to render your report and write it next to this instruction file: `plan-create-art-cli-project-repo/instructions/add-guide__report.md`. No separate delegation record is created.
+3. Use the `render-template` skill with the `.agents/domains/plans/templates/instructions-report.tart` to render your report and write it next to this instruction file: `plan-create-art-lib-project-repo/instructions/add-guide__report.md`. No separate delegation record is created.
 4. Generate the response and send it back to the delegator.
 5. Keep the response terse per the Working Agreements: happy face + up to 3 bullet points (done `add-guide`, created `{artefacts}`, thumbs up). The full trail lives in the report file; never repeat it in chat.
 
@@ -42,11 +42,11 @@ The plan workflow (see the entry point guide → Planning Workflow → Working T
 
 ## Goals
 
-Add the `_guide.md` to the art-cli repository, modeled on the art-js-reference guide but scoped to Art Cli: repository layout, records management, workflows, and operating instructions.
+Add the `_guide.md` to the art-cli repository, modeled on the art-js-reference guide but scoped to Art Lib: repository layout, records management, workflows, and operating instructions.
 
 ## Mandatory Reading
 
-- ::READ `$ART_DOMAINS/_backlog/1-done/plan-create-art-cli-project-repo/plan.md` (Plan) — Full plan context, scope, and commit blueprints.
+- ::READ `$ART_DOMAINS/_backlog/1-done/plan-create-art-lib-project-repo/plan.md` (Plan) — Full plan context, scope, and commit blueprints.
 - ::READ `$ART_JS/_guide.md` (Source) — Template guide to model the art-cli guide on.
 - ::READ `$ART_CLI/package.json` (Source) — The scaffolded package.json (scripts and workspaces for the guide).
 
@@ -109,10 +109,10 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ### Step `1 / 4` — Write the art-cli `_guide.md`
 
-Create `$ART_CLI/_guide.md`, modeled on `$ARJ_JS/_guide.md` but scoped to Art Cli. Include at minimum:
+Create `$ART_CLI/_guide.md`, modeled on `$ARJ_JS/_guide.md` but scoped to Art Lib. Include at minimum:
 
-- **Title:** `# Guide: Art Cli`
-- **Overview:** host and manage the Art Cli shared libraries and tools, and their planning artefacts.
+- **Title:** `# Guide: Art Lib`
+- **Overview:** host and manage the Art Lib shared libraries and tools, and their planning artefacts.
 - **Recommended Reading:** `_guide.md`, `_records/project.art`, `_records/repository.art`.
 - **Repository Layout:**
 
@@ -139,7 +139,7 @@ Create `$ART_CLI/_guide.md`, modeled on `$ARJ_JS/_guide.md` but scoped to Art Cl
 **Message:**
 
 ```
-guides(art-cli): Add root guide to Art Cli repository.
+guides(art-cli): Add root guide to Art Lib repository.
 ```
 
 ---

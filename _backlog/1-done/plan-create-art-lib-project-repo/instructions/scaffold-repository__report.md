@@ -1,6 +1,6 @@
 # Sub-Agent REPORT (#producer)
 
-**Plan:** `create-art-cli-project-repo`
+**Plan:** `create-art-lib-project-repo`
 
 **Iteration Id:** `scaffold-repository`
 
@@ -15,7 +15,7 @@
 | Create `noodlestan/art-cli` repo directory at `$ART_CLI` | Completed | Initialized directory at `$ART_CLI`                                                                                                                      |
 | Scaffold dotfiles and configs from `$ART_JS`             | Completed | Copied `.eslintrc.cjs`, `.gitignore`, `.npmrc`, `.nvmrc`, `.prettierignore`, `.prettierrc`, `lefthook.yml`, `tsconfig.json`, `turbo.json`, `LICENSE-MIT` |
 | Adjust `package.json`                                    | Completed | Set `name` to `noodlestan/art-cli`, `description`, `workspaces: ["libs/**"]`                                                                             |
-| Adapt `README.md`                                        | Completed | Set title `# Art Cli`, tagline, empty packages section, scripts, setup, license                                                                          |
+| Adapt `README.md`                                        | Completed | Set title `# Art Lib`, tagline, empty packages section, scripts, setup, license                                                                          |
 | Create empty architecture index                          | Completed | Created `architecture/index.md` with Overview and empty Documents table                                                                                  |
 | Initialize parking lots                                  | Completed | Created `_backlog/_parking-lot.md` and `_roadmap/_parking-lot.md`                                                                                        |
 | Initialize git, commit, and push                         | Completed | Initialized git (`main`), committed `3da41ec`, set remote `git@github.com:noodlestan/art-cli.git`, and pushed to `origin/main`                           |
@@ -29,7 +29,7 @@
 - `.prettierignore` — Prettier ignore patterns copied from template.
 - `.prettierrc` — Prettier format configuration copied from template.
 - `LICENSE-MIT` — MIT License file copied from template.
-- `README.md` — Root documentation adapted for Art Cli.
+- `README.md` — Root documentation adapted for Art Lib.
 - `_backlog/_parking-lot.md` — Backlog WIP tracker initialized with standard sections.
 - `_roadmap/_parking-lot.md` — Roadmap WIP tracker initialized with standard sections.
 - `architecture/index.md` — Empty architecture index document.

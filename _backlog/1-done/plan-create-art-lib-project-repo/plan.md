@@ -1,6 +1,6 @@
-# Plan: Create Art Cli Project and Repo
+# Plan: Create Art Lib Project and Repo
 
-**ID:** `create-art-cli-project-repo`
+**ID:** `create-art-lib-project-repo`
 
 **Status:** `DONE`
 
@@ -8,9 +8,9 @@
 
 **Skill:** `write-plan`
 
-**Purpose:** Create the `noodlestan/art-cli` repository scaffolded from the art-js-reference template, with project, repo, and namespace records for the Art Cli project.
+**Purpose:** Create the `noodlestan/art-cli` repository scaffolded from the art-js-reference template, with project, repo, and namespace records for the Art Lib project.
 
-**Description:** Scaffold the art-cli repo from `$ART_JS` (dotfiles, lint configs, vite, license, README, `_records`, empty architecture index, `_backlog/_parking-lot.md`, `_roadmap/_parking-lot.md`); add the guide; populate records (copied from the template except scaffolders) with Namespace: Art Cli, Project: Art Cli, and Repository remote `git@github.com:noodlestan/art-cli.git`.
+**Description:** Scaffold the art-cli repo from `$ART_JS` (dotfiles, lint configs, vite, license, README, `_records`, empty architecture index, `_backlog/_parking-lot.md`, `_roadmap/_parking-lot.md`); add the guide; populate records (copied from the template except scaffolders) with Namespace: Art Lib, Project: Art Lib, and Repository remote `git@github.com:noodlestan/art-cli.git`.
 
 ## Mandatory Reading
 
@@ -30,7 +30,7 @@
 
 ## Summary
 
-Create the `noodlestan/art-cli` repository scaffolded from the art-js-reference template, with Namespace: Art Cli, Project: Art Cli (resources: Package: Lib Records PLANNED), and Repository remote `git@github.com:noodlestan/art-cli.git`.
+Create the `noodlestan/art-cli` repository scaffolded from the art-js-reference template, with Namespace: Art Lib, Project: Art Lib (resources: Package: Lib Records PLANNED), and Repository remote `git@github.com:noodlestan/art-cli.git`.
 
 ## Context
 
@@ -61,7 +61,7 @@ Create the `noodlestan/art-cli` repository scaffolded from the art-js-reference 
 
 ## Scope
 
-Scaffold the art-cli repo from the art-js-reference template: dotfiles, lint configs, vite, license, README, `_records`, empty architecture index, `_backlog/_parking-lot.md`, `_roadmap/_parking-lot.md`; add the guide; populate records (all template records except scaffolders) with Namespace: Art Cli, Project: Art Cli, and Repository remote `git@github.com:noodlestan/art-cli.git`.
+Scaffold the art-cli repo from the art-js-reference template: dotfiles, lint configs, vite, license, README, `_records`, empty architecture index, `_backlog/_parking-lot.md`, `_roadmap/_parking-lot.md`; add the guide; populate records (all template records except scaffolders) with Namespace: Art Lib, Project: Art Lib, and Repository remote `git@github.com:noodlestan/art-cli.git`.
 
 ## Work
 
@@ -134,13 +134,13 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 **Status:** `DONE`
 
-**Report:** `./plan-create-art-cli-project-repo/instructions/scaffold-repository__report.md`
+**Report:** `./plan-create-art-lib-project-repo/instructions/scaffold-repository__report.md`
 
 **Purpose:** Scaffold the art-cli repository from the art-js-reference template.
 
 **Description:** Scaffold all dotfiles, tslint, eslint, vite, license, README, package.json, tsconfig, turbo.json, lefthook.yml, architecture (empty index), and initialize `_backlog/_parking-lot.md` and `_roadmap/_parking-lot.md` from `$ART_JS`. Records are populated in the Populate Records iteration.
 
-**Instructions:** `./plan-create-art-cli-project-repo/instructions/scaffold-repository.md`
+**Instructions:** `./plan-create-art-lib-project-repo/instructions/scaffold-repository.md`
 
 **Changes:**
 
@@ -156,14 +156,14 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 | ID                            | Repository / Checkout / Branch | Policy       | Hash      | Status      |
 | ----------------------------- | ------------------------------ | ------------ | --------- | ----------- |
-| `scaffold-art-cli-repository` | Art Cli / `$ART_CLI` / `main`  | `AUTONOMOUS` | `3da41ec` | `COMMITTED` |
+| `scaffold-art-cli-repository` | Art Lib / `$ART_CLI` / `main`  | `AUTONOMOUS` | `3da41ec` | `COMMITTED` |
 
 ##### Commit: `scaffold-art-cli-repository`
 
 **Message:**
 
 ```
-scaffold(art-cli): Scaffold Art Cli repository from Art Js template.
+scaffold(art-cli): Scaffold Art Lib repository from Art Js template.
 
 - Copy dotfiles, lint configs, vite, license, README, package.json, tsconfig, turbo.json, and lefthook.yml.
 - Create empty architecture index.
@@ -176,13 +176,13 @@ scaffold(art-cli): Scaffold Art Cli repository from Art Js template.
 
 **Status:** `DONE`
 
-**Report:** `./plan-create-art-cli-project-repo/instructions/add-guide__report.md`
+**Report:** `./plan-create-art-lib-project-repo/instructions/add-guide__report.md`
 
 **Purpose:** Add the guide to the new repository.
 
 **Description:** Add the `_guide.md` to the art-cli repository.
 
-**Instructions:** `./plan-create-art-cli-project-repo/instructions/add-guide.md`
+**Instructions:** `./plan-create-art-lib-project-repo/instructions/add-guide.md`
 
 **Changes:**
 
@@ -196,14 +196,14 @@ scaffold(art-cli): Scaffold Art Cli repository from Art Js template.
 
 | ID                  | Repository / Checkout / Branch | Policy       | Hash      | Status      |
 | ------------------- | ------------------------------ | ------------ | --------- | ----------- |
-| `add-art-cli-guide` | Art Cli / `$ART_CLI` / `main`  | `AUTONOMOUS` | `6e47e36` | `COMMITTED` |
+| `add-art-cli-guide` | Art Lib / `$ART_CLI` / `main`  | `AUTONOMOUS` | `6e47e36` | `COMMITTED` |
 
 ##### Commit: `add-art-cli-guide`
 
 **Message:**
 
 ```
-guides(art-cli): Add root guide to Art Cli repository.
+guides(art-cli): Add root guide to Art Lib repository.
 ```
 
 ### Iteration: Populate Records
@@ -212,19 +212,19 @@ guides(art-cli): Add root guide to Art Cli repository.
 
 **Status:** `DONE`
 
-**Report:** `./plan-create-art-cli-project-repo/instructions/populate-records__report.md`
+**Report:** `./plan-create-art-lib-project-repo/instructions/populate-records__report.md`
 
-**Purpose:** Populate the project, repo, and namespace records for the Art Cli project.
+**Purpose:** Populate the project, repo, and namespace records for the Art Lib project.
 
-**Description:** Copy all records from `$ART_JS` except scaffolders; set Namespace.name: Art Cli, Namespace.owner: Project: Art Cli, Project.name: Art Cli, Project.resources: Package: Lib Records (PLANNED canonical `@art-cli/lib-records`), Repository.Remote: `git@github.com:noodlestan/art-cli.git`.
+**Description:** Copy all records from `$ART_JS` except scaffolders; set Namespace.name: Art Lib, Namespace.owner: Project: Art Lib, Project.name: Art Lib, Project.resources: Package: Lib Records (PLANNED canonical `@art-cli/lib-records`), Repository.Remote: `git@github.com:noodlestan/art-cli.git`.
 
-**Instructions:** `./plan-create-art-cli-project-repo/instructions/populate-records.md`
+**Instructions:** `./plan-create-art-lib-project-repo/instructions/populate-records.md`
 
 **Changes:**
 
 - Copy all records from `$ART_JS` except scaffolders.
-- Set Namespace.name: Art Cli, Namespace.owner: Project: Art Cli.
-- Set Project.name: Art Cli, Project.resources: Package: Lib Records (PLANNED canonical `@art-cli/lib-records`).
+- Set Namespace.name: Art Lib, Namespace.owner: Project: Art Lib.
+- Set Project.name: Art Lib, Project.resources: Package: Lib Records (PLANNED canonical `@art-cli/lib-records`).
 - Set Repository.Remote: `git@github.com:noodlestan/art-cli.git`.
 
 **Dependencies:**
@@ -235,7 +235,7 @@ guides(art-cli): Add root guide to Art Cli repository.
 
 | ID                         | Repository / Checkout / Branch | Policy       | Hash      | Status      |
 | -------------------------- | ------------------------------ | ------------ | --------- | ----------- |
-| `populate-art-cli-records` | Art Cli / `$ART_CLI` / `main`  | `AUTONOMOUS` | `917c561` | `COMMITTED` |
+| `populate-art-cli-records` | Art Lib / `$ART_CLI` / `main`  | `AUTONOMOUS` | `917c561` | `COMMITTED` |
 
 ##### Commit: `populate-art-cli-records`
 
@@ -245,7 +245,7 @@ guides(art-cli): Add root guide to Art Cli repository.
 records(art-cli): Populate project, repo, and namespace records.
 
 - Copy template records except scaffolders.
-- Set Namespace: Art Cli, Project: Art Cli, Repository remote art-cli.git.
+- Set Namespace: Art Lib, Project: Art Lib, Repository remote art-cli.git.
 - Register Package: Lib Records (PLANNED) in the project record.
 ```
 
@@ -256,11 +256,11 @@ records(art-cli): Populate project, repo, and namespace records.
 ### Not In Scope
 
 - Moving the workspace-cli source code (tracked in Plan: Extract Workspace Cli to Art Work).
-- Extracting the record read/write modules (tracked in Plan: Extract Read/Write Records to Art Cli).
+- Extracting the record read/write modules (tracked in Plan: Extract Read/Write Records to Art Lib).
 
 ### Evidence
 
-- Scaffolded Art Cli repository skeleton, dotfiles, configs, architecture index, parking lots, and `_guide.md` at `$ART_CLI`.
+- Scaffolded Art Lib repository skeleton, dotfiles, configs, architecture index, parking lots, and `_guide.md` at `$ART_CLI`.
 - Populated project, repo, namespace, license, dependencies, and scripts records at `$ART_CLI/_records/`.
 - Commits `3da41ec`, `6e47e36`, and `10b5f13` authored and pushed to `origin/main`.
 
@@ -273,7 +273,7 @@ records(art-cli): Populate project, repo, and namespace records.
 
 - The art-cli repo is scaffolded from `$ART_JS`. Example: `/checkouts/art-js-reference`.
 - Records are copied from the template except scaffolders.
-- Namespace: Art Cli, Project: Art Cli, Repository remote `git@github.com:noodlestan/art-cli.git`.
+- Namespace: Art Lib, Project: Art Lib, Repository remote `git@github.com:noodlestan/art-cli.git`.
 - Commit order: scaffold → guide → records; each commit is self-contained in the art-cli repo.
 
 ### Knowledge to Update

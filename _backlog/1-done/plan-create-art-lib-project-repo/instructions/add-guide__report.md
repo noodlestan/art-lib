@@ -1,6 +1,6 @@
 # Sub-Agent REPORT (#producer)
 
-**Plan:** `create-art-cli-project-repo`
+**Plan:** `create-art-lib-project-repo`
 
 **Iteration Id:** `add-guide`
 
@@ -17,7 +17,7 @@
 
 #### Files changed
 
-- `_guide.md` — Root repository guide for Art Cli.
+- `_guide.md` — Root repository guide for Art Lib.
 
 ## Feedback
 

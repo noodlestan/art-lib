@@ -192,11 +192,11 @@ export {};
 
 > Generic record read/write modules for Art MD record files.
 
-This package is part of the [Art Cli toolkit](../../README.md).
+This package is part of the [Art Lib toolkit](../../README.md).
 
 ## Development
 
-Make sure you read the [Art Cli README](../../README.md) first.
+Make sure you read the [Art Lib README](../../README.md) first.
 
 ### Build Targets
 
@@ -238,9 +238,9 @@ Create `$ART_CLI/libs/records/_records/package.art`:
 
 **Description:** Find, read, and filter Art MD record files across a search path, honoring gitignore and configured patterns.
 
-**Owner:** Project: Art Cli
+**Owner:** Project: Art Lib
 
-**Namespace:** Namespace: Art Cli
+**Namespace:** Namespace: Art Lib
 
 **Author:** Noodlestan Collective
 

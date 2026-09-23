@@ -1,4 +1,4 @@
-# Plan: Extract Read/Write Records to Art Cli
+# Plan: Extract Read/Write Records to Art Lib
 
 **ID:** `extract-read-write-records-art-lib`
 
@@ -10,7 +10,7 @@
 
 **Purpose:** Extract the generic record read/write modules into a shared library in the art-lib repository.
 
-**Description:** Create Package: Lib Records in art-lib (canonical `@art-lib/fs-records`, path `libs/records`); extract the generic record read/write modules and their tests from art-work-cli; register the lib in the Art Cli project record; publish the lib; consume it in art-work-cli; update knowledge; publish a new art-work-cli version; test in `$WORKSPACE`.
+**Description:** Create Package: Lib Records in art-lib (canonical `@art-lib/fs-records`, path `libs/records`); extract the generic record read/write modules and their tests from art-work-cli; register the lib in the Art Lib project record; publish the lib; consume it in art-work-cli; update knowledge; publish a new art-work-cli version; test in `$WORKSPACE`.
 
 ## Mandatory Reading
 
@@ -61,7 +61,7 @@ Create Package: Lib Records in art-lib (`@art-lib/fs-records`, path `libs/record
 
 ## Scope
 
-Create the Lib Records package in art-lib; extract the generic record read/write modules and their tests from art-work-cli; register the lib in the Art Cli project record; publish the lib; consume it in art-work-cli; update knowledge; publish a new art-work-cli version; test in `$WORKSPACE`.
+Create the Lib Records package in art-lib; extract the generic record read/write modules and their tests from art-work-cli; register the lib in the Art Lib project record; publish the lib; consume it in art-work-cli; update knowledge; publish a new art-work-cli version; test in `$WORKSPACE`.
 
 ## Work
 
@@ -146,13 +146,13 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 **Dependencies:**
 
-- Plan: Create Art Cli Project and Repo — the art-lib repo must exist first.
+- Plan: Create Art Lib Project and Repo — the art-lib repo must exist first.
 
 #### Commits:
 
 | ID                           | Repository / Checkout / Branch | Policy       | Hash      | Status      |
 | ---------------------------- | ------------------------------ | ------------ | --------- | ----------- |
-| `create-lib-records-package` | Art Cli / `$ART_CLI` / `main`  | `AUTONOMOUS` | `5646b79` | `COMMITTED` |
+| `create-lib-records-package` | Art Lib / `$ART_CLI` / `main`  | `AUTONOMOUS` | `5646b79` | `COMMITTED` |
 
 ##### Commit: `create-lib-records-package`
 
@@ -190,7 +190,7 @@ scaffold(art-lib): Create lib/records package `@art-lib/fs-records`.
 
 | ID                       | Repository / Checkout / Branch | Policy       | Hash      | Status      |
 | ------------------------ | ------------------------------ | ------------ | --------- | ----------- |
-| `extract-record-modules` | Art Cli / `$ART_CLI` / `main`  | `AUTONOMOUS` | `6f7a73f` | `COMMITTED` |
+| `extract-record-modules` | Art Lib / `$ART_CLI` / `main`  | `AUTONOMOUS` | `6f7a73f` | `COMMITTED` |
 
 ##### Commit: `extract-record-modules`
 
@@ -211,13 +211,13 @@ refactor(art-lib): extract record read/write modules from art-work-cli
 
 **Purpose:** Register the lib, publish it, and consume it in art-work-cli.
 
-**Description:** Register the lib in the Art Cli project record; publish the lib; consume it in art-work-cli; update knowledge; publish a new art-work-cli version; test in `$WORKSPACE`.
+**Description:** Register the lib in the Art Lib project record; publish the lib; consume it in art-work-cli; update knowledge; publish a new art-work-cli version; test in `$WORKSPACE`.
 
 **Instructions:** `./plan-extract-read-write-records-art-lib/instructions/register-publish-consume.md`
 
 **Changes:**
 
-- Register the lib in the Art Cli project record.
+- Register the lib in the Art Lib project record.
 - Publish the lib.
 - Consume the lib in art-work-cli.
 - Update knowledge in art-lib and art-work.
@@ -232,7 +232,7 @@ refactor(art-lib): extract record read/write modules from art-work-cli
 
 | ID                                 | Repository / Checkout / Branch | Policy       | Hash      | Status      |
 | ---------------------------------- | ------------------------------ | ------------ | --------- | ----------- |
-| `register-and-publish-lib-records` | Art Cli / `$ART_CLI` / `main`  | `AUTONOMOUS` | `8e78f52` | `COMMITTED` |
+| `register-and-publish-lib-records` | Art Lib / `$ART_CLI` / `main`  | `AUTONOMOUS` | `8e78f52` | `COMMITTED` |
 
 ---
 
@@ -240,7 +240,7 @@ refactor(art-lib): extract record read/write modules from art-work-cli
 
 ### Not In Scope
 
-- Creating the art-lib repository (tracked in Plan: Create Art Cli Project and Repo).
+- Creating the art-lib repository (tracked in Plan: Create Art Lib Project and Repo).
 - Moving the art-work-cli source code (tracked in Plan: Extract Art Work Cli to Art Work).
 - Generating the art-lib ecosystem roadmap notes (future plan, not yet tracked).
 

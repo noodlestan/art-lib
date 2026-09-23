@@ -1,6 +1,6 @@
 # Instructions: `populate-records`
 
-**Plan:** `create-art-cli-project-repo`
+**Plan:** `create-art-lib-project-repo`
 
 **Iteration Id:** `populate-records`
 
@@ -18,7 +18,7 @@ This section describes how to report back to the delegator after completing the 
 
 1. Summarise the current context, asking: are you reporting completion or a BLOCKER?
 2. Gather the evidence of changes made and outcomes achieved, or the blocker error details.
-3. Use the `render-template` skill with the `.agents/domains/plans/templates/instructions-report.tart` to render your report and write it next to this instruction file: `plan-create-art-cli-project-repo/instructions/populate-records__report.md`. No separate delegation record is created.
+3. Use the `render-template` skill with the `.agents/domains/plans/templates/instructions-report.tart` to render your report and write it next to this instruction file: `plan-create-art-lib-project-repo/instructions/populate-records__report.md`. No separate delegation record is created.
 4. Generate the response and send it back to the delegator.
 5. Keep the response terse per the Working Agreements: happy face + up to 3 bullet points (done `populate-records`, created `{artefacts}`, thumbs up). The full trail lives in the report file; never repeat it in chat.
 
@@ -42,11 +42,11 @@ The plan workflow (see the entry point guide → Planning Workflow → Working T
 
 ## Goals
 
-Populate the project, repository, and namespace records for the Art Cli project: copy the template records (except scaffolders) and set Namespace: Art Cli, Project: Art Cli (resources: Package: Lib Records PLANNED), and Repository remote `git@github.com:noodlestan/art-cli.git`.
+Populate the project, repository, and namespace records for the Art Lib project: copy the template records (except scaffolders) and set Namespace: Art Lib, Project: Art Lib (resources: Package: Lib Records PLANNED), and Repository remote `git@github.com:noodlestan/art-cli.git`.
 
 ## Mandatory Reading
 
-- ::READ `$ART_DOMAINS/_backlog/1-done/plan-create-art-cli-project-repo/plan.md` (Plan) — Full plan context, scope, and commit blueprints.
+- ::READ `$ART_DOMAINS/_backlog/1-done/plan-create-art-lib-project-repo/plan.md` (Plan) — Full plan context, scope, and commit blueprints.
 - ::READ `$ART_JS/_records/project.art` (Source) — Template project record to copy and adapt.
 - ::READ `$ART_JS/_records/repository.art` (Source) — Template repository record to copy and adapt.
 - ::READ `$ART_JS/_records/namespace.art` (Source) — Template namespace record to copy and adapt.
@@ -107,7 +107,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 ## Changes
 
 - Step 1 / 4 — Copy the template records (except scaffolders)
-- Step 2 / 4 — Adapt the namespace, project, and repository records for Art Cli
+- Step 2 / 4 — Adapt the namespace, project, and repository records for Art Lib
 - Step 3 / 4 — Commit `populate-art-cli-records` and push
 - Step 4 / 4 — Report
 
@@ -128,23 +128,23 @@ Do NOT copy `$ART_JS/_records/scaffolders/`.
 
 **Expected outcome:** `$ART_CLI/_records/` contains dependencies, license, namespace, project, repository, and scripts — no scaffolders.
 
-### Step `2 / 4` — Adapt the namespace, project, and repository records for Art Cli
+### Step `2 / 4` — Adapt the namespace, project, and repository records for Art Lib
 
 **2a. `$ART_CLI/_records/namespace.art`:**
 
-- `## Namespace: Art Cli`
+- `## Namespace: Art Lib`
 - **Purpose:** Shared libraries and tools for the Noodlestan ecosystem.
 - **Description:** Libraries and tools shared across Noodlestan projects.
-- **Owner:** Project: Art Cli
+- **Owner:** Project: Art Lib
 - Keep Author, Scaffolders, and License as in the template.
 
 **2b. `$ART_CLI/_records/project.art`:**
 
-- `## Project: Art Cli`
+- `## Project: Art Lib`
 - **Purpose:** Shared libraries and tools for the Noodlestan ecosystem.
 - **Description:** Libraries and tools shared across Noodlestan projects.
 - **Owner:** Project: Artificials (unchanged from template)
-- **Repository:** Repository: Art Cli
+- **Repository:** Repository: Art Lib
 - **Code:** `https://github.com/noodlestan/art-cli`
 - **Resources:**
   - Package: Lib Records (PLANNED canonical `@art-cli/lib-records`)
@@ -152,14 +152,14 @@ Do NOT copy `$ART_JS/_records/scaffolders/`.
 
 **2c. `$ART_CLI/_records/repository.art`:**
 
-- `## Repository: Art Cli`
-- **Purpose:** Host and manage the Art Cli shared libraries and tools, and their planning artefacts.
-- **Description:** Monorepo containing the Art Cli shared libraries and tools, and their backlogs.
-- **Owner:** Project: Art Cli
+- `## Repository: Art Lib`
+- **Purpose:** Host and manage the Art Lib shared libraries and tools, and their planning artefacts.
+- **Description:** Monorepo containing the Art Lib shared libraries and tools, and their backlogs.
+- **Owner:** Project: Art Lib
 - **Remote:** `git@github.com:noodlestan/art-cli.git`
 - Keep the rest as in the template.
 
-**Expected outcome:** the three records are scoped to Art Cli; the license, dependencies, and scripts records are unchanged copies.
+**Expected outcome:** the three records are scoped to Art Lib; the license, dependencies, and scripts records are unchanged copies.
 
 ---
 
@@ -173,7 +173,7 @@ Do NOT copy `$ART_JS/_records/scaffolders/`.
 records(art-cli): Populate project, repo, and namespace records.
 
 - Copy template records except scaffolders.
-- Set Namespace: Art Cli, Project: Art Cli, Repository remote art-cli.git.
+- Set Namespace: Art Lib, Project: Art Lib, Repository remote art-cli.git.
 - Register Package: Lib Records (PLANNED) in the project record.
 ```
 
@@ -203,7 +203,7 @@ Report according to the "How to Report Back to the Delegator" instructions, noti
 **Instructions:**
 
 - Verify that commits have been executed and pushed according to the commit's policy.
-- Verify that `$ART_CLI/_records/` contains the copied records (no scaffolders) and that namespace, project, and repository records are scoped to Art Cli with the correct remote.
+- Verify that `$ART_CLI/_records/` contains the copied records (no scaffolders) and that namespace, project, and repository records are scoped to Art Lib with the correct remote.
 - Verify that Package: Lib Records (PLANNED) is registered in the project record.
 - Execute the **Verifying Completion** step as defined in the "Operating Instructions" section.
 - Report according to the "How to Report Back to the Delegator" instructions.

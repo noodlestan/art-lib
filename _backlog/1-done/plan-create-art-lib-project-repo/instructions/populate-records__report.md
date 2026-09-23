@@ -1,6 +1,6 @@
 # Sub-Agent REPORT (#producer)
 
-**Plan:** `create-art-cli-project-repo`
+**Plan:** `create-art-lib-project-repo`
 
 **Iteration Id:** `populate-records`
 
@@ -13,17 +13,17 @@
 | Goal Item                            | Status    | Details                                                                                                                           |
 | ------------------------------------ | --------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | Copy template records from `$ART_JS` | COMPLETED | Copied `dependencies/` (8 files), `scripts/` (7 files), and `license.art` as-is                                                   |
-| Set Namespace: Art Cli               | COMPLETED | Adapted `_records/namespace.art` with Art Cli purpose, description, and Owner: Project: Art Cli                                   |
-| Set Project: Art Cli                 | COMPLETED | Adapted `_records/project.art` with Art Cli purpose, description, Owner: Project: Artificials, and Package: Lib Records (PLANNED) |
-| Set Repository: Art Cli              | COMPLETED | Adapted `_records/repository.art` with Art Cli purpose, description, and remote `git@github.com:noodlestan/art-cli.git`           |
+| Set Namespace: Art Lib               | COMPLETED | Adapted `_records/namespace.art` with Art Lib purpose, description, and Owner: Project: Art Lib                                   |
+| Set Project: Art Lib                 | COMPLETED | Adapted `_records/project.art` with Art Lib purpose, description, Owner: Project: Artificials, and Package: Lib Records (PLANNED) |
+| Set Repository: Art Lib              | COMPLETED | Adapted `_records/repository.art` with Art Lib purpose, description, and remote `git@github.com:noodlestan/art-cli.git`           |
 | Exclude scaffolders                  | COMPLETED | Verified `scaffolders/` directory was excluded from `$ART_CLI/_records/`                                                          |
 | Commit & push                        | COMPLETED | Committed `10b5f13` and pushed to `origin/main`                                                                                   |
 
 #### Files changed
 
 - `_records/license.art` — Template MIT license record.
-- `_records/namespace.art` — Namespace record scoped to Art Cli.
-- `_records/project.art` — Root project record for Art Cli with registered Package: Lib Records (PLANNED).
+- `_records/namespace.art` — Namespace record scoped to Art Lib.
+- `_records/project.art` — Root project record for Art Lib with registered Package: Lib Records (PLANNED).
 - `_records/repository.art` — Monorepo repository record with remote `git@github.com:noodlestan/art-cli.git`.
 - `_records/dependencies/build-tools-dev.art` — Build tools dev dependency definitions.
 - `_records/dependencies/cli-dev.art` — CLI development dependency definitions.

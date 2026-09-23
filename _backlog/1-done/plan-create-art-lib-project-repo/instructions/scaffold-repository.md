@@ -1,6 +1,6 @@
 # Instructions: `scaffold-repository`
 
-**Plan:** `create-art-cli-project-repo`
+**Plan:** `create-art-lib-project-repo`
 
 **Iteration Id:** `scaffold-repository`
 
@@ -18,7 +18,7 @@ This section describes how to report back to the delegator after completing the 
 
 1. Summarise the current context, asking: are you reporting completion or a BLOCKER?
 2. Gather the evidence of changes made and outcomes achieved, or the blocker error details.
-3. Use the `render-template` skill with the `.agents/domains/plans/templates/instructions-report.tart` to render your report and write it next to this instruction file: `plan-create-art-cli-project-repo/instructions/scaffold-repository__report.md`. No separate delegation record is created.
+3. Use the `render-template` skill with the `.agents/domains/plans/templates/instructions-report.tart` to render your report and write it next to this instruction file: `plan-create-art-lib-project-repo/instructions/scaffold-repository__report.md`. No separate delegation record is created.
 4. Generate the response and send it back to the delegator.
 5. Keep the response terse per the Working Agreements: happy face + up to 3 bullet points (done `scaffold-repository`, created `{artefacts}`, thumbs up). The full trail lives in the report file; never repeat it in chat.
 
@@ -46,9 +46,9 @@ Create the `noodlestan/art-cli` repository at `$ART_CLI`, scaffolded from the ar
 
 ## Mandatory Reading
 
-- ::READ `$ART_DOMAINS/_backlog/1-done/plan-create-art-cli-project-repo/plan.md` (Plan) — Full plan context, scope, and commit blueprints.
+- ::READ `$ART_DOMAINS/_backlog/1-done/plan-create-art-lib-project-repo/plan.md` (Plan) — Full plan context, scope, and commit blueprints.
 - ::READ `$ART_JS/package.json` (Source) — Template package.json to copy and adjust.
-- ::READ `$ART_JS/README.md` (Source) — Template README to adapt for Art Cli.
+- ::READ `$ART_JS/README.md` (Source) — Template README to adapt for Art Lib.
 - ::READ `$ART_JS/_guide.md` (Source) — Template guide; reference for the guide added in the next iteration.
 - ::READ `$ART_JS/architecture/index.md` (Source) — Template architecture index; replaced with an empty index.
 
@@ -139,7 +139,7 @@ Do NOT copy: `_records/`, `_guide.md`, `_backlog/` (except the parking lot creat
 
 **1d. Adapt `README.md`:**
 
-- Title: `# Art Cli`
+- Title: `# Art Lib`
 - Tagline: `> Shared libraries and tools for the Noodlestan ecosystem.`
 - Replace the template's Packages table with an empty `## Packages` section (packages are added as they are created).
 - Keep the `## Scripts` and `## Setup` sections, adapted to the art-cli scripts.
@@ -147,11 +147,11 @@ Do NOT copy: `_records/`, `_guide.md`, `_backlog/` (except the parking lot creat
 **1e. Create the empty architecture index** at `$ART_CLI/architecture/index.md`:
 
 ```md
-# Art Cli Architecture
+# Art Lib Architecture
 
 ## Overview
 
-This directory contains architecture documentation for the Art Cli packages.
+This directory contains architecture documentation for the Art Lib packages.
 
 ## Documents
 
@@ -175,7 +175,7 @@ This directory contains architecture documentation for the Art Cli packages.
 **Message:**
 
 ```
-scaffold(art-cli): Scaffold Art Cli repository from Art Js template.
+scaffold(art-cli): Scaffold Art Lib repository from Art Js template.
 
 - Copy dotfiles, lint configs, vite, license, README, package.json, tsconfig, turbo.json, and lefthook.yml.
 - Create empty architecture index.

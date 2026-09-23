@@ -42,7 +42,7 @@ The plan workflow (see the entry point guide → Planning Workflow → Working T
 
 ## Goals
 
-Register the Lib Records package in the Art Cli project record, publish `@art-lib/fs-records` to npm, consume it in art-work-cli (replacing the local record modules), update knowledge in art-lib and art-work, publish a new art-work-cli version, and test in `$WORKSPACE`.
+Register the Lib Records package in the Art Lib project record, publish `@art-lib/fs-records` to npm, consume it in art-work-cli (replacing the local record modules), update knowledge in art-lib and art-work, publish a new art-work-cli version, and test in `$WORKSPACE`.
 
 ## Mandatory Reading
 
@@ -107,7 +107,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Changes
 
-- Step 1 / 6 — Register the lib in the Art Cli project record
+- Step 1 / 6 — Register the lib in the Art Lib project record
 - Step 2 / 6 — Publish `@art-lib/fs-records` and commit `register-and-publish-lib-records`
 - Step 3 / 6 — Consume the lib in art-work-cli and commit `consume-lib-records-in-art-work-cli`
 - Step 4 / 6 — Update knowledge in art-lib and art-work
@@ -116,13 +116,13 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Steps
 
-### Step `1 / 6` — Register the lib in the Art Cli project record
+### Step `1 / 6` — Register the lib in the Art Lib project record
 
 Edit `$ART_CLI/_records/project.art`: change the Lib Records resource from PLANNED to registered:
 
 - `Package: Lib Records (PLANNED)` → `Package: Lib Records`
 
-**Expected outcome:** the Art Cli project record lists Package: Lib Records as a registered resource.
+**Expected outcome:** the Art Lib project record lists Package: Lib Records as a registered resource.
 
 ### Step `2 / 6` — Publish `@art-lib/fs-records`
 
@@ -152,7 +152,7 @@ If the publish fails because the package name is already taken or npm auth is mi
 ```
 records(art-lib): register lib records in project record and publish
 
-- Register Package: Lib Records in the Art Cli project record.
+- Register Package: Lib Records in the Art Lib project record.
 - Publish @art-lib/fs-records to npm.
 ```
 
@@ -257,7 +257,7 @@ release(art-work): publish art-work-cli with lib records dependency
 **Instructions:**
 
 - Verify that commits have been executed and pushed according to the commit's policy.
-- Verify that the Art Cli project record registers Package: Lib Records, the lib is published (or deferred), and art-work-cli consumes `@art-lib/fs-records` with no local record modules remaining.
+- Verify that the Art Lib project record registers Package: Lib Records, the lib is published (or deferred), and art-work-cli consumes `@art-lib/fs-records` with no local record modules remaining.
 - Verify that knowledge in art-lib and art-work is updated and the new art-work-cli version is published (or deferred).
 - Execute the **Verifying Completion** step as defined in the "Operating Instructions" section.
 - Report according to the "How to Report Back to the Delegator" instructions.
