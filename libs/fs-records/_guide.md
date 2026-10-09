@@ -31,6 +31,12 @@ This package maintains:
 - an architecture reference at `architecture/index.md` describing commands, models, reports, configuration, and logs.
 - decision records at `architecture/records/adr`.
 
+## Conventions
+
+This package follows strict conventions.
+
+::READ `../../_guide.md` for repository-wide conventions.
+
 ## Workflows
 
 This project uses the following workflows:
