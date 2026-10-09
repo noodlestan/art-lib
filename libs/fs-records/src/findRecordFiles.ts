@@ -1,8 +1,8 @@
-import { createRecordFile } from './private/createRecordFile';
-import { directoryExists } from './private/directoryExists';
-import { filterFilenamesByKinds } from './private/filterByKinds';
-import { findRecordFilesInPath } from './private/findRecordFilesInPath';
-import type { FSRecordFile, FSRecordsConfig } from './types';
+import { createRecordFile } from './private/createRecordFile.js';
+import { directoryExists } from './private/directoryExists.js';
+import { filterFilenamesByKinds } from './private/filterByKinds.js';
+import { findRecordFilesInPath } from './private/findRecordFilesInPath.js';
+import type { FSRecordFile, FSRecordsConfig } from './types.js';
 
 export async function findRecordFiles(
 	recordsConfig: FSRecordsConfig,

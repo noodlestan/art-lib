@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 
-import type { FSRecordFile } from './types';
+import type { FSRecordFile } from './types.js';
 
 export async function readRecordFileContent(file: FSRecordFile): Promise<FSRecordFile> {
 	if (file.content !== undefined || file.error) {

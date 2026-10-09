@@ -1,7 +1,7 @@
-import type { FSRecordsPath } from '../types';
+import type { FSRecordsPath } from '../types.js';
 
-import { getGitIgnoredSet } from './getGitIgnoredSet';
-import { globPath } from './globPath';
+import { getGitIgnoredSet } from './getGitIgnoredSet.js';
+import { globPath } from './globPath.js';
 
 export async function findRecordFilesInPath(
 	searchPath: string,

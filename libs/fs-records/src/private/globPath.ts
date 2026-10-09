@@ -1,10 +1,10 @@
 import { glob } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
-import type { FSRecordsPath } from '../types';
+import type { FSRecordsPath } from '../types.js';
 
-import { normalizeExcludes } from './normalizeExcludes';
-import { normalizePatterns } from './normalizePatterns';
+import { normalizeExcludes } from './normalizeExcludes.js';
+import { normalizePatterns } from './normalizePatterns.js';
 
 export async function globPath(searchPath: string, path: FSRecordsPath): Promise<string[]> {
 	const baseDir = join(searchPath, path.base);

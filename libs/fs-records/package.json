@@ -9,7 +9,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.mjs"
     }
   },
   "files": [
@@ -23,8 +23,6 @@
     "lint:fix": "prettier . -c --write && eslint . --fix",
     "build": "esbuild-cli",
     "build:clean": "rm -rf dist",
-    "build:types:esm": "tsc --project tsconfig.esm.json",
-    "build:types:cjs": "tsc --project tsconfig.cjs.json",
     "test": "vitest run",
     "test:ci": "vitest run --coverage",
     "test:watch": "vitest",

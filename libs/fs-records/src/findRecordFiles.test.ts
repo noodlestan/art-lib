@@ -4,10 +4,10 @@ import { join } from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { findRecordFiles } from './findRecordFiles';
-import { makeTempDir } from './test/helpers/tempDirs/makeTempDir';
-import { removeTempDirs } from './test/helpers/tempDirs/removeTempDirs';
-import { makeMockRecordsConfig } from './test/makeMockRecordsConfig';
+import { findRecordFiles } from './findRecordFiles.js';
+import { makeTempDir } from './test/helpers/tempDirs/makeTempDir.js';
+import { removeTempDirs } from './test/helpers/tempDirs/removeTempDirs.js';
+import { makeMockRecordsConfig } from './test/makeMockRecordsConfig.js';
 
 const tempDirs: string[] = [];
 

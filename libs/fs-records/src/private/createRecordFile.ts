@@ -1,6 +1,6 @@
 import { relative, resolve } from 'node:path';
 
-import type { FSRecordFile } from '../types';
+import type { FSRecordFile } from '../types.js';
 
 export function createRecordFile(searchPath: string, filename: string): FSRecordFile {
 	const resolvedSearchPath = resolve(searchPath);

@@ -1,4 +1,4 @@
-import type { FSRecordsConfig } from '../types';
+import type { FSRecordsConfig } from '../types.js';
 
 export function makeMockRecordsConfig(custom?: Partial<FSRecordsConfig>): FSRecordsConfig {
 	return {
