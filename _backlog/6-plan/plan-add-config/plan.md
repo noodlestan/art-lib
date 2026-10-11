@@ -10,7 +10,7 @@
 
 **Purpose:** Load, compile, and cache typed config modules (for example, `something.config.mts`).
 
-**Description:** Create the `@art-lib/config` package: a `defineConfig()` authoring helper, a `loadConfig()` that discovers the config module, compiles it with esbuild bundle-at-runtime, and caches the compiled bundle under `node_modules/.art-lib/` with content-hash invalidation and a bypass option.
+**Description:** Create the `@art-lib/config` package: `loadConfigModule<T>(entryPath, options?)` — esbuild bundle-at-runtime compilation of a caller-supplied config entry, an optional content-hash cache in a caller-supplied `cacheDir`, a `cache: false` bypass that refreshes the cache, and graceful degradation when the cache is unwritable. The package assumes nothing about config location, cache location, or config data shape.
 
 ## Mandatory Reading
 
@@ -29,7 +29,7 @@
 
 ## Summary
 
-Create `@art-lib/config` with `defineConfig()` and `loadConfig()`: esbuild bundle-at-runtime compilation of `*.config.mts` modules, a content-hash cache under `node_modules/.art-lib/`, graceful degradation when the cache is unavailable, and a `cache: false` bypass.
+Create `@art-lib/config` with `loadConfigModule<T>(entryPath, options?)`: esbuild bundle-at-runtime compilation, an optional content-hash cache under a caller-supplied `cacheDir`, graceful degradation when the cache is unavailable, and a `cache: false` bypass. Entry path, cache directory, and config shape are all caller-supplied — the package makes no conventions its own.
 
 ## Context
 
@@ -59,7 +59,7 @@ Create `@art-lib/config` with `defineConfig()` and `loadConfig()`: esbuild bundl
 
 ## Scope
 
-Create `$ART_LIB/libs/config` exposing `defineConfig()`, `loadConfig()`, and the config types — with esbuild bundle-at-runtime compilation, a content-hash cache under `node_modules/.art-lib/`, and a bypass option — plus tests, package records, and docs mirroring `libs/fs-records` conventions. Config schema and discovery rules stay with each consumer CLI.
+Create `$ART_LIB/libs/config` exposing `loadConfigModule`, the lower-level `compileConfig` / `findReusableBundle` / `importConfigModule` pieces, and the cache metadata types — with esbuild bundle-at-runtime compilation, a caller-supplied cache directory, and a bypass option — plus tests, package records, and docs mirroring `libs/fs-records` conventions. Config location, cache location, defaults, and schema stay with each consumer CLI.
 
 ## Work
 
@@ -173,16 +173,17 @@ scaffold(config): Scaffold package skeleton.
 
 **Purpose:** Implement typed config authoring and esbuild bundle-at-runtime loading.
 
-**Description:** Implement `src/` with `defineConfig<T>(config: T): T` and `loadConfig<T>(rootPath, options?)`: read the config module (`{name}.config.mts` by convention), bundle it with `esbuild.build({ bundle: true, write: false, format: 'esm', platform: 'node' })`, write to a temp `.mjs`, `await import()` it, and return the typed default export. No caching yet. Unit tests.
+**Description:** Implement `src/` with `loadConfigModule<T>(entryPath, options?)` and the pieces beneath it: `compileConfig(entryPath, options)` (esbuild `bundle-at-runtime` with `metafile: true`; externals = package defaults merged with caller `externals`), `importConfigModule<T>(bundlePath)` (dynamic import, default export). Without a `cacheDir`, compile to a temp `.mjs` and import; with one, write bundle + metadata there. Unit tests.
 
 **Changes:**
 
 In `$ART_LIB/libs/config/src/`
 
-- `types.ts` — `LoadConfigOptions`, `ConfigCacheMetadata` (for the next iteration).
-- `defineConfig.ts` — identity helper pinning the authoring type.
-- `loadConfig.ts` — discovery of the config module under `rootPath`, esbuild bundle-at-runtime, dynamic import, typed return.
-- `loadConfig.test.ts` — loads a fixture `something.config.mts`; resolves imports from the consumer `node_modules`; throws a clear error when the config module is missing.
+- `types.ts` — `LoadConfigOptions { cacheDir?, cache?, baseDir?, externals? }`, `CompiledConfig`, `ConfigCacheInput`, `ConfigCacheMeta`.
+- `compileConfig.ts` — esbuild bundle-at-runtime with default externals (node builtins + `esbuild`) merged with caller `externals`; writes bundle + metadata when `cacheDir` is given; temp-dir fallback on write failure.
+- `importConfigModule.ts` — `import(pathToFileURL(bundlePath))`; returns the default export as `T`.
+- `loadConfigModule.ts` — orchestrates compile-or-reuse (cache lands next iteration) → import.
+- `loadConfigModule.test.ts` — loads a fixture config entry from a caller-supplied path; resolves imports from the consumer `node_modules`; throws a clear error when the entry is missing; works without a `cacheDir` (temp bundle).
 - Update `src/index.ts` exports.
 
 **Dependencies:**
@@ -211,16 +212,16 @@ build(config): Add typed config loading with bundle-at-runtime.
 
 **Purpose:** Reuse the compiled config while its sources are unchanged; bypass on demand.
 
-**Description:** Cache the compiled bundle under `<root>/node_modules/.art-lib/` (`config.bundle.mjs` + `config.cache.json` with a sha256 per esbuild `metafile.inputs` entry and a `version` field). Reuse the cached bundle only while every recorded input hashes the same; changed/missing/unreadable input, missing bundle, unparseable metadata, or version mismatch triggers a rebuild. Unwritable cache degrades gracefully (compile without caching, never fail the run). `options.cache === false` bypasses the cache and refreshes it. Unit tests.
+**Description:** Add the content-hash cache inside the caller-supplied `cacheDir` (`config.bundle.mjs` + `config.cache.json` with a sha256 per esbuild `metafile.inputs` entry, recorded relative to `baseDir`, and a `version` field). Reuse the cached bundle only while every recorded input hashes the same; changed/missing/unreadable input, missing bundle, unparseable metadata, or version mismatch triggers a rebuild. Unwritable cache degrades to a temp bundle with a warning — never fails the run. `options.cache === false` bypasses reuse, rebuilds, and refreshes the cache. Unit tests.
 
 **Changes:**
 
 In `$ART_LIB/libs/config/src/`
 
-- `cache.ts` — cache location helpers (`node_modules/.art-lib/`), metadata read/write, input-hash verification.
-- `loadConfig.ts` — integrate cache check before `build()`; `metafile: true`; bypass via `options.cache === false`.
-- `loadConfig.test.ts` — valid cache skips rebuild; edited source rebuilds; imported-file change rebuilds; missing/unparseable/version-mismatch rebuilds; unwritable cache degrades; bypass rebuilds and refreshes.
-- Update `src/index.ts` exports if cache helpers are public.
+- `cache.ts` — `findReusableBundle(cacheDir, baseDir)`, metadata read/write with version and shape guards, input-hash verification (sha256, content-based).
+- `loadConfigModule.ts` — integrate cache check before `build()`; `metafile: true`; bypass via `options.cache === false` (still refreshes).
+- `loadConfigModule.test.ts` — valid cache skips rebuild; edited source rebuilds; imported-file change rebuilds; missing/unparseable/version-mismatch rebuilds; unwritable cache degrades to temp; bypass rebuilds and refreshes.
+- Update `src/index.ts` exports.
 
 **Dependencies:**
 
@@ -251,7 +252,7 @@ build(config): Add content-hash config cache with bypass.
 
 ### Evidence
 
-- `@art-lib/config` builds, lints, and tests green from `$ART_LIB/config`; a second `loadConfig()` call with an unchanged fixture skips the esbuild build; `cache: false` forces a rebuild.
+- `@art-lib/config` builds, lints, and tests green from `$ART_LIB/config`; a second `loadConfigModule()` call with an unchanged fixture and a valid `cacheDir` skips the esbuild build; `cache: false` forces a rebuild.
 
 ### Findings
 
@@ -259,10 +260,10 @@ build(config): Add content-hash config cache with bypass.
 
 ### Decisions
 
-- Cache location `node_modules/.art-lib/` — already git-ignored in every consumer; no `.gitignore` changes needed.
-- Content hash (sha256 of every esbuild `metafile.inputs` entry), not mtime — mtimes are unreliable across checkouts and container binds.
-- Degrade gracefully — a missing or unwritable cache falls back to compiling without caching; caching never fails a run.
-- Bypass refreshes the cache — `cache: false` rebuilds and rewrites the metadata so the next run is warm.
+- **No conventions in the package** — config entry path, cache directory, and config shape are caller parameters; art-work keeps `.art-workspace.mts`, `node_modules/.art-work/`, and `defineConfig` on its side.
+- **Content hash (sha256 of every esbuild `metafile.inputs` entry), not mtime** — mtimes are unreliable across checkouts and container binds; input paths are recorded relative to `baseDir`.
+- **Degrade gracefully** — an unwritable cache falls back to a temp-dir bundle with a warning; caching never fails the run.
+- **Bypass refreshes the cache** — `cache: false` rebuilds and rewrites the metadata so the next run is warm.
 
 ### Knowledge to Update
 

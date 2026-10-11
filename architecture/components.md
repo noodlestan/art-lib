@@ -18,10 +18,10 @@ Frameworks adopted (see [Decision: Frameworks](./adr/frameworks.md)): Commander,
 
 **Status:** PLANNED — plan drafted at `_backlog/6-plan/plan-add-operations/plan.md`
 
-The shared CLI operation plumbing, extracted from `@art-work/cli` and `@art-md/bin` as one package with two pure subpath modules:
+The shared CLI operation plumbing, extracted from `@art-work/cli` and `@art-md/bin` as one package with two subpath modules:
 
-- `/model` — operation outcome types and factories (`OperationPending`/`Success`/`Failure`).
-- `/log` — append-only operations log with `all`/`since`/`latest` queries.
+- `/model` — operation outcome types and factories (`OperationPending`/`Success`/`Failure`); operations conform to the `Message` interface of `@art-lib/logger`.
+- `/log` — append-only operations log with `all`/`since`/`latest` queries; created with the logger and forwarding every operation to it.
 
 ### Logger (`@art-lib/logger`)
 
@@ -29,7 +29,7 @@ The shared CLI operation plumbing, extracted from `@art-work/cli` and `@art-md/b
 
 **Status:** PLANNED
 
-Normalized way to log operations and messages, with buffering capabilities — so that operations are logged consistently before and after the environment is fully resolved — wrapping the actual log writer. Consumes operation values from `@art-lib/operations` `/model`.
+One logging interface for messages: a `Message` model with severity levels (`createMessage`, `createInfoMessage`, `createWarningMessage`, `createErrorMessage`, `createDebugMessage`) and a buffering logger — so messages are logged consistently before and after the environment is fully resolved — wrapping the actual log writer. The logger knows only messages; operations conform to `Message` structurally and it has no dependency on `@art-lib/operations`.
 
 ### Config (`@art-lib/config`)
 
@@ -37,7 +37,7 @@ Normalized way to log operations and messages, with buffering capabilities — s
 
 **Status:** PLANNED
 
-Load, compile, and cache typed config modules (for example, `something.config.mts`), so every command resolves its configuration through one cached, typed path.
+Infrastructure for CLI implementors to load, compile, and cache typed config modules — esbuild bundle-at-runtime with a content-hash cache. Config entry path, cache directory, and config shape are caller-supplied; the authoring surface (`defineConfig`, config types) always stays in each consumer package.
 
 ### FS Records (`@art-lib/fs-records`)
 
@@ -86,9 +86,10 @@ Not so much a wrapper as a **recipes library** for creating the basics of a pers
 ## Relationships
 
 ```
-@art-lib/config ──┐
-@art-lib/logger ──┼──▶ consumer CLIs (Art Work, Art MD, …)
-@art-lib/operations (/model ← /log) ──┘
+@art-lib/logger (messages) ◀─ @art-lib/operations (/model, /log — conform + forward)
+@art-lib/config (loading infra for CLI implementors)
+
+@art-lib/logger / @art-lib/operations / @art-lib/config ──▶ consumer CLIs (Art Work, Art MD, …)
 
 Commander ──▶ @art-lib/bin ────┐
 Clack ──────▶ @art-lib/prompts ─┼──▶ consumer CLIs

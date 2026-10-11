@@ -8,9 +8,9 @@
 
 **Skill:** `write-plan`
 
-**Purpose:** Provide a normalized way to log operations and messages with buffering, wrapping the actual log writer.
+**Purpose:** Provide a normalized way to log messages — operations conform to the message interface — with buffering, wrapping the actual log writer.
 
-**Description:** Create the `@art-lib/logger` package: a buffering logger with output modes that logs operations consistently before and after the environment is fully resolved, formats log lines through an injected formatter, and wraps an injectable log writer. Split out of the operations package per the milestone decision.
+**Description:** Create the `@art-lib/logger` package: a `Message` interface with severity levels and message creators (`createMessage`, `createInfoMessage`, `createWarningMessage`, `createErrorMessage`, `createDebugMessage`), and a buffering logger with output modes that formats messages through an injected formatter and writes through an injectable log writer. The logger knows only messages — never operations. Split out of the operations package per the milestone decision.
 
 ## Mandatory Reading
 
@@ -29,7 +29,7 @@
 
 ## Summary
 
-Create `@art-lib/logger` with a buffering `createLogger()` — `quiet`/`verbose` output modes, injected `LogFormatter`, injectable log writer — consuming operation values from `@art-lib/operations` `/model`.
+Create `@art-lib/logger` with the `Message` interface and message creators, plus a buffering `createLogger()` — `quiet`/`verbose` output modes, injected `LogFormatter`, injectable log writer. The logger has no dependency on `@art-lib/operations`; operations conform to `Message` structurally.
 
 ## Context
 
@@ -59,17 +59,17 @@ Create `@art-lib/logger` with a buffering `createLogger()` — `quiet`/`verbose`
 
 ## Scope
 
-Create `$ART_LIB/libs/logger` exposing the buffering logger — `LoggerAPI`, `LogFormatter`, injectable writer, `quiet`/`verbose` modes — with tests, package records, and docs mirroring `libs/fs-records` conventions. Operation model and log stay in `@art-lib/operations`; adoption refactors in consumers are out of scope.
+Create `$ART_LIB/libs/logger` exposing the message model (`Message`, creators) and the buffering logger — `LoggerAPI`, `LogFormatter`, injectable writer, `quiet`/`verbose` modes — with tests, package records, and docs mirroring `libs/fs-records` conventions. Operation model and log stay in `@art-lib/operations`; adoption refactors in consumers are out of scope.
 
 ## Work
 
 ### Next
 
-- Write instructions for the two `PLANNING` iterations, then delegate Iteration: Scaffold Logger Package. Sequence after Plan: Add Operations Package, Iteration: Implement Operations Model.
+- Write instructions for the two `PLANNING` iterations, then delegate Iteration: Scaffold Logger Package. No dependencies on other plans.
 
 ### Blockers
 
-- None. Sequencing note: `implement-logger` imports the `Operation` type from `@art-lib/operations` `/model` — execute after that iteration lands.
+- None.
 
 ---
 
@@ -134,13 +134,13 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 **Purpose:** Create the `logger` package skeleton before adding the module.
 
-**Description:** Scaffold `$ART_LIB/libs/logger` mirroring `libs/fs-records` conventions: `package.json` (root export only; dependency on `@art-lib/operations` for the `Operation` type), tsconfig, vitest config, npm scripts, `_guide.md`, `_records/package.art`, `src/index.ts` placeholder.
+**Description:** Scaffold `$ART_LIB/libs/logger` mirroring `libs/fs-records` conventions: `package.json` (root export; no internal dependencies — the logger knows only messages), tsconfig, vitest config, npm scripts, `_guide.md`, `_records/package.art`, `src/index.ts` placeholder.
 
 **Changes:**
 
 In `$ART_LIB/libs/logger`
 
-- Create `package.json` — name `@art-lib/logger`, root export, dependency `@art-lib/operations`, scripts mirroring `libs/fs-records`.
+- Create `package.json` — name `@art-lib/logger`, root export, no internal dependencies, scripts mirroring `libs/fs-records`.
 - Create `tsconfig.json` and vitest config extending the monorepo configs.
 - Create `src/index.ts` as placeholder entry point.
 - Create `_guide.md` describing the package and operating instructions.
@@ -170,23 +170,24 @@ scaffold(logger): Scaffold package skeleton.
 
 **Status:** `PLANNING`
 
-**Purpose:** Implement the buffering logger with output modes, injected formatter, and injectable writer.
+**Purpose:** Implement the message model and the buffering logger with output modes, injected formatter, and injectable writer.
 
-**Description:** Implement `src/` with `LoggerAPI { log(op), setOutputMode(mode) }`, `LogFormatter { format(op): string[] }`, `LogWriter { write(lines: string[]): void }`, and `createLogger(options?: { formatter?, writer? })`. Buffer operations until the mode is set: `quiet` discards the buffer and drops future pending ops; `verbose` flushes and logs every operation. Default writer wraps `console.error`; formatting delegates to the injected formatter. Unit tests.
+**Description:** Implement `src/` with the message model — `Message { level, text(), ts }`, `createMessage(options)`, `createDebugMessage`, `createInfoMessage`, `createWarningMessage`, `createErrorMessage(error: MaybeError, message?)` — and the logger — `LoggerAPI { log(message), setOutputMode(mode) }`, `LogFormatter { format(message): string[] }`, `LogWriter { write(lines): void }`, `createLogger(options?: { formatter?, writer? })`. Buffer messages until the mode is set: `quiet` discards the buffer and then logs only `warning`/`error`; `verbose` flushes and logs everything. Default writer wraps `console.error`; formatting delegates to the injected formatter. The logger never imports operations — they conform to `Message` structurally. Unit tests.
 
 **Changes:**
 
 In `$ART_LIB/libs/logger/src/`
 
+- `message/types.ts` — `Message`, `MessageLevel`, `MaybeError`.
+- `message/createMessage.ts` — `createMessage`, `createDebugMessage`, `createInfoMessage`, `createWarningMessage`, `createErrorMessage`.
 - `types.ts` — `LoggerAPI`, `LogFormatter`, `LogWriter`.
-- `createLogger.ts` — `createLogger(options?)`; buffer semantics for `quiet`/`verbose`; default writer via `console.error`; default formatter producing the glyph | operation | message | timing cells.
-- `createLogger.test.ts` — buffering, mode transitions, writer delegation, formatter injection.
+- `createLogger.ts` — `createLogger(options?)`; buffer semantics for `quiet`/`verbose`; default writer via `console.error`; default formatter producing the glyph | name | text | timing cells.
+- `message/createMessage.test.ts` and `createLogger.test.ts` — creators per level, buffering, mode transitions, writer delegation, formatter injection.
 - Update `src/index.ts` exports.
 
 **Dependencies:**
 
 - Iteration: Scaffold Logger Package.
-- Plan: Add Operations Package, Iteration: Implement Operations Model.
 
 #### Commits:
 
@@ -199,7 +200,7 @@ In `$ART_LIB/libs/logger/src/`
 **Message:**
 
 ```text
-build(logger): Add buffering operations logger.
+build(logger): Add message model and buffering logger.
 ```
 
 ---
@@ -221,7 +222,8 @@ build(logger): Add buffering operations logger.
 
 ### Decisions
 
-- Split from `@art-lib/operations` per the milestone decision — logger is effectful (wraps the log writer); `/model` and `/log` stay pure.
+- Split from `@art-lib/operations` per the milestone decision — logger is effectful (wraps the log writer); operations stay in `@art-lib/operations`.
+- **The logger knows only messages** — one `Message` interface with severity levels; operations conform to it structurally, so the logger has no dependency on `@art-lib/operations` (and no cycle is possible).
 - The log writer is injectable (`LogWriter`) so tests and future sinks (file, reactive layer) do not touch `console.error` directly.
 
 ### Knowledge to Update

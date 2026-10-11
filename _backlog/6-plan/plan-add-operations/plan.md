@@ -57,13 +57,13 @@ Create `@art-lib/operations` with subpath modules `/model` and `/log`, extractin
 
 ## Scope
 
-Create `$ART_LIB/libs/operations` exposing two subpath modules — `/model` (pure types and factories) and `/log` (pure append-only operations log) — with tests, package records, and docs mirroring `libs/fs-records` conventions. Adoption refactors in `@art-work/cli` and `@art-md/bin` are out of scope.
+Create `$ART_LIB/libs/operations` exposing two subpath modules — `/model` (operation types and factories; operations conform to the `Message` interface of `@art-lib/logger`) and `/log` (append-only operations log, created with the logger and forwarding every operation to it) — with tests, package records, and docs mirroring `libs/fs-records` conventions. Adoption refactors in `@art-work/cli` and `@art-md/bin` are out of scope.
 
 ## Work
 
 ### Next
 
-- Write instructions for the three `PLANNING` iterations, then delegate Iteration: Scaffold Operations Package.
+- Write instructions for the three `PLANNING` iterations, then delegate Iteration: Scaffold Operations Package. Sequencing: Iteration: Implement Operations Log runs after Plan: Add Logger Package has landed the `Message` interface.
 
 ### Blockers
 
@@ -139,7 +139,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 In `$ART_LIB/libs/operations`
 
-- Create `package.json` — name `@art-lib/operations`, exports map with `.`, `./model`, `./log` subpaths, scripts mirroring `libs/fs-records`.
+- Create `package.json` — name `@art-lib/operations`, exports map with `.`, `./model`, `./log` subpaths, dependency `@art-lib/logger`, scripts mirroring `libs/fs-records`.
 - Create `tsconfig.json` and vitest config extending the monorepo configs.
 - Create `src/index.ts`, `src/model/index.ts`, `src/log/index.ts` as placeholder entry points.
 - Create `_guide.md` describing the package, subpath modules, and operating instructions.
@@ -208,22 +208,23 @@ build(operations): Add operation model and factories.
 
 **Status:** `PLANNING`
 
-**Purpose:** Add the pure append-only operations log with query methods.
+**Purpose:** Add the append-only operations log, created with the logger and forwarding every operation to it.
 
-**Description:** Implement `src/log/` with `OperationsLog { log(op), all(), since(ts), latest(n) }` and `createOperationsLog(sink?)`. Stores completed operations only (excludes `pending`); delegates side effects to the injected `sink: (op) => void` callback — no dependency on the logger module. Export and unit test.
+**Description:** Implement `src/log/` with `OperationsLog { log(op), all(), since(ts), latest(n) }` and `createOperationsLog(logger, options?)`. Every recorded operation is forwarded to `logger.log(...)`; pending operations pass through to the logger but only finished operations are stored. Operations conform to the `Message` interface of `@art-lib/logger` (level derived from the outcome). Export and unit test.
 
 **Changes:**
 
 In `$ART_LIB/libs/operations/src/log/`
 
 - `types.ts` — `OperationsLog` interface.
-- `createOperationsLog.ts` — `createOperationsLog(sink?: (op: Operation) => void): OperationsLog`; excludes pending ops from storage; `since`/`latest` query semantics.
-- `createOperationsLog.test.ts` — storage filter, queries, sink delegation.
+- `createOperationsLog.ts` — `createOperationsLog(logger, options?): OperationsLog`; forwards every operation to `logger.log`; stores finished ops only; `since`/`latest` query semantics.
+- `createOperationsLog.test.ts` — storage filter, queries, forwarding to the logger.
 - Update `src/index.ts` and `src/log/index.ts` exports.
 
 **Dependencies:**
 
 - Iteration: Implement Operations Model.
+- Plan: Add Logger Package, Iteration: Implement Buffering Logger.
 
 #### Commits:
 
@@ -254,13 +255,14 @@ build(operations): Add operations log module.
 
 ### Findings
 
-- The Art MD proposal (`_backlog/_message-from-art-md-project.md`, since deleted) showed ~60% identical CLI plumbing across `@art-work/cli` and `@art-md/bin`; packages 1–3 of the proposal are merged into this single package.
-- The proposal's claimed `operations-log` → `cli-logger` dependency is illusory — the log accepts a plain `sink` callback.
+- The Art MD proposal (`_backlog/_message-from-art-md-project.md`, since deleted) showed ~60% identical CLI plumbing across `@art-work/cli` and `@art-md/bin`; packages 1–3 of the proposal are merged into this single package (logger split out again per the milestone decision).
+- The operations log is intentionally created with the logger (`createOperationsLog(logger, options?)`) and forwards every operation to it — one-way dependency, operations → logger.
 
 ### Decisions
 
-- One package with two pure subpath modules (`/model`, `/log`) — not three published packages; ~185 lines of total dedup does not justify separate version surfaces.
-- The buffering logger is split out into the planned `@art-lib/logger` package (effectful, wraps the log writer); `/model` and `/log` stay pure (no I/O).
+- One package with two subpath modules (`/model`, `/log`) — not three published packages; ~185 lines of total dedup does not justify separate version surfaces.
+- The buffering logger is split out into the planned `@art-lib/logger` package (effectful, wraps the log writer).
+- Operations conform to the logger's `Message` interface (level derived from outcome); the logger never knows about operations.
 - `createOperationFailure` takes `{ label }` per call — replaces Art Work's hardcoded `errorLabels` map.
 
 ### Knowledge to Update

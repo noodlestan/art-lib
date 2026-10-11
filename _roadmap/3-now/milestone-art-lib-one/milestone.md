@@ -120,7 +120,7 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ### Next
 
-- None.
+- Green sequence, no blockers: write instructions for **Plan: Add Logger Package** first, then **Plan: Add Operations Package** (needs the logger `Message` interface). **Plan: Add Config Package** is independent — can run anytime, in parallel.
 
 ### Blockers
 
