@@ -20,7 +20,7 @@ Agents SHOULD scan these files for relevant clarifications when faced with ambig
 _guide.md           — this file
 _backlog/           — plans, instructions, reports
 _records/           — project, repository, namespace, and license records
-architecture/       — repository-level architecture documentation
+knowledge/          — repository-level knowledge
 libs/               — library packages
 ```
 
@@ -35,9 +35,9 @@ Records are co-located with the resources they describe in `_records/` directori
 
 ## Knowledge References
 
-This repository maintains architecture references at:
+This repository maintains knowledge references at:
 
-- `architecture/index.md` — Repository-level architecture index.
+- `knowledge/index.md` — Repository-level knowledge index.
 
 ## Conventions
 

@@ -1,4 +1,4 @@
-# Architecture: Art Lib
+# Knowledge: Art Lib
 
 ## Documents
 

@@ -53,9 +53,9 @@ Create `@art-lib/logger` with the `Message` interface and message creators, plus
 
 ### Knowledge
 
-::READ `architecture/design/logger.md` (Design) — Consumer requirements from Art Work and Art MD CLIs. Relevant for Planning Work Item.
+::READ `knowledge/design/logger.md` (Design) — Consumer requirements from Art Work and Art MD CLIs. Relevant for Planning Work Item.
 
-::READ `$ART_LIB/architecture/index.md` (Model) — Package layout and publishing conventions. Relevant for Planning Work Item.
+::READ `$ART_LIB/knowledge/index.md` (Model) — Package layout and publishing conventions. Relevant for Planning Work Item.
 
 ## Scope
 
@@ -228,7 +228,7 @@ build(logger): Add message model and buffering logger.
 
 ### Knowledge to Update
 
-- Keep the `logger` package entry in `architecture/components.md` in sync after scaffolding.
+- Keep the `logger` package entry in `knowledge/components.md` in sync after scaffolding.
 
 ### Follow Ups
 

@@ -7,13 +7,13 @@ The Art Lib FS Records package (`@art-lib/fs-records`) provides generic Art MD r
 Agents SHOULD scan these files for relevant clarifications when faced with ambiguity or omissions that may result from missing definitions.
 
 - `_guide.md` — the workspace CLI overview, plan workflow, and agent interactions.
-- `architecture/index.md` — How the workspace CLI is structured, how it works, structures, use cases, and auxiliary functions.
+- `knowledge/index.md` — How the workspace CLI is structured, how it works, structures, use cases, and auxiliary functions.
 
 ## Package Layout
 
 ```
-architecture/       — architecture index, docs, decision records (records/adr)
-src/                — the CLI source (commands, config, shared, private)
+knowledge/       — knowledge index, docs, decision records (records/adr)
+src/             — the CLI source (commands, config, shared, private)
 CHANGELOG.md
 ```
 
@@ -28,8 +28,8 @@ Records are co-located with the resources they describe in `_records/` directori
 
 This package maintains:
 
-- an architecture reference at `architecture/index.md` describing commands, models, reports, configuration, and logs.
-- decision records at `architecture/records/adr`.
+- knowledge reference at `knowledge/index.md` describing commands, models, reports, configuration, and logs.
+- decision records at `knowledge/records/adr`.
 
 ## Conventions
 

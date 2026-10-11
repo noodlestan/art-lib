@@ -1,4 +1,4 @@
-# Architecture: Art Lib
+# Art Lib - Frameworks
 
 ## Decision: CLI Framework — Commander
 

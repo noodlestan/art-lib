@@ -53,7 +53,7 @@ Provide a new service for finding, reading and writing records.
 
 ### Knowledge
 
-::READ `$ART_LIB/architecture/index.md` (Model) — Package layout, publishing, and execution model. Relevant for Planning Work Item.
+::READ `$ART_LIB/knowledge/index.md` (Model) — Package layout, publishing, and execution model. Relevant for Planning Work Item.
 
 ## Scope
 
@@ -403,7 +403,7 @@ build(fs-records): Implement FSRecordsAdapter factory and tests.
 
 ### Knowledge to Update
 
-- Generate `libs/fs-records/architecture/`.
+- Generate `libs/fs-records/knowledge/`.
 
 ### Follow Ups
 

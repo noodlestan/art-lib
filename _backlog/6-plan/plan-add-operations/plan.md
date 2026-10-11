@@ -53,7 +53,7 @@ Create `@art-lib/operations` with subpath modules `/model` and `/log`, extractin
 
 ### Knowledge
 
-::READ `$ART_LIB/architecture/index.md` (Model) — Package layout, publishing, and execution model. Relevant for Planning Work Item.
+::READ `$ART_LIB/knowledge/index.md` (Model) — Package layout, publishing, and execution model. Relevant for Planning Work Item.
 
 ## Scope
 
@@ -267,7 +267,7 @@ build(operations): Add operations log module.
 
 ### Knowledge to Update
 
-- Keep the `operations` package entry in `architecture/components.md` in sync after scaffolding.
+- Keep the `operations` package entry in `knowledge/components.md` in sync after scaffolding.
 
 ### Follow Ups
 

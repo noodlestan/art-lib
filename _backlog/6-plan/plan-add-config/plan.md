@@ -53,9 +53,9 @@ Create `@art-lib/config` with `loadConfigModule<T>(entryPath, options?)`: esbuil
 
 ### Knowledge
 
-::READ `architecture/design/config.md` (Design) — Consumer requirements from the Art Work CLI and its config-cache plan. Relevant for Planning Work Item.
+::READ `knowledge/design/config.md` (Design) — Consumer requirements from the Art Work CLI and its config-cache plan. Relevant for Planning Work Item.
 
-::READ `$ART_LIB/architecture/index.md` (Model) — Package layout and publishing conventions. Relevant for Planning Work Item.
+::READ `$ART_LIB/knowledge/index.md` (Model) — Package layout and publishing conventions. Relevant for Planning Work Item.
 
 ## Scope
 
@@ -267,7 +267,7 @@ build(config): Add content-hash config cache with bypass.
 
 ### Knowledge to Update
 
-- Keep the `config` package entry in `architecture/components.md` in sync after scaffolding.
+- Keep the `config` package entry in `knowledge/components.md` in sync after scaffolding.
 
 ### Follow Ups
 

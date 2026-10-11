@@ -45,7 +45,7 @@ Introduce the type layer for the `FSRecordsAdapter`, including record abstractio
 
 ## Mandatory Reading
 
-- `$ART_LIB/architecture/index.md` — package layout, publishing, and execution model.
+- `$ART_LIB/knowledge/index.md` — package layout, publishing, and execution model.
 - `$PACKAGE/_guide.md` — package overview, layout, and operating instructions.
 - `$PACKAGE/src/files/types.ts` — current type declarations (created in `refactor-module-layout`).
 - `$PACKAGE/src/index.ts` — current public exports.

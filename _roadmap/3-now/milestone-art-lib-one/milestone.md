@@ -51,9 +51,9 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ### Knowledge
 
-::READ `architecture/overview.md` (Model) — Framework wrappers and capabilities. Relevant for Planning Work Item.
+::READ `knowledge/overview.md` (Model) — Framework wrappers and capabilities. Relevant for Planning Work Item.
 
-::READ `architecture/components.md` (Model) — Package components and planned packages. Relevant for Planning Work Item.
+::READ `knowledge/components.md` (Model) — Package components and planned packages. Relevant for Planning Work Item.
 
 ---
 

@@ -68,5 +68,5 @@ The logger does not import operations. `@art-lib/operations` `/log` is created w
 
 ## Sources
 
-- Art Work CLI operations log (logger behaviour): `$ART_WORK/cli/work/architecture/design/operations-log.md`
-- Art MD bin operations (logger + log line): `$ART_MD/cli/bin/architecture/design/operations.md`
+- Art Work CLI operations log (logger behaviour): `$ART_WORK/cli/work/knowledge/design/operations-log.md`
+- Art MD bin operations (logger + log line): `$ART_MD/cli/bin/knowledge/design/operations.md`

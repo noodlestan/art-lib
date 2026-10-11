@@ -45,7 +45,7 @@ Reorganise the `fs-records` package into a clear module structure before adding 
 
 ## Mandatory Reading
 
-- `$ART_LIB/architecture/index.md` — package layout, publishing, and execution model.
+- `$ART_LIB/knowledge/index.md` — package layout, publishing, and execution model.
 - `$PACKAGE/_guide.md` — package overview, layout, and operating instructions.
 - `$PACKAGE/src/index.ts` — current public exports.
 - `$PACKAGE/src/types.ts` — current type declarations.
