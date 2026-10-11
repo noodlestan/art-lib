@@ -1,6 +1,6 @@
-# Plan: Add CLI Operations Package
+# Plan: Add Operations Package
 
-**ID:** `add-cli-operations`
+**ID:** `add-operations`
 
 **Status:** `PLANNING`
 
@@ -8,9 +8,9 @@
 
 **Skill:** `write-plan`
 
-**Purpose:** Provide the shared CLI operation model, log, and logger extracted from the Art Work CLI and the Art MD codec bin.
+**Purpose:** Provide the shared CLI operation model and operations log extracted from the Art Work CLI and the Art MD codec bin.
 
-**Description:** Create the `@art-lib/cli-operations` package with three subpath modules — `/model` (operation types and factories), `/log` (append-only operations log), and `/logger` (buffering logger with output modes) — replacing duplicated plumbing in both CLIs.
+**Description:** Create the `@art-lib/operations` package with two subpath modules — `/model` (operation types and factories) and `/log` (append-only operations log) — replacing duplicated plumbing in both CLIs. The buffering logger lives in the planned `@art-lib/logger` package.
 
 ## Mandatory Reading
 
@@ -29,7 +29,7 @@
 
 ## Summary
 
-Create `@art-lib/cli-operations` with subpath modules `/model`, `/log`, and `/logger`, extracting the identical operation plumbing from `@art-work/cli` and `@art-md/bin`.
+Create `@art-lib/operations` with subpath modules `/model` and `/log`, extracting the identical operation plumbing from `@art-work/cli` and `@art-md/bin`.
 
 ## Context
 
@@ -57,13 +57,13 @@ Create `@art-lib/cli-operations` with subpath modules `/model`, `/log`, and `/lo
 
 ## Scope
 
-Create `$ART_LIB/libs/cli-operations` exposing three subpath modules — `/model` (pure types and factories), `/log` (pure append-only operations log), `/logger` (effectful buffering logger) — with tests, package records, and docs mirroring `libs/fs-records` conventions. Adoption refactors in `@art-work/cli` and `@art-md/bin` are out of scope.
+Create `$ART_LIB/libs/operations` exposing two subpath modules — `/model` (pure types and factories) and `/log` (pure append-only operations log) — with tests, package records, and docs mirroring `libs/fs-records` conventions. Adoption refactors in `@art-work/cli` and `@art-md/bin` are out of scope.
 
 ## Work
 
 ### Next
 
-- Write instructions for the four `PLANNING` iterations, then delegate Iteration: Scaffold CLI Operations Package.
+- Write instructions for the three `PLANNING` iterations, then delegate Iteration: Scaffold Operations Package.
 
 ### Blockers
 
@@ -119,30 +119,29 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Items:
 
-| Iteration / Instructions                   | Status     |
-| ------------------------------------------ | ---------- |
-| Iteration: Scaffold CLI Operations Package | `PLANNING` |
-| Iteration: Implement Operations Model      | `PLANNING` |
-| Iteration: Implement Operations Log        | `PLANNING` |
-| Iteration: Implement Operations Logger     | `PLANNING` |
+| Iteration / Instructions               | Status     |
+| -------------------------------------- | ---------- |
+| Iteration: Scaffold Operations Package | `PLANNING` |
+| Iteration: Implement Operations Model  | `PLANNING` |
+| Iteration: Implement Operations Log    | `PLANNING` |
 
-### Iteration: Scaffold CLI Operations Package
+### Iteration: Scaffold Operations Package
 
-**Id:** `scaffold-cli-operations-package`
+**Id:** `scaffold-operations-package`
 
 **Status:** `PLANNING`
 
-**Purpose:** Create the `cli-operations` package skeleton with subpath exports before adding modules.
+**Purpose:** Create the `operations` package skeleton with subpath exports before adding modules.
 
-**Description:** Scaffold `$ART_LIB/libs/cli-operations` mirroring `libs/fs-records` conventions: `package.json` with `exports` for `.`, `./model`, `./log`, and `./logger`; tsconfig; vitest config; npm scripts; `_guide.md`; `_records/package.art`; empty module directories with `index.ts` entry points.
+**Description:** Scaffold `$ART_LIB/libs/operations` mirroring `libs/fs-records` conventions: `package.json` with `exports` for `.`, `./model`, and `./log`; tsconfig; vitest config; npm scripts; `_guide.md`; `_records/package.art`; empty module directories with `index.ts` entry points.
 
 **Changes:**
 
-In `$ART_LIB/libs/cli-operations`
+In `$ART_LIB/libs/operations`
 
-- Create `package.json` — name `@art-lib/cli-operations`, exports map with `.`, `./model`, `./log`, `./logger` subpaths, scripts mirroring `libs/fs-records`.
+- Create `package.json` — name `@art-lib/operations`, exports map with `.`, `./model`, `./log` subpaths, scripts mirroring `libs/fs-records`.
 - Create `tsconfig.json` and vitest config extending the monorepo configs.
-- Create `src/index.ts`, `src/model/index.ts`, `src/log/index.ts`, `src/logger/index.ts` as placeholder entry points.
+- Create `src/index.ts`, `src/model/index.ts`, `src/log/index.ts` as placeholder entry points.
 - Create `_guide.md` describing the package, subpath modules, and operating instructions.
 - Create `_records/package.art` mirroring `libs/fs-records/_records`.
 
@@ -152,16 +151,16 @@ In `$ART_LIB/libs/cli-operations`
 
 #### Commits:
 
-| ID                        | Repository / Checkout / Branch    | Policy       | Hash | Status     |
-| ------------------------- | --------------------------------- | ------------ | ---- | ---------- |
-| `scaffold-cli-operations` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` |      | `PLANNING` |
+| ID                    | Repository / Checkout / Branch    | Policy       | Hash | Status     |
+| --------------------- | --------------------------------- | ------------ | ---- | ---------- |
+| `scaffold-operations` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` |      | `PLANNING` |
 
-##### Commit: `scaffold-cli-operations`
+##### Commit: `scaffold-operations`
 
 **Message:**
 
 ```text
-scaffold(cli-operations): Scaffold package with subpath exports.
+scaffold(operations): Scaffold package with subpath exports.
 ```
 
 ### Iteration: Implement Operations Model
@@ -176,7 +175,7 @@ scaffold(cli-operations): Scaffold package with subpath exports.
 
 **Changes:**
 
-In `$ART_LIB/libs/cli-operations/src/model/`
+In `$ART_LIB/libs/operations/src/model/`
 
 - `types.ts` — `OperationOutcome`, `OperationBase { operation, ts, finishedTs?, outcome, message(), timing() }`, `OperationPending` (adds `data?`), `OperationSuccess`, `OperationFailure` (adds `error`, `errorSerialized()`).
 - `createGenericOperation.ts` — `createGenericOperation(operation, data?): OperationPending`.
@@ -200,7 +199,7 @@ In `$ART_LIB/libs/cli-operations/src/model/`
 **Message:**
 
 ```text
-build(cli-operations): Add operation model and factories.
+build(operations): Add operation model and factories.
 ```
 
 ### Iteration: Implement Operations Log
@@ -215,7 +214,7 @@ build(cli-operations): Add operation model and factories.
 
 **Changes:**
 
-In `$ART_LIB/libs/cli-operations/src/log/`
+In `$ART_LIB/libs/operations/src/log/`
 
 - `types.ts` — `OperationsLog` interface.
 - `createOperationsLog.ts` — `createOperationsLog(sink?: (op: Operation) => void): OperationsLog`; excludes pending ops from storage; `since`/`latest` query semantics.
@@ -237,44 +236,7 @@ In `$ART_LIB/libs/cli-operations/src/log/`
 **Message:**
 
 ```text
-build(cli-operations): Add operations log module.
-```
-
-### Iteration: Implement Operations Logger
-
-**Id:** `implement-operations-logger`
-
-**Status:** `PLANNING`
-
-**Purpose:** Add the effectful buffering logger with output modes.
-
-**Description:** Implement `src/logger/` with `LoggerAPI { log(op), setOutputMode(mode) }`, `LogFormatter { format(op): string[] }`, and `createLogger(options?: { formatter?: LogFormatter })`. Buffers pending operations until the mode is set; `quiet` discards the buffer and drops future pending ops; `verbose` flushes and shows all ops; formatting delegates to the injected formatter (console I/O is the only effectful module). Export and unit test.
-
-**Changes:**
-
-In `$ART_LIB/libs/cli-operations/src/logger/`
-
-- `types.ts` — `LoggerAPI`, `LogFormatter`.
-- `createLogger.ts` — `createLogger(options?: { formatter?: LogFormatter }): LoggerAPI`; buffer semantics for `quiet` and `verbose`.
-- `createLogger.test.ts` — buffering, mode transitions, formatter delegation.
-- Update `src/index.ts` and `src/logger/index.ts` exports.
-
-**Dependencies:**
-
-- Iteration: Implement Operations Model.
-
-#### Commits:
-
-| ID                      | Repository / Checkout / Branch    | Policy       | Hash | Status     |
-| ----------------------- | --------------------------------- | ------------ | ---- | ---------- |
-| `add-operations-logger` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` |      | `PLANNING` |
-
-##### Commit: `add-operations-logger`
-
-**Message:**
-
-```text
-build(cli-operations): Add buffering operations logger.
+build(operations): Add operations log module.
 ```
 
 ---
@@ -288,22 +250,22 @@ build(cli-operations): Add buffering operations logger.
 
 ### Evidence
 
-- `@art-lib/cli-operations` builds, lints, and tests green from `$ART_LIB/libs/cli-operations`; all three subpaths resolve via the exports map.
+- `@art-lib/operations` builds, lints, and tests green from `$ART_LIB/libs/operations`; both subpaths resolve via the exports map.
 
 ### Findings
 
 - The Art MD proposal (`_backlog/_message-from-art-md-project.md`, since deleted) showed ~60% identical CLI plumbing across `@art-work/cli` and `@art-md/bin`; packages 1–3 of the proposal are merged into this single package.
-- The proposal's claimed `cli-operations-log` → `cli-logger` dependency is illusory — the log accepts a plain `sink` callback.
+- The proposal's claimed `operations-log` → `cli-logger` dependency is illusory — the log accepts a plain `sink` callback.
 
 ### Decisions
 
-- One package with subpath modules (`/model`, `/log`, `/logger`), not three published packages — ~85 lines of total dedup does not justify separate version surfaces.
-- `/model` and `/log` stay pure (no I/O); `/logger` is the only effectful module, keeping the pure/effectful boundary explicit.
+- One package with two pure subpath modules (`/model`, `/log`) — not three published packages; ~185 lines of total dedup does not justify separate version surfaces.
+- The buffering logger is split out into the planned `@art-lib/logger` package (effectful, wraps the log writer); `/model` and `/log` stay pure (no I/O).
 - `createOperationFailure` takes `{ label }` per call — replaces Art Work's hardcoded `errorLabels` map.
 
 ### Knowledge to Update
 
-- Add the `cli-operations` package entry to `$ART_LIB/architecture/index.md` after scaffolding.
+- Keep the `operations` package entry in `architecture/components.md` in sync after scaffolding.
 
 ### Follow Ups
 

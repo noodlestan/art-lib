@@ -2,7 +2,7 @@
 
 **ID:** `add-fs-records-adapter`
 
-**Status:** `READY`
+**Status:** `BLOCKED`
 
 **Template:** `.agents/domains/plans/templates/plan.tart`
 
@@ -63,11 +63,11 @@ Refactor existing modules to classify and separate responsibilities and add the 
 
 ### Next
 
-- Delegate the next `READY` instruction: Iteration: Refactor Module Layout.
+- HELD — do not delegate. Await `@art-js/records`, then revise instructions against the real types (see Blockers).
 
 ### Blockers
 
-- None.
+- **`@art-js/records` not yet available** — this plan is HELD by decision (2026-10-11). The adapter's abstract types (`RecordSource`, `BaseRecordStructure`, `RecordDTO`, `FSRecordPosition`) duplicate the abstractions designed by Art JS `Plan: Design Lib Records` (`ArtRecord`, `RecordPosition`, `ArtContentSource`/`ArtDocumentSource` contracts). Do NOT delegate any iteration. Release conditions, ALL required: (1) Art JS executes `plan-create-lib-records` and `@art-js/records` exposes `ArtRecord` and the source contracts; (2) revise all three instructions to import from `@art-js/records` and drop the WIP stand-ins; (3) remove the `FSRecordPosition` duplicate in favour of the imported `RecordPosition`. Owner: Art JS project — tracked there as follow-up "Downstream adoption in `$ART_LIB`".
 
 ---
 

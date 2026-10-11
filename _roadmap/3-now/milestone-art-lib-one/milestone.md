@@ -36,7 +36,6 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 | Kind        | Path                                | Role                                                            |
 | ----------- | ----------------------------------- | --------------------------------------------------------------- |
 | Parking Lot | `$PROJECT/_backlog/_parking-lot.md` | Tracks short-term actionables, pending questions, and blockers. |
-| Source      | `$PROJECT/_roadmap/_architect.md`   | Architect Briefing: Workspace CLI (Milestone 1)                 |
 
 ### Required Skills
 
@@ -52,7 +51,9 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ### Knowledge
 
-::READ `_roadmap/_architect.md` (Briefing) — Workspace principles, NFRs, milestones. Relevant for Planning Work Item.
+::READ `architecture/overview.md` (Model) — Framework wrappers and capabilities. Relevant for Planning Work Item.
+
+::READ `architecture/components.md` (Model) — Package components and planned packages. Relevant for Planning Work Item.
 
 ---
 
@@ -108,8 +109,8 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 | ----- | ------------------------------------------------------------------------------------------------------------- | ---------- |
 | 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`     |
 | 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`     |
-| 1     | Plan: Add FS Records Adapter `_backlog/4-next/plan-add-fs-records-adapter/plan.md`                            | `READY`    |
-| 1     | Plan: Add CLI Operations Package `_backlog/6-plan/plan-add-cli-operations/plan.md`                            | `PLANNING` |
+| 1     | Plan: Add FS Records Adapter `_backlog/4-next/plan-add-fs-records-adapter/plan.md`                            | `BLOCKED`  |
+| 1     | Plan: Add Operations Package `_backlog/6-plan/plan-add-operations/plan.md`                                    | `PLANNING` |
 
 ---
 
@@ -121,7 +122,7 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ### Blockers
 
-- None.
+- **`@art-js/records` not yet available** — Plan: Add FS Records Adapter is HELD (2026-10-11) until Art JS delivers `@art-js/records` (`ArtRecord` + source contracts). Its WIP local types duplicate the Art JS design; delegating now would build throwaway abstractions. Release conditions recorded in the plan's Blockers.
 
 ---
 
@@ -154,7 +155,8 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ### Decisions
 
-- Accept **`@art-lib/cli-operations`** as a single package with subpath modules (`/model`, `/log`, `/logger`): operation model + factories, operations log, and buffering logger. Merges proposal packages 1, 2, and 3 from the Art MD message (`_backlog/_message-from-art-md-project.md`); `/model` + `/log` stay pure (no I/O), `/logger` is the effectful subpath.
+- Accept **`@art-lib/operations`** as a package with two pure subpath modules (`/model`, `/log`): operation model + factories, and operations log. Merges proposal packages 1 and 3 from the Art MD message (`_backlog/_message-from-art-md-project.md`, since deleted).
+- Split the buffering logger out of operations into planned **`@art-lib/logger`** (merges proposal package 2): normalized logging of operations and messages with buffering, wrapping the actual log writer.
 - Reject `cli-command-runner`, `cli-test-helpers`, and `cli-present` from the Art MD proposal (see Follow Ups for revisit triggers).
 
 ### Knowledge to Update
