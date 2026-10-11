@@ -1,20 +1,14 @@
-# Art Lib Architecture
-
-## Overview
-
-This directory contains architecture documentation for the Art Lib packages.
-
-## Packages
-
-### Lib Records
-
-**Canonical Name:** `@art-lib/fs-records`
-
-**Path:** `libs/fs-records`
-
-**Purpose:** Generic record read/write modules for Art MD record files. Find, read, and filter Art MD record files across a search path, honoring gitignore and configured patterns.
+# Architecture: Art Lib
 
 ## Documents
 
-| Document | Description |
-| -------- | ----------- |
+| Document                       | Purpose                                      |
+| ------------------------------ | -------------------------------------------- |
+| [overview.md](overview.md)     | Art Lib, framework wrappers, capabilities    |
+| [components.md](components.md) | Components, relationships, and package links |
+
+## Decision Records
+
+| Record                                 | Purpose                                                      |
+| -------------------------------------- | ------------------------------------------------------------ |
+| [adr/frameworks.md](adr/frameworks.md) | Adopted CLI frameworks: Commander, `@clack/prompts`, OpenTUI |

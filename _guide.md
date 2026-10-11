@@ -33,6 +33,12 @@ Records are co-located with the resources they describe in `_records/` directori
 - **Namespace:** `_records/namespace.art`
 - **License:** `_records/license.art`
 
+## Knowledge References
+
+This repository maintains architecture references at:
+
+- `architecture/index.md` — Repository-level architecture index.
+
 ## Conventions
 
 This repository follows strict conventions.
@@ -61,13 +67,11 @@ Projects in this repository use the following workflows:
 
 - The roadmap lives at `_roadmap/` with subdirectories such as `/3-now` and `/4-next/`.
 - The short-term roadmapping focus is captured in `_roadmap/_parking-lot.md`.
-- The requirements, use cases, and principles are captured in `_roadmap/_architect.md`.
 
 ### Planning Work
 
 - The backlog lives at `_backlog/` with subdirectories such as `/3-now` and `/4-next/`.
 - The short-term focus is captured in `_backlog/_parking-lot.md`.
-- Planning coordination and constraints are captured in `_backlog/_architect.md`.
 
 ## Operating Instructions
 
