@@ -104,11 +104,12 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ## Items:
 
-| Phase | Resource / Record                                                                                             | Status  |
-| ----- | ------------------------------------------------------------------------------------------------------------- | ------- |
-| 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`  |
-| 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`  |
-| 1     | Plan: Add FS Records Adapter `_backlog/4-next/plan-add-fs-records-adapter/plan.md`                            | `READY` |
+| Phase | Resource / Record                                                                                             | Status     |
+| ----- | ------------------------------------------------------------------------------------------------------------- | ---------- |
+| 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`     |
+| 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`     |
+| 1     | Plan: Add FS Records Adapter `_backlog/4-next/plan-add-fs-records-adapter/plan.md`                            | `READY`    |
+| 1     | Plan: Add CLI Operations Package `_backlog/6-plan/plan-add-cli-operations/plan.md`                            | `PLANNING` |
 
 ---
 
@@ -153,7 +154,8 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ### Decisions
 
-- None.
+- Accept **`@art-lib/cli-operations`** as a single package with subpath modules (`/model`, `/log`, `/logger`): operation model + factories, operations log, and buffering logger. Merges proposal packages 1, 2, and 3 from the Art MD message (`_backlog/_message-from-art-md-project.md`); `/model` + `/log` stay pure (no I/O), `/logger` is the effectful subpath.
+- Reject `cli-command-runner`, `cli-test-helpers`, and `cli-present` from the Art MD proposal (see Follow Ups for revisit triggers).
 
 ### Knowledge to Update
 
@@ -161,7 +163,8 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ### Follow Ups
 
-- None.
+- Reconsider `cli-command-runner` when a third CLI exists — rejected as premature generalization over two data points (`...deps: unknown[]`, `getOutputMode(options, config)`).
+- Dedup `makeTempDir`/`removeTempDirs` test helpers across `fs-records` and the CLIs as a later chore — not a lib package.
 
 ### Feedback
 
