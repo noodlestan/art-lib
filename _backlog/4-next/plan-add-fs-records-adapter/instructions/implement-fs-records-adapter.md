@@ -45,6 +45,7 @@ Implement the `createFSRecordsAdapter` factory and wire it to the existing disco
 
 ## Mandatory Reading
 
+- `$ART_LIB/architecture/index.md` — package layout, publishing, and execution model.
 - `$PACKAGE/_guide.md` — package overview, layout, and operating instructions.
 - `$PACKAGE/src/adapter/types.ts` — the `FSRecordsAdapter` interface and adapter types (created in `add-adapter-types`).
 - `$PACKAGE/src/files/types.ts` — `FSRecordFile`, `FSRecordsPattern`, `FSRecordSource`.

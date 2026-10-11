@@ -104,11 +104,11 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ## Items:
 
-| Phase | Resource / Record                                                                                             | Status     |
-| ----- | ------------------------------------------------------------------------------------------------------------- | ---------- |
-| 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`     |
-| 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`     |
-| 1     | Plan: Add FS Records Adapter `_backlog/4-next/add-fs-records-adapter/plan.md`                                 | `PLANNING` |
+| Phase | Resource / Record                                                                                             | Status  |
+| ----- | ------------------------------------------------------------------------------------------------------------- | ------- |
+| 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`  |
+| 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`  |
+| 1     | Plan: Add FS Records Adapter `_backlog/4-next/plan-add-fs-records-adapter/plan.md`                            | `READY` |
 
 ---
 

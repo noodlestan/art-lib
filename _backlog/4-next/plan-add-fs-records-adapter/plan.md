@@ -2,7 +2,7 @@
 
 **ID:** `add-fs-records-adapter`
 
-**Status:** `PLANNING`
+**Status:** `READY`
 
 **Template:** `.agents/domains/plans/templates/plan.tart`
 
@@ -20,11 +20,12 @@
 
 ## Path Variables
 
-| Variable     | Resolved Path                           | Purpose                    |
-| ------------ | --------------------------------------- | -------------------------- |
-| `$WORKSPACE` | Current working directory               | Workspace root directory   |
-| `$DOMAINS`   | `$WORKSPACE/.agents/domains`            | Domain resources directory |
-| `$ART_LIB`   | `$WORKSPACE/checkouts/art-lib-building` | Art Lib repository.        |
+| Variable     | Resolved Path                           | Purpose                               |
+| ------------ | --------------------------------------- | ------------------------------------- |
+| `$WORKSPACE` | Current working directory               | Workspace root directory              |
+| `$DOMAINS`   | `$WORKSPACE/.agents/domains`            | Domain resources directory            |
+| `$PROJECT`   | `$WORKSPACE/checkouts/art-lib-planning` | Planning repository (upstream items). |
+| `$ART_LIB`   | `$WORKSPACE/checkouts/art-lib-building` | Art Lib repository.                   |
 
 ## Summary
 
@@ -34,11 +35,10 @@ Provide a new service for finding, reading and writing records.
 
 ### Upstream Work
 
-| Kind                  | Path                                                         | Role                                                            |
-| --------------------- | ------------------------------------------------------------ | --------------------------------------------------------------- |
-| Parking Lot           | `$ART_LIB/_backlog/_parking-lot.md`                          | Tracks short-term actionables, pending questions, and blockers. |
-| Architecture Briefing | `$ART_LIB/_roadmap/_architect.md`                            | Art Work principles, NFRs, milestones.                          |
-| Milestone             | `$ART_LIB/_roadmap/3-now/milestone-art-lib-one/milestone.md` | Scope for this library's first version.                         |
+| Kind        | Path                                                         | Role                                                            |
+| ----------- | ------------------------------------------------------------ | --------------------------------------------------------------- |
+| Parking Lot | `$PROJECT/_backlog/_parking-lot.md`                          | Tracks short-term actionables, pending questions, and blockers. |
+| Milestone   | `$PROJECT/_roadmap/3-now/milestone-art-lib-one/milestone.md` | Scope for this library's first version.                         |
 
 ### Required Skills
 
@@ -53,9 +53,7 @@ Provide a new service for finding, reading and writing records.
 
 ### Knowledge
 
-::READ `$ART_LIB/_roadmap/_architect.md` (Briefing) — Workspace principles, NFRs, milestones. Relevant for Planning Work Item.
-
-::READ `$ART_LIB/cli/work/architecture/index.md` (Model) — Package layout, publishing, and execution model. Relevant for Planning Work Item.
+::READ `$ART_LIB/architecture/index.md` (Model) — Package layout, publishing, and execution model. Relevant for Planning Work Item.
 
 ## Scope
 
@@ -137,7 +135,9 @@ Additionally verify the CLI from a global installation and from the local develo
 
 **Description:** Move existing modules into `files/`, `discover/`, and `test/helpers/` directories. Rename `FSRecordsPath` to `FSRecordsPattern`, remove `FSRecordsConfig`, rename `findRecordFiles()` to `discoverRecordFiles()` accepting `(basePath, patterns)`, and rename `FSRecordFile.searchPath` to `FSRecordFile.basePath`.
 
-**Instructions:** `./add-fs-records-adapter/instructions/refactor-module-layout.md`
+**Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
+
+**Instructions:** `./plan-add-fs-records-adapter/instructions/refactor-module-layout.md`
 
 **Changes:**
 
@@ -187,7 +187,7 @@ Update all consumers within the package:
 
 | ID                       | Repository / Checkout / Branch    | Policy       | Hash | Status     |
 | ------------------------ | --------------------------------- | ------------ | ---- | ---------- |
-| `refactor-module-layout` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` |      | `PLANNING` |
+| `refactor-module-layout` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` |      | `AUTHORED` |
 
 ##### Commit: `refactor-module-layout`
 
@@ -207,7 +207,9 @@ refactor(fs-records): Reorganise module layout and rename FSRecordsPattern.
 
 **Description:** Add `RecordSource`, `FSRecordPosition`, `FSRecordSource` to `files/types.ts`; create `adapter/types.ts` with `RecordDTO`, `BaseRecordStructure`, `FSRecord`, `FSRecordsAdapterOptions`, `RecordReadImplementation`, `RecordWriteImplementation`, and the `FSRecordsAdapter` interface. Export the new types from `index.ts`.
 
-**Instructions:** `./add-fs-records-adapter/instructions/add-adapter-types.md`
+**Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
+
+**Instructions:** `./plan-add-fs-records-adapter/instructions/add-adapter-types.md`
 
 **Changes:**
 
@@ -289,7 +291,7 @@ Update `libs/fs-records/src/index.ts` to export the new types.
 
 | ID                  | Repository / Checkout / Branch    | Policy       | Hash | Status     |
 | ------------------- | --------------------------------- | ------------ | ---- | ---------- |
-| `add-adapter-types` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` |      | `PLANNING` |
+| `add-adapter-types` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` |      | `AUTHORED` |
 
 ##### Commit: `add-adapter-types`
 
@@ -309,7 +311,9 @@ build(fs-records): Add FSRecordsAdapter types and record abstractions.
 
 **Description:** Create `adapter/createFSRecordsAdapter.ts` implementing `FSRecordsAdapter`. Use `discoverRecordFiles()` for `listFiles()`, `readRecordFileContent()` for `readRecord()`, and `writeFile()` for `writeRecord()`. Add unit tests.
 
-**Instructions:** `./add-fs-records-adapter/instructions/implement-fs-records-adapter.md`
+**Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
+
+**Instructions:** `./plan-add-fs-records-adapter/instructions/implement-fs-records-adapter.md`
 
 **Changes:**
 
@@ -363,7 +367,7 @@ Add unit tests for the adapter in `libs/fs-records/src/adapter/createFSRecordsAd
 
 | ID                             | Repository / Checkout / Branch    | Policy       | Hash | Status     |
 | ------------------------------ | --------------------------------- | ------------ | ---- | ---------- |
-| `implement-fs-records-adapter` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` |      | `PLANNING` |
+| `implement-fs-records-adapter` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` |      | `AUTHORED` |
 
 ##### Commit: `implement-fs-records-adapter`
 
