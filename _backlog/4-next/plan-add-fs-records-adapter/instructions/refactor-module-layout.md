@@ -25,11 +25,11 @@ This section describes how to report back to the delegator after completing the 
 
 ## Path Variables
 
-| Variable     | Resolved Path                           | Purpose                            |
-| ------------ | --------------------------------------- | ---------------------------------- |
-| `$WORKSPACE` | Current working directory               | Workspace root directory           |
-| `$ART_LIB`   | `$WORKSPACE/checkouts/art-lib-building` | Art Lib repository                 |
-| `$PACKAGE`   | `$ART_LIB/libs/fs-records`              | The `fs-records` package to modify |
+| Variable     | Resolved Path              | Purpose                            |
+| ------------ | -------------------------- | ---------------------------------- |
+| `$WORKSPACE` | Current working directory  | Workspace root directory           |
+| `$PROJECT`   | Provided with Prompt       | Art Lib repository                 |
+| `$PACKAGE`   | `$PROJECT/libs/fs-records` | The `fs-records` package to modify |
 
 ## Working Agreements
 
@@ -45,7 +45,7 @@ Reorganise the `fs-records` package into a clear module structure before adding 
 
 ## Mandatory Reading
 
-- `$ART_LIB/knowledge/index.md` — package layout, publishing, and execution model.
+- `$PROJECT/_guide.md` — repository layout, records management, conventions, and operating instructions.
 - `$PACKAGE/_guide.md` — package overview, layout, and operating instructions.
 - `$PACKAGE/src/index.ts` — current public exports.
 - `$PACKAGE/src/types.ts` — current type declarations.
@@ -73,7 +73,7 @@ npm ci # to install dependencies.
 npm run ci # to verify build is green before starting
 ```
 
-If any of these fail, resolve the issue before proceeding with implementation. Do NOT run `npm install` inside `$ART_LIB` (the package directory) — a local `node_modules` there shadows the monorepo resolution and breaks the build.
+If any of these fail, resolve the issue before proceeding with implementation. Do NOT run `npm install` inside `$PROJECT` (the package directory) — a local `node_modules` there shadows the monorepo resolution and breaks the build.
 
 ### Writing Commit Message
 
@@ -88,7 +88,7 @@ If any of these fail, resolve the issue before proceeding with implementation. D
 
 **Purpose:** Confirms that the work item has been completed and satisfies its intended outcome.
 
-**Instructions:** (From `$ART_LIB/_guide.md`)
+**Instructions:** (From `$PROJECT/_guide.md`)
 
 Run from the package directory:
 

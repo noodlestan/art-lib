@@ -25,11 +25,11 @@ This section describes how to report back to the delegator after completing the 
 
 ## Path Variables
 
-| Variable     | Resolved Path                           | Purpose                            |
-| ------------ | --------------------------------------- | ---------------------------------- |
-| `$WORKSPACE` | Current working directory               | Workspace root directory           |
-| `$ART_LIB`   | `$WORKSPACE/checkouts/art-lib-building` | Art Lib repository                 |
-| `$PACKAGE`   | `$ART_LIB/libs/fs-records`              | The `fs-records` package to modify |
+| Variable     | Resolved Path              | Purpose                            |
+| ------------ | -------------------------- | ---------------------------------- |
+| `$WORKSPACE` | Current working directory  | Workspace root directory           |
+| `$PROJECT`   | Provided with Prompt       | Art Lib repository                 |
+| `$PACKAGE`   | `$PROJECT/libs/fs-records` | The `fs-records` package to modify |
 
 ## Working Agreements
 
@@ -41,11 +41,13 @@ The plan workflow (see the entry point guide → Planning Workflow → Working T
 
 ## Goals
 
-Introduce the type layer for the `FSRecordsAdapter`, including record abstractions and adapter options. Add `RecordSource`, `FSRecordPosition`, and `FSRecordSource` to `files/types.ts`; create `adapter/types.ts` with `RecordDTO`, `BaseRecordStructure`, `FSRecord`, `FSRecordsAdapterOptions`, `RecordReadImplementation`, `RecordWriteImplementation`, and the `FSRecordsAdapter` interface; and export the new types from `index.ts`.
+Introduce the type layer for the filesystem adapter and its per-file content source. Create `files/FSContentSource.ts` implementing the `ArtContentSource` contract imported from `@art-md/primitives@0.0.3`; create `adapter/types.ts` with `FSRecordsAdapterOptions` and the `FSRecordsAdapter` interface; and export the new types from `index.ts`.
+
+This iteration introduces no runtime behaviour — it declares types only. It deliberately does **not** re-export `ArtContentSource`: that contract belongs to `@art-md/primitives` and consumers import it there (chain-agreed import path).
 
 ## Mandatory Reading
 
-- `$ART_LIB/knowledge/index.md` — package layout, publishing, and execution model.
+- `$PROJECT/_guide.md` — repository layout, records management, conventions, and operating instructions.
 - `$PACKAGE/_guide.md` — package overview, layout, and operating instructions.
 - `$PACKAGE/src/files/types.ts` — current type declarations (created in `refactor-module-layout`).
 - `$PACKAGE/src/index.ts` — current public exports.
@@ -70,7 +72,7 @@ npm ci # to install dependencies.
 npm run ci # to verify build is green before starting
 ```
 
-If any of these fail, resolve the issue before proceeding with implementation. Do NOT run `npm install` inside `$ART_LIB` (the package directory) — a local `node_modules` there shadows the monorepo resolution and breaks the build.
+If any of these fail, resolve the issue before proceeding with implementation. Do NOT run `npm install` inside `$PROJECT` (the package directory) — a local `node_modules` there shadows the monorepo resolution and breaks the build.
 
 ### Writing Commit Message
 
@@ -85,7 +87,7 @@ If any of these fail, resolve the issue before proceeding with implementation. D
 
 **Purpose:** Confirms that the work item has been completed and satisfies its intended outcome.
 
-**Instructions:** (From `$ART_LIB/_guide.md`)
+**Instructions:** (From `$PROJECT/_guide.md`)
 
 Run from the package directory:
 
@@ -102,118 +104,115 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Changes
 
-This iteration adds the type layer for the `FSRecordsAdapter`. It introduces no runtime behaviour.
+This iteration adds the type layer for the adapter. It introduces no runtime behaviour.
 
-- Step 1 / 4 — Add record abstractions to `files/types.ts`
-- Step 2 / 4 — Create `adapter/types.ts` with adapter types and interface
-- Step 3 / 4 — Export the new types from `index.ts`
-- Step 4 / 4 — Commit `add-adapter-types`
+- Step 1 / 5 — Add the `@art-md/primitives` dependency
+- Step 2 / 5 — Create `files/FSContentSource.ts`
+- Step 3 / 5 — Create `adapter/types.ts` with adapter options and interface
+- Step 4 / 5 — Export the new types from `index.ts`
+- Step 5 / 5 — Commit `add-adapter-types`
 
 ## Steps
 
-### Step `1 / 4` — Add record abstractions to `files/types.ts`
+### Step `1 / 5` — Add the `@art-md/primitives` dependency
 
-Append the following WIP record abstractions to `$PACKAGE/src/files/types.ts`. Keep the existing `FSRecordsPattern` and `FSRecordFile` declarations.
+`FSContentSource` implements `ArtContentSource`, which is declared in `@art-md/primitives@0.0.3`. Add it as a runtime dependency of the package so the type resolves.
 
-```ts
-// WIP Abstract RecordSource to be moved to an Art JS primitives package later.
-export interface RecordSource {
-  type: string;
-  uri: string;
+In `$PACKAGE/package.json`, add:
+
+```json
+"dependencies": {
+  "@art-md/primitives": "0.0.3"
 }
-
-export interface FSRecordPosition {
-  startLine: number; // 1-indexed
-  endLine?: number; // 1-indexed, inclusive
-}
-
-export interface FSRecordSource extends RecordSource {
-  type: 'fs-record';
-  file: FSRecordFile;
-  position?: FSRecordPosition;
-}
-
-// The `uri` in `FSRecordSource` is derived from `file.path` with an optional
-// line-range suffix (e.g., `file:///path/to/file.art#L10-L20`).
 ```
 
-Expected outcome: `RecordSource`, `FSRecordPosition`, and `FSRecordSource` are declared in `files/types.ts`.
+Then, from the `$WORKSPACE` root, run `npm install` to hoist the new workspace dependency — **not** inside `$PROJECT` (a local `node_modules` there shadows the monorepo resolution and breaks the build).
 
-### Step `2 / 4` — Create `adapter/types.ts` with adapter types and interface
+Notes:
 
-Create `$PACKAGE/src/adapter/types.ts` with the adapter options, record DTO abstractions, and the `FSRecordsAdapter` interface. Import `RecordSource`, `FSRecordSource`, and `FSRecordFile` from `../files/types`.
+- `0.0.3` is published and frozen for this chain; pin it exactly, do not use a range.
+- This package imports `ArtContentSource` as a **type only**. Do not add `@art-md/constructs` — that package is `@art-js/records`' dependency for the record bridge, not this adapter's.
+
+Expected outcome: `@art-md/primitives@0.0.3` resolves from `$PACKAGE`, and `npm run build` can type-resolve the import added in step 2.
+
+### Step `2 / 5` — Create `files/FSContentSource.ts`
+
+Create `$PACKAGE/src/files/FSContentSource.ts`:
 
 ```ts
-import type { FSRecordFile, FSRecordSource, RecordSource } from '../files/types';
+import type { ArtContentSource } from '@art-md/primitives';
 
-// WIP Abstract RecordDTO to be moved to an Art JS primitives package later.
-export interface RecordDTO<T extends BaseRecordStructure> {
-  source: RecordSource;
-  record: T;
-}
+import type { FSRecordFile } from './types';
 
-export interface BaseRecordStructure {
-  kind: string;
-  name: string;
+// One per file. Implements the chain's ArtContentSource contract: content
+// acquisition and persistence only — no parsing, no record semantics.
+export interface FSContentSource extends ArtContentSource {
+  readonly type: 'fs';
+  readonly file: FSRecordFile;
 }
+```
 
-export interface FSRecord<T extends BaseRecordStructure> extends RecordDTO<T> {
-  source: FSRecordSource;
-}
+Notes:
+
+- `FSContentSource` extends `ArtContentSource`, so it inherits `type`, `uri`, `maybeContent`, `readContent()`, and `writeContent()` — it must not narrow or widen any of them.
+- The narrowed `type: 'fs'` discriminates this source from other `ArtContentSource` implementations.
+- `uri` and `maybeContent` are declared readonly on the contract; the implementing factory (next iteration) backs them with getters.
+
+Expected outcome: `files/FSContentSource.ts` declares `FSContentSource` and type-resolves `ArtContentSource` from `@art-md/primitives`.
+
+### Step `3 / 5` — Create `adapter/types.ts` with adapter options and interface
+
+Create `$PACKAGE/src/adapter/types.ts`. Import `FSContentSource` and `FSRecordFile` from `../files/types`' sibling modules:
+
+```ts
+import type { FSContentSource } from '../files/FSContentSource';
+import type { FSRecordFile, FSRecordsPattern } from '../files/types';
 
 export interface FSRecordsAdapterOptions {
-  path: string;
-  extension: `.art`;
-  ignored: string[];
-  excluded: string[];
+  basePath: string;
+  patterns: FSRecordsPattern[];
 }
 
-export type RecordReadImplementation<T extends BaseRecordStructure> = (content: string) => T;
-export type RecordWriteImplementation<T extends BaseRecordStructure> = (record: T) => string;
-
+// The adapter is discovery + a content-source factory. It is NOT itself an
+// ArtContentSource: a content source addresses one URI, the adapter spans a
+// search tree.
 export interface FSRecordsAdapter {
-  options: FSRecordsAdapterOptions;
-  listFiles: () => Promise<FSRecordFile[]>;
-  readRecord: <T extends BaseRecordStructure>(
-    file: FSRecordFile,
-    recordRead: RecordReadImplementation<T>,
-  ) => Promise<FSRecord<T>>;
-  writeRecord: <T extends BaseRecordStructure>(
-    file: FSRecordFile,
-    record: T,
-    recordWrite: RecordWriteImplementation<T>,
-  ) => Promise<FSRecord<T>>;
+  readonly options: FSRecordsAdapterOptions;
+  discoverRecordFiles(kinds?: string | string[]): Promise<FSRecordFile[]>;
+  createContentSource(file: FSRecordFile): FSContentSource;
 }
 ```
 
 Notes on the interface:
 
-- `listFiles` is async (`Promise<FSRecordFile[]>`) because discovery (`discoverRecordFiles()`) is async.
-- `writeRecord` accepts the `record: T` to write, in addition to the `recordWrite` serializer, so the adapter can produce the content to persist.
+- `discoverRecordFiles` is async because the underlying discovery walks the filesystem and resolves gitignore state.
+- The optional `kinds` filter narrows discovery to record files whose kind matches, mirroring the existing free function's parameter.
+- `createContentSource` is **synchronous** — it returns a `FSContentSource` handle; the async work happens inside that handle's `readContent()`/`writeContent()`.
 
-Expected outcome: `adapter/types.ts` declares all adapter types and the `FSRecordsAdapter` interface.
+Expected outcome: `adapter/types.ts` declares `FSRecordsAdapterOptions` and `FSRecordsAdapter`.
 
-### Step `3 / 4` — Export the new types from `index.ts`
+### Step `4 / 5` — Export the new types from `index.ts`
 
-Update `$PACKAGE/src/index.ts` to export the new adapter types alongside the existing exports.
+Update `$PACKAGE/src/index.ts` to export the new types alongside the existing exports:
 
 ```ts
-export { discoverRecordFiles } from './discover/discoverRecordFiles';
-export { readRecordFileContent } from './files/readRecordFileContent';
-export type { FSRecordFile, FSRecordsPattern } from './files/types';
-export type {
-  BaseRecordStructure,
-  FSRecord,
-  FSRecordsAdapter,
-  FSRecordsAdapterOptions,
-  RecordReadImplementation,
-  RecordWriteImplementation,
-} from './adapter/types';
+export { findRecordFiles } from './findRecordFiles.js';
+export { readRecordFileContent } from './readRecordFileContent.js';
+export type { FSRecordFile, FSRecordsConfig, FSRecordsPath } from './types.js';
+export type { FSContentSource } from './files/FSContentSource.js';
+export type { FSRecordsAdapter, FSRecordsAdapterOptions } from './adapter/types.js';
 ```
 
-Expected outcome: the new adapter types are part of the package's public API.
+Keep the existing export lines intact — this iteration adds types, it does not rename or remove anything. (The `FSRecordsPath` → `FSRecordsPattern` and `findRecordFiles` → `discoverRecordFiles` renames belong to `refactor-module-layout`, which runs **before** this iteration. If that iteration has already landed, mirror its final export shape here and only append the two new type exports.)
 
-### Step `4 / 4` — Commit `add-adapter-types`
+Notes:
+
+- `ArtContentSource` is intentionally **not** re-exported. Consumers import it from `@art-md/primitives` — single source of truth for the contract.
+- Append `.js` extensions to match the existing import style in this package (ESM/NodeNext).
+
+Expected outcome: `index.ts` exports the two new types and retains all pre-existing exports.
+
+### Step `5 / 5` — Commit `add-adapter-types`
 
 ---
 
@@ -224,7 +223,7 @@ Expected outcome: the new adapter types are part of the package's public API.
 **Message:**
 
 ```
-build(fs-records): Add FSRecordsAdapter types and record abstractions.
+build(fs-records): Add FSContentSource and adapter type layer.
 ```
 
 ---
@@ -234,9 +233,10 @@ build(fs-records): Add FSRecordsAdapter types and record abstractions.
 **Instructions:**
 
 - Verify that commits have been executed and pushed (or not pushed) according to the commit's policy.
-- Verify that `RecordSource`, `FSRecordPosition`, and `FSRecordSource` are declared in `files/types.ts`.
-- Verify that `adapter/types.ts` declares `RecordDTO`, `BaseRecordStructure`, `FSRecord`, `FSRecordsAdapterOptions`, `RecordReadImplementation`, `RecordWriteImplementation`, and `FSRecordsAdapter`.
-- Verify that `FSRecordsAdapter.listFiles` is async and `writeRecord` accepts `(file, record, recordWrite)`.
-- Verify that the new types are exported from `index.ts`.
+- Verify `@art-md/primitives@0.0.3` is declared in `$PACKAGE/package.json` dependencies and resolves.
+- Verify `files/FSContentSource.ts` declares `FSContentSource extends ArtContentSource` with the narrowed `type: 'fs'`.
+- Verify `adapter/types.ts` declares `FSRecordsAdapterOptions` and `FSRecordsAdapter`, and that `discoverRecordFiles` is async while `createContentSource` is sync.
+- Verify the new types are exported from `index.ts` and that **no** `RecordSource`/`RecordDTO`/`BaseRecordStructure`/`FSRecordPosition`/`FSRecord`/`RecordReadImplementation`/`RecordWriteImplementation` symbols exist anywhere in the package.
+- Verify `ArtContentSource` is **not** re-exported from `index.ts`.
 - Execute the **Verifying Completion** step as defined in the "Operating Instructions" section.
 - Report according to the "How to Report Back to the Delegator" instructions.

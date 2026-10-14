@@ -47,7 +47,7 @@ Infrastructure for CLI implementors to load, compile, and cache typed config mod
 
 Generic record read/write modules for Art MD record files. Find, read, and filter record files across a search path, honouring gitignore and configured patterns. Exposes `discoverRecordFiles()`, `readRecordFileContent()`, and the `FSRecordFile`/`FSRecordsPattern` types.
 
-Planned extension: the `FSRecordsAdapter` (filesystem discovery and content acquisition backend for the `@art-js/records` abstraction chain). **HELD** pending `@art-js/records` — see `_backlog/4-next/plan-add-fs-records-adapter/plan.md` Blockers.
+Extension delivered by `_backlog/4-next/plan-add-fs-records-adapter/plan.md` (`READY`, hold lifted 2026-10-13): the `FSRecordsAdapter` (discovery + content-source factory) and its per-file `FSContentSource`, which implements `ArtContentSource` from `@art-md/primitives` — the filesystem discovery and content-acquisition backend for the records chain. Naming and layering are chain-agreed in `$ART_JS/_backlog/whiteboard-art-records/whiteboard.md`: package `@art-lib/fs-records`, unit `FSRecordsAdapter`/`createFSRecordsAdapter`, method `discoverRecordFiles()`, persistence `writeContent(content)`; the adapter is not itself a content source (one URI per source, the adapter spans a search tree).
 
 ## Framework Wrappers
 

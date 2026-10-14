@@ -25,11 +25,11 @@ This section describes how to report back to the delegator after completing the 
 
 ## Path Variables
 
-| Variable     | Resolved Path                           | Purpose                            |
-| ------------ | --------------------------------------- | ---------------------------------- |
-| `$WORKSPACE` | Current working directory               | Workspace root directory           |
-| `$ART_LIB`   | `$WORKSPACE/checkouts/art-lib-building` | Art Lib repository                 |
-| `$PACKAGE`   | `$ART_LIB/libs/fs-records`              | The `fs-records` package to modify |
+| Variable     | Resolved Path              | Purpose                            |
+| ------------ | -------------------------- | ---------------------------------- |
+| `$WORKSPACE` | Current working directory  | Workspace root directory           |
+| `$PROJECT`   | Provided with Prompt       | Art Lib repository                 |
+| `$PACKAGE`   | `$PROJECT/libs/fs-records` | The `fs-records` package to modify |
 
 ## Working Agreements
 
@@ -41,14 +41,17 @@ The plan workflow (see the entry point guide → Planning Workflow → Working T
 
 ## Goals
 
-Implement the `createFSRecordsAdapter` factory and wire it to the existing discover/read/write utilities. Create `adapter/createFSRecordsAdapter.ts` implementing `FSRecordsAdapter`, using `discoverRecordFiles()` for `listFiles()`, `readRecordFileContent()` for `readRecord()`, and `writeFile()` for `writeRecord()`. Export the factory and add unit tests.
+Implement the two units the type layer declared: `files/createFSContentSource.ts`, the `ArtContentSource` implementation for a single file, and `adapter/createFSRecordsAdapter.ts`, discovery plus a content-source factory. Export both and cover them with unit tests.
+
+The adapter performs filesystem discovery and content persistence only. It does not parse content, does not model records, and does not template-render — those belong to `@art-js/records` and the consuming CLI.
 
 ## Mandatory Reading
 
-- `$ART_LIB/knowledge/index.md` — package layout, publishing, and execution model.
+- `$PROJECT/_guide.md` — repository layout, records management, conventions, and operating instructions.
 - `$PACKAGE/_guide.md` — package overview, layout, and operating instructions.
-- `$PACKAGE/src/adapter/types.ts` — the `FSRecordsAdapter` interface and adapter types (created in `add-adapter-types`).
-- `$PACKAGE/src/files/types.ts` — `FSRecordFile`, `FSRecordsPattern`, `FSRecordSource`.
+- `$PACKAGE/src/adapter/types.ts` — `FSRecordsAdapter` and `FSRecordsAdapterOptions` (created in `add-adapter-types`).
+- `$PACKAGE/src/files/FSContentSource.ts` — `FSContentSource` (created in `add-adapter-types`).
+- `$PACKAGE/src/files/types.ts` — `FSRecordFile`, `FSRecordsPattern`.
 - `$PACKAGE/src/discover/discoverRecordFiles.ts` — discovery entry point.
 - `$PACKAGE/src/files/readRecordFileContent.ts` — content reader.
 - `$PACKAGE/src/index.ts` — current public exports.
@@ -73,7 +76,7 @@ npm ci # to install dependencies.
 npm run ci # to verify build is green before starting
 ```
 
-If any of these fail, resolve the issue before proceeding with implementation. Do NOT run `npm install` inside `$ART_LIB` (the package directory) — a local `node_modules` there shadows the monorepo resolution and breaks the build.
+If any of these fail, resolve the issue before proceeding with implementation. Do NOT run `npm install` inside `$PROJECT` (the package directory) — a local `node_modules` there shadows the monorepo resolution and breaks the build.
 
 ### Writing Commit Message
 
@@ -88,7 +91,7 @@ If any of these fail, resolve the issue before proceeding with implementation. D
 
 **Purpose:** Confirms that the work item has been completed and satisfies its intended outcome.
 
-**Instructions:** (From `$ART_LIB/_guide.md`)
+**Instructions:** (From `$PROJECT/_guide.md`)
 
 Run from the package directory:
 
@@ -105,121 +108,120 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Changes
 
-This iteration implements the `FSRecordsAdapter` factory and its unit tests.
+This iteration implements the two units and their unit tests.
 
-- Step 1 / 4 — Create `adapter/createFSRecordsAdapter.ts`
-- Step 2 / 4 — Export `createFSRecordsAdapter` from `index.ts`
-- Step 3 / 4 — Add unit tests in `adapter/createFSRecordsAdapter.test.ts`
-- Step 4 / 4 — Commit `implement-fs-records-adapter`
+- Step 1 / 5 — Create `files/createFSContentSource.ts`
+- Step 2 / 5 — Create `adapter/createFSRecordsAdapter.ts`
+- Step 3 / 5 — Export both factories from `index.ts`
+- Step 4 / 5 — Add unit tests for both units
+- Step 5 / 5 — Commit `implement-fs-records-adapter`
 
 ## Steps
 
-### Step `1 / 4` — Create `adapter/createFSRecordsAdapter.ts`
+### Step `1 / 5` — Create `files/createFSContentSource.ts`
 
-Create `$PACKAGE/src/adapter/createFSRecordsAdapter.ts` implementing the `FSRecordsAdapter` interface.
+Create `$PACKAGE/src/files/createFSContentSource.ts`:
 
 ```ts
 import { writeFile } from 'node:fs/promises';
 
-import { discoverRecordFiles } from '../discover/discoverRecordFiles';
-import { readRecordFileContent } from '../files/readRecordFileContent';
-import type { FSRecordFile, FSRecordSource, FSRecordsPattern } from '../files/types';
-import type {
-  BaseRecordStructure,
-  FSRecord,
-  FSRecordsAdapter,
-  FSRecordsAdapterOptions,
-  RecordReadImplementation,
-  RecordWriteImplementation,
-} from './types';
+import { readRecordFileContent } from './readRecordFileContent';
+import type { FSContentSource } from './FSContentSource';
+import type { FSRecordFile } from './types';
 
-export function createFSRecordsAdapter(options: FSRecordsAdapterOptions): FSRecordsAdapter {
-  const listFiles = async (): Promise<FSRecordFile[]> => {
-    const pattern: FSRecordsPattern = {
-      base: '.',
-      pattern: `**/*${options.extension}`,
-      ignored: options.ignored,
-      excluded: options.excluded,
-      gitignore: true,
-    };
-    return discoverRecordFiles(options.path, [pattern]);
-  };
+export function createFSContentSource(file: FSRecordFile): FSContentSource {
+  let cached: string | undefined;
 
-  const readRecord = async <T extends BaseRecordStructure>(
-    file: FSRecordFile,
-    recordRead: RecordReadImplementation<T>,
-  ): Promise<FSRecord<T>> => {
-    const fileWithContent = await readRecordFileContent(file);
-    if (fileWithContent.error || fileWithContent.content === undefined) {
-      throw fileWithContent.error ?? new Error(`No content for ${fileWithContent.filename}`);
+  const readContent = async (): Promise<string> => {
+    if (cached !== undefined) return cached;
+    const withContent = await readRecordFileContent(file);
+    if (withContent.error !== undefined) throw withContent.error;
+    if (withContent.content === undefined) {
+      throw new Error(`No content for ${withContent.filename}`);
     }
-    const record = recordRead(fileWithContent.content);
-    const source: FSRecordSource = {
-      type: 'fs-record',
-      uri: `file://${fileWithContent.filename}`,
-      file: fileWithContent,
-    };
-    return { source, record };
+    cached = withContent.content;
+    return cached;
   };
 
-  const writeRecord = async <T extends BaseRecordStructure>(
-    file: FSRecordFile,
-    record: T,
-    recordWrite: RecordWriteImplementation<T>,
-  ): Promise<FSRecord<T>> => {
-    const content = recordWrite(record);
+  const writeContent = async (content: string): Promise<void> => {
     await writeFile(file.filename, content, 'utf-8');
-    const source: FSRecordSource = {
-      type: 'fs-record',
-      uri: `file://${file.filename}`,
-      file,
-    };
-    return { source, record };
+    cached = content; // refresh so the next readContent() sees what we wrote
   };
 
-  const api: FSRecordsAdapter = {
-    options,
-    listFiles,
-    readRecord,
-    writeRecord,
+  return {
+    type: 'fs',
+    file,
+    get uri(): string {
+      return `file://${file.filename}`;
+    },
+    get maybeContent(): string | undefined {
+      return cached;
+    },
+    readContent,
+    writeContent,
   };
-
-  return api;
 }
 ```
 
 Notes:
 
-- `listFiles()` treats `options.path` as the search root and builds a single `FSRecordsPattern` with `base: '.'` and pattern `**/*{extension}`.
-- `readRecord()` reads content via `readRecordFileContent()`, parses it via `recordRead()`, and returns an `FSRecord<T>` whose `source.uri` is `file://{filename}`.
-- `writeRecord()` serializes the record via `recordWrite(record)`, writes it to `file.filename`, and returns an `FSRecord<T>`.
+- **Stateless between calls, cached within an instance.** `maybeContent` is `undefined` until the first successful `readContent()`; `writeContent()` refreshes the cache so the next `readContent()` returns what was written without re-reading disk. A _new_ `createFSContentSource` call for the same file re-reads from disk — this is what makes line-based anchors in `@art-js/records` safe, and the opt-in content-hash guard covers out-of-band drift.
+- **`uri` is `file://{filename}`** — the absolute path, no line-range suffix. The adapter deals in whole files, never slices.
+- **Strict on read, tolerant on discovery.** `ArtContentSource.readContent()` is frozen upstream at `Promise<string>`, so it must throw for an unreadable file. Degradation is a _discovery_-level guarantee instead: filter on `FSRecordFile.error?` before calling `readContent()`. Do not swallow errors here.
+
+Expected outcome: `createFSContentSource` returns a `FSContentSource` conforming to the inherited contract.
+
+### Step `2 / 5` — Create `adapter/createFSRecordsAdapter.ts`
+
+Create `$PACKAGE/src/adapter/createFSRecordsAdapter.ts`:
+
+```ts
+import { createFSContentSource } from '../files/createFSContentSource';
+import { discoverRecordFiles } from '../discover/discoverRecordFiles';
+import type { FSContentSource } from '../files/FSContentSource';
+import type { FSRecordFile } from '../files/types';
+import type { FSRecordsAdapter, FSRecordsAdapterOptions } from './types';
+
+export function createFSRecordsAdapter(options: FSRecordsAdapterOptions): FSRecordsAdapter {
+  const discover = async (kinds: string | string[] = []): Promise<FSRecordFile[]> =>
+    discoverRecordFiles(options.basePath, options.patterns, kinds);
+
+  const createContentSource = (file: FSRecordFile): FSContentSource => createFSContentSource(file);
+
+  return { options, discoverRecordFiles: discover, createContentSource };
+}
+```
+
+Notes:
+
+- `discoverRecordFiles()` delegates to the existing free function with `options.basePath` and `options.patterns`; the optional `kinds` filter passes through unchanged.
+- Results come back **sorted ascending by absolute path** — deterministic across runs and machines. That ordering is now an explicit contract (consumers report on it), so do not replace the sort with a non-deterministic source.
+- `createContentSource` is synchronous by design: it returns a handle, and the async work lives inside that handle.
+- The adapter holds no per-file state. Callers who need caching hold the `FSContentSource`; the adapter itself is safe to keep for the lifetime of a run.
 
 Expected outcome: `createFSRecordsAdapter` is exported and returns a fully wired `FSRecordsAdapter`.
 
-### Step `2 / 4` — Export `createFSRecordsAdapter` from `index.ts`
+### Step `3 / 5` — Export both factories from `index.ts`
 
-Update `$PACKAGE/src/index.ts` to export the factory alongside the existing exports.
+Update `$PACKAGE/src/index.ts` to export the two factories alongside the type exports added in `add-adapter-types`:
 
 ```ts
-export { discoverRecordFiles } from './discover/discoverRecordFiles';
-export { readRecordFileContent } from './files/readRecordFileContent';
-export { createFSRecordsAdapter } from './adapter/createFSRecordsAdapter';
-export type { FSRecordFile, FSRecordsPattern } from './files/types';
-export type {
-  BaseRecordStructure,
-  FSRecord,
-  FSRecordsAdapter,
-  FSRecordsAdapterOptions,
-  RecordReadImplementation,
-  RecordWriteImplementation,
-} from './adapter/types';
+export { findRecordFiles } from './findRecordFiles.js';
+export { readRecordFileContent } from './readRecordFileContent.js';
+export type { FSRecordFile, FSRecordsConfig, FSRecordsPath } from './types.js';
+export type { FSContentSource } from './files/FSContentSource.js';
+export type { FSRecordsAdapter, FSRecordsAdapterOptions } from './adapter/types.js';
+export { createFSContentSource } from './files/createFSContentSource.js';
+export { createFSRecordsAdapter } from './adapter/createFSRecordsAdapter.js';
 ```
 
-Expected outcome: `createFSRecordsAdapter` is part of the package's public API.
+Keep every pre-existing export intact. As in the previous iteration, mirror the final export shape if `refactor-module-layout` has already renamed the free function.
 
-### Step `3 / 4` — Add unit tests in `adapter/createFSRecordsAdapter.test.ts`
+Expected outcome: both factories are part of the package's public API.
 
-Create `$PACKAGE/src/adapter/createFSRecordsAdapter.test.ts` covering `listFiles`, `readRecord`, and `writeRecord`.
+### Step `4 / 5` — Add unit tests for both units
+
+Create `$PACKAGE/src/files/createFSContentSource.test.ts`:
 
 ```ts
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -227,9 +229,8 @@ import { join } from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { createFSRecordsAdapter } from './createFSRecordsAdapter';
-import type { FSRecordFile } from '../files/types';
-import type { BaseRecordStructure, FSRecordsAdapterOptions } from './types';
+import { createFSContentSource } from './createFSContentSource';
+import type { FSRecordFile } from './types';
 import { makeTempDir } from '../test/helpers/tempDirs/makeTempDir';
 import { removeTempDirs } from '../test/helpers/tempDirs/removeTempDirs';
 
@@ -239,104 +240,157 @@ afterEach(async () => {
   await removeTempDirs(tempDirs);
 });
 
-interface TestRecord extends BaseRecordStructure {
-  kind: 'project';
-  name: string;
-  value: string;
+function makeFile(dir: string, name: string): FSRecordFile {
+  return { filename: join(dir, name), basePath: dir, path: name };
 }
 
-function makeOptions(dir: string): FSRecordsAdapterOptions {
-  return {
-    path: dir,
-    extension: '.art',
-    ignored: ['node_modules/', '.git/', 'dist/'],
-    excluded: [],
-  };
-}
-
-describe('createFSRecordsAdapter', () => {
-  it('listFiles discovers .art files under the configured path', async () => {
+describe('createFSContentSource', () => {
+  it('exposes type fs and a file:// uri before any read', () => {
     const dir = makeTempDir(tempDirs);
-    writeFileSync(join(dir, 'project.art'), '## Project: demo\n');
-    mkdirSync(join(dir, 'sub'), { recursive: true });
-    writeFileSync(join(dir, 'sub/nested.art'), '## Project: nested\n');
+    const file = makeFile(dir, 'project.art');
+    writeFileSync(file.filename, '## Project: demo\n');
 
-    const adapter = createFSRecordsAdapter(makeOptions(dir));
-    const files = await adapter.listFiles();
+    const source = createFSContentSource(file);
 
-    expect(files).toHaveLength(2);
-    expect(files.map(file => file.filename)).toContain(join(dir, 'project.art'));
-    expect(files.map(file => file.filename)).toContain(join(dir, 'sub/nested.art'));
+    expect(source.type).toBe('fs');
+    expect(source.uri).toBe(`file://${file.filename}`);
   });
 
-  it('readRecord reads content and parses via recordRead', async () => {
+  it('leaves maybeContent undefined until read, then caches', async () => {
     const dir = makeTempDir(tempDirs);
-    writeFileSync(join(dir, 'project.art'), '## Project: demo\n');
+    const file = makeFile(dir, 'project.art');
+    writeFileSync(file.filename, '## Project: demo\n');
 
-    const adapter = createFSRecordsAdapter(makeOptions(dir));
-    const [file] = await adapter.listFiles();
+    const source = createFSContentSource(file);
+    expect(source.maybeContent).toBeUndefined();
 
-    const record = await adapter.readRecord<TestRecord>(file!, content => ({
-      kind: 'project',
-      name: 'demo',
-      value: content,
-    }));
+    const first = await source.readContent();
+    expect(first).toBe('## Project: demo\n');
+    expect(source.maybeContent).toBe(first);
 
-    expect(record.record.name).toBe('demo');
-    expect(record.record.value).toContain('## Project: demo');
-    expect(record.source.type).toBe('fs-record');
-    expect(record.source.uri).toContain('file://');
-    expect(record.source.file.filename).toBe(join(dir, 'project.art'));
+    // A concurrent out-of-band write must NOT be observed: the instance caches.
+    writeFileSync(file.filename, '## Project: changed\n');
+    const second = await source.readContent();
+    expect(second).toBe(first);
   });
 
-  it('readRecord throws when the file has no content', async () => {
+  it('re-reads from disk on a fresh source for the same file', async () => {
     const dir = makeTempDir(tempDirs);
-    const file: FSRecordFile = {
-      filename: join(dir, 'missing.art'),
-      basePath: dir,
-      path: 'missing.art',
-    };
+    const file = makeFile(dir, 'project.art');
+    writeFileSync(file.filename, '## Project: v1\n');
 
-    const adapter = createFSRecordsAdapter(makeOptions(dir));
+    const first = createFSContentSource(file);
+    await first.readContent();
 
-    await expect(
-      adapter.readRecord<TestRecord>(file, content => ({
-        kind: 'project',
-        name: 'demo',
-        value: content,
-      })),
-    ).rejects.toThrow();
+    writeFileSync(file.filename, '## Project: v2\n');
+
+    const second = createFSContentSource(file);
+    expect(await second.readContent()).toBe('## Project: v2\n');
   });
 
-  it('writeRecord serializes via recordWrite and writes to disk', async () => {
+  it('writeContent persists and refreshes the cache', async () => {
     const dir = makeTempDir(tempDirs);
-    const filename = join(dir, 'project.art');
-    writeFileSync(filename, '');
+    const file = makeFile(dir, 'project.art');
+    writeFileSync(file.filename, '## Project: old\n');
 
-    const file: FSRecordFile = {
-      filename,
-      basePath: dir,
-      path: 'project.art',
-    };
-    const record: TestRecord = { kind: 'project', name: 'demo', value: 'x' };
+    const source = createFSContentSource(file);
+    await source.readContent();
+    await source.writeContent('## Project: new\n');
 
-    const adapter = createFSRecordsAdapter(makeOptions(dir));
-    const result = await adapter.writeRecord<TestRecord>(
-      file,
-      record,
-      r => `## Project: ${r.name}\n`,
-    );
+    expect(readFileSync(file.filename, 'utf-8')).toBe('## Project: new\n');
+    expect(source.maybeContent).toBe('## Project: new\n');
+    expect(await source.readContent()).toBe('## Project: new\n');
+  });
 
-    expect(result.record.name).toBe('demo');
-    expect(result.source.type).toBe('fs-record');
-    expect(readFileSync(filename, 'utf-8')).toBe('## Project: demo\n');
+  it('readContent throws for a missing file', async () => {
+    const dir = makeTempDir(tempDirs);
+    const file = makeFile(dir, 'missing.art');
+
+    await expect(createFSContentSource(file).readContent()).rejects.toThrow();
   });
 });
 ```
 
-Expected outcome: the adapter's `listFiles`, `readRecord`, and `writeRecord` are covered by passing unit tests.
+Create `$PACKAGE/src/adapter/createFSRecordsAdapter.test.ts`:
 
-### Step `4 / 4` — Commit `implement-fs-records-adapter`
+```ts
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+import { afterEach, describe, expect, it } from 'vitest';
+
+import { createFSRecordsAdapter } from './createFSRecordsAdapter';
+import type { FSRecordsAdapterOptions } from './types';
+import type { FSRecordsPattern } from '../files/types';
+import { makeTempDir } from '../test/helpers/tempDirs/makeTempDir';
+import { removeTempDirs } from '../test/helpers/tempDirs/removeTempDirs';
+
+const tempDirs: string[] = [];
+
+afterEach(async () => {
+  await removeTempDirs(tempDirs);
+});
+
+const pattern: FSRecordsPattern = {
+  base: '.',
+  pattern: '**/*.art',
+  ignored: ['node_modules/', '.git/', 'dist/'],
+  excluded: [],
+  gitignore: true,
+};
+
+function makeOptions(dir: string): FSRecordsAdapterOptions {
+  return { basePath: dir, patterns: [pattern] };
+}
+
+describe('createFSRecordsAdapter', () => {
+  it('discovers .art files under basePath, sorted ascending by path', async () => {
+    const dir = makeTempDir(tempDirs);
+    mkdirSync(join(dir, 'sub'), { recursive: true });
+    writeFileSync(join(dir, 'project.art'), '## Project: demo\n');
+    writeFileSync(join(dir, 'sub/nested.art'), '## Project: nested\n');
+
+    const adapter = createFSRecordsAdapter(makeOptions(dir));
+    const files = await adapter.discoverRecordFiles();
+
+    expect(files.map(file => file.filename)).toEqual([
+      join(dir, 'project.art'),
+      join(dir, 'sub/nested.art'),
+    ]);
+  });
+
+  it('returns no files for an empty directory rather than throwing', async () => {
+    const dir = makeTempDir(tempDirs);
+
+    const adapter = createFSRecordsAdapter(makeOptions(dir));
+
+    await expect(adapter.discoverRecordFiles()).resolves.toEqual([]);
+  });
+
+  it('createContentSource returns a working FSContentSource for a discovered file', async () => {
+    const dir = makeTempDir(tempDirs);
+    writeFileSync(join(dir, 'project.art'), '## Project: demo\n');
+
+    const adapter = createFSRecordsAdapter(makeOptions(dir));
+    const [file] = await adapter.discoverRecordFiles();
+
+    const source = adapter.createContentSource(file!);
+    expect(source.type).toBe('fs');
+    expect(source.file).toBe(file);
+    expect(await source.readContent()).toBe('## Project: demo\n');
+  });
+});
+```
+
+Notes:
+
+- Both suites use the existing `makeTempDir`/`removeTempDirs` helpers — do not add new temp-dir utilities.
+- The ordering assertion is deliberate: it pins the ascending-path contract rather than merely checking membership.
+- The empty-directory assertion pins degrade-not-fail at the discovery layer.
+
+Expected outcome: `createFSContentSource` and `createFSRecordsAdapter` are covered by passing unit tests.
+
+### Step `5 / 5` — Commit `implement-fs-records-adapter`
 
 ---
 
@@ -347,7 +401,7 @@ Expected outcome: the adapter's `listFiles`, `readRecord`, and `writeRecord` are
 **Message:**
 
 ```
-build(fs-records): Implement FSRecordsAdapter factory and tests.
+build(fs-records): Implement FSContentSource and adapter factory with tests.
 ```
 
 ---
@@ -357,8 +411,10 @@ build(fs-records): Implement FSRecordsAdapter factory and tests.
 **Instructions:**
 
 - Verify that commits have been executed and pushed (or not pushed) according to the commit's policy.
-- Verify that `createFSRecordsAdapter` is exported from `index.ts` and returns a fully wired `FSRecordsAdapter`.
-- Verify that `listFiles()` discovers `.art` files under `options.path`, `readRecord()` parses content via `recordRead`, and `writeRecord()` persists via `recordWrite`.
-- Verify that `adapter/createFSRecordsAdapter.test.ts` covers `listFiles`, `readRecord`, and `writeRecord` and passes.
+- Verify `createFSContentSource` and `createFSRecordsAdapter` are exported from `index.ts` and return fully wired implementations.
+- Verify `createFSContentSource` leaves `maybeContent` undefined until the first `readContent()`, caches within an instance, refreshes on `writeContent()`, and re-reads on a fresh instance for the same file.
+- Verify `createFSRecordsAdapter.discoverRecordFiles()` is async and returns results **sorted ascending by absolute path**, and that `createContentSource()` is synchronous.
+- Verify no record semantics leaked in: no parsing, no record types, no template rendering, and no `RecordSource`/`RecordDTO`/`BaseRecordStructure`/`FSRecordPosition` symbols anywhere in the package.
+- Verify the test suites pass and no `it.todo()` remains.
 - Execute the **Verifying Completion** step as defined in the "Operating Instructions" section.
 - Report according to the "How to Report Back to the Delegator" instructions.

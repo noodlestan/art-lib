@@ -109,7 +109,7 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 | ----- | ------------------------------------------------------------------------------------------------------------- | ---------- |
 | 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`     |
 | 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`     |
-| 1     | Plan: Add FS Records Adapter `_backlog/4-next/plan-add-fs-records-adapter/plan.md`                            | `BLOCKED`  |
+| 1     | Plan: Add FS Records Adapter `_backlog/4-next/plan-add-fs-records-adapter/plan.md`                            | `READY`    |
 | 1     | Plan: Add Operations Package `_backlog/6-plan/plan-add-operations/plan.md`                                    | `PLANNING` |
 | 1     | Plan: Add Logger Package `_backlog/6-plan/plan-add-logger/plan.md`                                            | `PLANNING` |
 | 1     | Plan: Add Config Package `_backlog/6-plan/plan-add-config/plan.md`                                            | `PLANNING` |
@@ -120,11 +120,11 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ### Next
 
-- Green sequence, no blockers: write instructions for **Plan: Add Logger Package** first, then **Plan: Add Operations Package** (needs the logger `Message` interface). **Plan: Add Config Package** is independent — can run anytime, in parallel.
+- Green sequence, no blockers: **Plan: Add FS Records Adapter** is `READY` (hold lifted 2026-10-13 — chain verdict confirmed the adapter is decoupled from `@art-js/records`); delegate its three iterations, starting with the layout-only `refactor-module-layout`. Then write instructions for **Plan: Add Logger Package**, then **Plan: Add Operations Package** (needs the logger `Message` interface). **Plan: Add Config Package** is independent — can run anytime, in parallel.
 
 ### Blockers
 
-- **`@art-js/records` not yet available** — Plan: Add FS Records Adapter is HELD (2026-10-11) until Art JS delivers `@art-js/records` (`ArtRecord` + source contracts). Its WIP local types duplicate the Art JS design; delegating now would build throwaway abstractions. Release conditions recorded in the plan's Blockers.
+- None. The **`@art-js/records` hold on Plan: Add FS Records Adapter was lifted 2026-10-13** — `ART_JS` (producer) and `ART_WORK` (consumer) both confirmed the adapter imports nothing from `@art-js/records`; its only upstream dependency is `ArtContentSource` from the published `@art-md/primitives@0.0.3`. All three iterations are `READY` and their instruction files are current. Residual note, tracked in the plan's Follow Ups: the agreed symbol names (`discoverRecordFiles`, `FSRecordsPattern`, `FSRecordFile.basePath`) land with iteration 1 and are **not** in the published `0.0.1` — consumers verifying exports against `0.0.1` must expect the pre-rename names until then.
 
 ---
 
