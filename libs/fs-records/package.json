@@ -2,6 +2,12 @@
   "name": "@art-lib/fs-records",
   "version": "0.0.1",
   "description": "Generic Art MD record read/write modules for CLIs.",
+  "keywords": [
+    "art",
+    "markdown",
+    "records",
+    "file-system"
+  ],
   "author": "Noodlestan Collective",
   "license": "MIT",
   "private": false,

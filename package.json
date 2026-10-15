@@ -2,6 +2,11 @@
   "name": "noodlestan/art-lib",
   "version": "0.0.1",
   "description": "Shared libraries and tools for building CLIs and Tools.",
+  "keywords": [
+    "art",
+    "cli",
+    "tooling"
+  ],
   "author": "Noodlestan",
   "license": "MIT",
   "private": true,
