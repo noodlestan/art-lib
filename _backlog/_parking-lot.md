@@ -1,19 +1,28 @@
-# Artificials WIP
+# Parking Lot: Art Lib Backlog
 
 WIP tracker, structured like the session parking lot: **ACTIONABLE** (in progress now), **pending** (waiting), **BLOCKER** (blocking work), **FOLLOW-UPS** (not in scope).
 
+## Ongoing
+
+- **Participate in the Art Boards Inception Whiteboard (owned by `ART_BOARDS`)** — board at `$ART_BOARDS/cli/whiteboard/_roadmap/whiteboard-art-boards-inception/whiteboard.md`.
+- **Participate in the Art Records Whiteboard (owned by `ART_JS`)** — board at `$ART_JS/_backlog/whiteboard-art-records/whiteboard.md`; this project is the highest priority.
+
+---
+
 ## ACTIONABLE
 
-- None
+None current.
 
-## pending
+## PENDING
 
-- None
+None current.
 
-## BLOCKER
+## BLOCKERS
 
-- None
+None current.
 
-## FOLLOW-UPS (not in scope)
+---
 
-- None
+## Follow-ups
+
+None current.
