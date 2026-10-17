@@ -4,6 +4,7 @@ WIP tracker, structured like the session parking lot: **ACTIONABLE** (in progres
 
 ## Ongoing
 
+- **Participate in the Art Boards Inception Whiteboard (owned by `ART_BOARDS`)** — board at `$ART_BOARDS/cli/whiteboard/_roadmap/whiteboard-art-boards-inception/whiteboard.md`.
 - **Participate in the Art Records Whiteboard (owned by `ART_JS`)** — board at `$ART_JS/_backlog/whiteboard-art-records/whiteboard.md`; this project is the highest priority.
 
 ---
@@ -12,11 +13,11 @@ WIP tracker, structured like the session parking lot: **ACTIONABLE** (in progres
 
 None current.
 
-## pending
+## PENDING
 
 None current.
 
-## BLOCKER
+## BLOCKERS
 
 None current.
 
