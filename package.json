@@ -4,8 +4,7 @@
   "description": "Shared libraries and tools for building CLIs and Tools.",
   "keywords": [
     "art",
-    "cli",
-    "tooling"
+    "terminal-apps"
   ],
   "author": "Noodlestan",
   "license": "MIT",

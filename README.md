@@ -4,7 +4,7 @@
 
 Shared libraries and tools for building CLIs and Tools.
 
-**Keywords:** art, cli, tooling.
+**Keywords:** art, terminal-apps.
 
 ## Development
 

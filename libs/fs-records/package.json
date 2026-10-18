@@ -3,10 +3,14 @@
   "version": "0.0.1",
   "description": "Generic Art MD record read/write modules for CLIs.",
   "keywords": [
-    "art",
+    "library",
     "markdown",
     "records",
-    "file-system"
+    "file-system",
+    "cli",
+    "tooling",
+    "art",
+    "terminal-apps"
   ],
   "author": "Noodlestan Collective",
   "license": "MIT",
