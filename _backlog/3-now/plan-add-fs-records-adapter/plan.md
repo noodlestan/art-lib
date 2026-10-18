@@ -123,11 +123,11 @@ Additionally verify that the package builds, lints, and tests green from `$PROJE
 
 ## Items:
 
-| Iteration / Instructions              | Status  |
-| ------------------------------------- | ------- |
-| Iteration: Refactor Module Layout     | `DONE`  |
-| Iteration: Add FSRecordsAdapter Types | `DONE`  |
-| Iteration: Implement FSRecordsAdapter | `READY` |
+| Iteration / Instructions              | Status |
+| ------------------------------------- | ------ |
+| Iteration: Refactor Module Layout     | `DONE` |
+| Iteration: Add FSRecordsAdapter Types | `DONE` |
+| Iteration: Implement FSRecordsAdapter | `DONE` |
 
 > All three iterations are `READY` — the plan-level hold was lifted 2026-10-13 (chain verdict: adapter decoupled from `@art-js/records`). `Refactor Module Layout` runs first: it owns the renames the other two iterations reference.
 
@@ -286,7 +286,7 @@ build(fs-records): Add FSRecordsAdapter types and record abstractions.
 
 **Id:** `implement-fs-records-adapter`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Implement the `createFSRecordsAdapter` factory and the per-file `createFSContentSource`, wiring them to the existing discover/read/write utilities.
 
@@ -370,9 +370,9 @@ Add unit tests in `files/createFSContentSource.test.ts` (lazy `maybeContent`, `r
 
 #### Commits:
 
-| ID                             | Repository / Checkout / Branch    | Policy       | Hash | Status     |
-| ------------------------------ | --------------------------------- | ------------ | ---- | ---------- |
-| `implement-fs-records-adapter` | Art Lib / `$PROJECT` / `building` | `AUTONOMOUS` |      | `AUTHORED` |
+| ID                             | Repository / Checkout / Branch    | Policy       | Hash      | Status      |
+| ------------------------------ | --------------------------------- | ------------ | --------- | ----------- |
+| `implement-fs-records-adapter` | Art Lib / `$PROJECT` / `building` | `AUTONOMOUS` | `7ec8c65` | `COMMITTED` |
 
 ##### Commit: `implement-fs-records-adapter`
 
