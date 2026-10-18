@@ -39,7 +39,7 @@
     "ci": "npm run lint && npm run build && npm run test:ci"
   },
   "dependencies": {
-    "@art-md/primitives": "0.0.3"
+    "@art-md/primitives": "0.0.5"
   },
   "devDependencies": {}
 }
