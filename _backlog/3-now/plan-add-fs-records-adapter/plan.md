@@ -126,7 +126,7 @@ Additionally verify that the package builds, lints, and tests green from `$PROJE
 | Iteration / Instructions              | Status  |
 | ------------------------------------- | ------- |
 | Iteration: Refactor Module Layout     | `DONE`  |
-| Iteration: Add FSRecordsAdapter Types | `READY` |
+| Iteration: Add FSRecordsAdapter Types | `DONE`  |
 | Iteration: Implement FSRecordsAdapter | `READY` |
 
 > All three iterations are `READY` — the plan-level hold was lifted 2026-10-13 (chain verdict: adapter decoupled from `@art-js/records`). `Refactor Module Layout` runs first: it owns the renames the other two iterations reference.
@@ -205,7 +205,7 @@ refactor(fs-records): Reorganise module layout and rename FSRecordsPattern.
 
 **Id:** `add-adapter-types`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Introduce the type layer for the adapter and its per-file content source, against the agreed chain contracts.
 
@@ -270,9 +270,9 @@ Update `libs/fs-records/src/index.ts` to export the new types. `ArtContentSource
 
 #### Commits:
 
-| ID                  | Repository / Checkout / Branch    | Policy       | Hash | Status     |
-| ------------------- | --------------------------------- | ------------ | ---- | ---------- |
-| `add-adapter-types` | Art Lib / `$PROJECT` / `building` | `AUTONOMOUS` |      | `AUTHORED` |
+| ID                  | Repository / Checkout / Branch    | Policy       | Hash      | Status      |
+| ------------------- | --------------------------------- | ------------ | --------- | ----------- |
+| `add-adapter-types` | Art Lib / `$PROJECT` / `building` | `AUTONOMOUS` | `91aecab` | `COMMITTED` |
 
 ##### Commit: `add-adapter-types`
 
