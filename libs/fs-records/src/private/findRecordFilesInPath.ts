@@ -1,18 +1,18 @@
-import type { FSRecordsPath } from '../types.js';
+import type { FSRecordsPattern } from '../files/types.js';
 
 import { getGitIgnoredSet } from './getGitIgnoredSet.js';
 import { globPath } from './globPath.js';
 
 export async function findRecordFilesInPath(
-	searchPath: string,
-	path: FSRecordsPath,
+	basePath: string,
+	pattern: FSRecordsPattern,
 ): Promise<string[]> {
-	const candidates = await globPath(searchPath, path);
+	const candidates = await globPath(basePath, pattern);
 
-	if (!path.gitignore) {
+	if (!pattern.gitignore) {
 		return candidates;
 	}
 
-	const ignoredSet = getGitIgnoredSet(searchPath, candidates);
+	const ignoredSet = getGitIgnoredSet(basePath, candidates);
 	return candidates.filter(candidate => !ignoredSet.has(candidate));
 }

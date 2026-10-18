@@ -1,5 +1,5 @@
-import { readRecordFileContent } from '../readRecordFileContent.js';
-import type { FSRecordFile } from '../types.js';
+import { readRecordFileContent } from '../files/readRecordFileContent.js';
+import type { FSRecordFile } from '../files/types.js';
 
 function escapeRegExp(value: string): string {
 	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

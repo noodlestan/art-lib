@@ -1,3 +1,3 @@
-export { findRecordFiles } from './findRecordFiles.js';
-export { readRecordFileContent } from './readRecordFileContent.js';
-export type { FSRecordFile, FSRecordsConfig, FSRecordsPath } from './types.js';
+export { discoverRecordFiles } from './discover/discoverRecordFiles.js';
+export { readRecordFileContent } from './files/readRecordFileContent.js';
+export type { FSRecordFile, FSRecordsPattern } from './files/types.js';

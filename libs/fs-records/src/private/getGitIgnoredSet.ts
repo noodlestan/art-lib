@@ -1,11 +1,11 @@
 import { execFileSync } from 'node:child_process';
 import { resolve } from 'node:path';
 
-export function getGitIgnoredSet(searchPath: string, candidates: string[]): Set<string> {
+export function getGitIgnoredSet(basePath: string, candidates: string[]): Set<string> {
 	try {
 		const output = execFileSync('git', ['check-ignore', '--no-index', '--stdin'], {
 			input: candidates.join('\n'),
-			cwd: searchPath,
+			cwd: basePath,
 			encoding: 'utf-8',
 			timeout: 5000,
 			stdio: ['pipe', 'pipe', 'ignore'],
@@ -14,7 +14,7 @@ export function getGitIgnoredSet(searchPath: string, candidates: string[]): Set<
 			output
 				.split('\n')
 				.filter(Boolean)
-				.map((line: string) => resolve(searchPath, line)),
+				.map((line: string) => resolve(basePath, line)),
 		);
 	} catch {
 		return new Set();

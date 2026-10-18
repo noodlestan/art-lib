@@ -4,10 +4,11 @@ import { join } from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { findRecordFiles } from './findRecordFiles.js';
-import { makeTempDir } from './test/helpers/tempDirs/makeTempDir.js';
-import { removeTempDirs } from './test/helpers/tempDirs/removeTempDirs.js';
-import { makeMockRecordsConfig } from './test/makeMockRecordsConfig.js';
+import { makeMockRecordsConfig } from '../test/helpers/config/makeMockRecordsConfig.js';
+import { makeTempDir } from '../test/helpers/tempDirs/makeTempDir.js';
+import { removeTempDirs } from '../test/helpers/tempDirs/removeTempDirs.js';
+
+import { discoverRecordFiles } from './discoverRecordFiles.js';
 
 const tempDirs: string[] = [];
 
@@ -21,20 +22,20 @@ function initGitRepo(dir: string): void {
 	execFileSync('git', ['config', 'user.name', 'Test'], { cwd: dir, stdio: 'ignore' });
 }
 
-describe('findRecordFiles', () => {
+describe('discoverRecordFiles', () => {
 	it('finds *.art files recursively with default pattern', async () => {
 		const tempDir = makeTempDir(tempDirs);
 		writeFileSync(join(tempDir, 'root.art'), '# Root');
 		mkdirSync(join(tempDir, 'sub'), { recursive: true });
 		writeFileSync(join(tempDir, 'sub/nested.art'), '# Nested');
 
-		const results = await findRecordFiles(makeMockRecordsConfig(), tempDir);
+		const results = await discoverRecordFiles(tempDir, makeMockRecordsConfig());
 
 		expect(results).toHaveLength(2);
 		expect(results.map(file => file.filename)).toContain(join(tempDir, 'root.art'));
 		expect(results.map(file => file.filename)).toContain(join(tempDir, 'sub/nested.art'));
 		expect(results[0]).toMatchObject({
-			searchPath: tempDir,
+			basePath: tempDir,
 			path: 'root.art',
 		});
 	});
@@ -44,7 +45,7 @@ describe('findRecordFiles', () => {
 		writeFileSync(join(tempDir, 'foo.art'), '# Art');
 		writeFileSync(join(tempDir, 'bar.md'), '# Markdown');
 
-		const results = await findRecordFiles(makeMockRecordsConfig(), tempDir);
+		const results = await discoverRecordFiles(tempDir, makeMockRecordsConfig());
 
 		expect(results).toHaveLength(1);
 		expect(results[0]?.filename).toBe(join(tempDir, 'foo.art'));
@@ -56,7 +57,7 @@ describe('findRecordFiles', () => {
 		writeFileSync(join(tempDir, 'namespace.art'), '## Namespace: art-domains\n');
 		writeFileSync(join(tempDir, 'decoy.art'), '## Resource: unrelated\n');
 
-		const results = await findRecordFiles(makeMockRecordsConfig(), tempDir, 'Project');
+		const results = await discoverRecordFiles(tempDir, makeMockRecordsConfig(), 'Project');
 
 		expect(results.map(file => file.filename)).toEqual([join(tempDir, 'project.art')]);
 	});
@@ -67,7 +68,7 @@ describe('findRecordFiles', () => {
 		writeFileSync(join(tempDir, 'namespace.art'), '## Namespace: art-domains\n');
 		writeFileSync(join(tempDir, 'decoy.art'), '## Resource: unrelated\n');
 
-		const results = await findRecordFiles(makeMockRecordsConfig(), tempDir, [
+		const results = await discoverRecordFiles(tempDir, makeMockRecordsConfig(), [
 			'Namespace',
 			'Project',
 		]);
@@ -83,18 +84,8 @@ describe('findRecordFiles', () => {
 		writeFileSync(join(tempDir, 'keep.art'), '# Keep');
 		writeFileSync(join(tempDir, 'skip.art'), '# Skip');
 
-		const records = makeMockRecordsConfig({
-			paths: [
-				{
-					base: '.',
-					pattern: '*.art',
-					ignored: ['skip.art'],
-					excluded: [],
-					gitignore: true,
-				},
-			],
-		});
-		const results = await findRecordFiles(records, tempDir, []);
+		const records = makeMockRecordsConfig({ ignored: ['skip.art'] });
+		const results = await discoverRecordFiles(tempDir, records, []);
 
 		expect(results.map(file => file.filename)).toEqual([join(tempDir, 'keep.art')]);
 	});
@@ -107,24 +98,14 @@ describe('findRecordFiles', () => {
 		mkdirSync(join(tempDir, 'ignored'), { recursive: true });
 		writeFileSync(join(tempDir, 'ignored/skip.art'), '# Skip');
 
-		const records = makeMockRecordsConfig({
-			paths: [
-				{
-					base: '.',
-					pattern: '*.art',
-					ignored: ['node_modules/', '.git/', 'dist/'],
-					excluded: [],
-					gitignore: false,
-				},
-			],
-		});
-		const results = await findRecordFiles(records, tempDir, []);
+		const records = makeMockRecordsConfig({ gitignore: false });
+		const results = await discoverRecordFiles(tempDir, records, []);
 
 		expect(results).toHaveLength(2);
 	});
 
 	it('returns empty array for missing path', async () => {
-		const results = await findRecordFiles(makeMockRecordsConfig(), '/nonexistent/path');
+		const results = await discoverRecordFiles('/nonexistent/path', makeMockRecordsConfig());
 		expect(results).toEqual([]);
 	});
 
@@ -134,7 +115,7 @@ describe('findRecordFiles', () => {
 		mkdirSync(join(tempDir, '.git/objects'), { recursive: true });
 		writeFileSync(join(tempDir, '.git/config'), '[core]');
 
-		const results = await findRecordFiles(makeMockRecordsConfig(), tempDir);
+		const results = await discoverRecordFiles(tempDir, makeMockRecordsConfig());
 
 		expect(results).toHaveLength(1);
 		expect(results[0]?.filename).toBe(join(tempDir, 'root.art'));
@@ -148,7 +129,7 @@ describe('findRecordFiles', () => {
 		mkdirSync(join(tempDir, 'ignored'), { recursive: true });
 		writeFileSync(join(tempDir, 'ignored/skip.art'), '# Skip');
 
-		const results = await findRecordFiles(makeMockRecordsConfig(), tempDir);
+		const results = await discoverRecordFiles(tempDir, makeMockRecordsConfig());
 
 		expect(results).toHaveLength(1);
 		expect(results[0]?.filename).toBe(join(tempDir, 'root.art'));
@@ -161,7 +142,7 @@ describe('findRecordFiles', () => {
 		mkdirSync(join(tempDir, 'ignored'), { recursive: true });
 		writeFileSync(join(tempDir, 'ignored/skip.art'), '# Skip');
 
-		const results = await findRecordFiles(makeMockRecordsConfig(), tempDir);
+		const results = await discoverRecordFiles(tempDir, makeMockRecordsConfig());
 
 		expect(results).toHaveLength(2);
 	});
@@ -172,7 +153,7 @@ describe('findRecordFiles', () => {
 		writeFileSync(join(tempDir, 'a.art'), '# A');
 		writeFileSync(join(tempDir, 'b.art'), '# B');
 
-		const results = await findRecordFiles(makeMockRecordsConfig(), tempDir);
+		const results = await discoverRecordFiles(tempDir, makeMockRecordsConfig());
 
 		expect(results.map(file => file.filename)).toEqual([
 			join(tempDir, 'a.art'),
@@ -186,7 +167,7 @@ describe('findRecordFiles', () => {
 		const file = join(tempDir, 'not-a-dir.txt');
 		writeFileSync(file, 'hello');
 
-		const results = await findRecordFiles(makeMockRecordsConfig(), file);
+		const results = await discoverRecordFiles(file, makeMockRecordsConfig());
 
 		expect(results).toEqual([]);
 	});
