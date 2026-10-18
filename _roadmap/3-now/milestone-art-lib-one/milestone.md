@@ -109,7 +109,8 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 | ----- | ------------------------------------------------------------------------------------------------------------- | ---------- |
 | 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`     |
 | 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`     |
-| 1     | Plan: Add FS Records Adapter `_backlog/3-now/plan-add-fs-records-adapter/plan.md`                             | `READY`    |
+| 1     | Plan: Add FS Records Adapter `_backlog/3-now/plan-add-fs-records-adapter/plan.md`                             | `DONE`     |
+| 1     | Plan: Add FS Records Knowledge `_backlog/4-next/plan-add-fs-records-knowledge/plan.md`                        | `READY`    |
 | 1     | Plan: Add Operations Package `_backlog/6-plan/plan-add-operations/plan.md`                                    | `PLANNING` |
 | 1     | Plan: Add Logger Package `_backlog/6-plan/plan-add-logger/plan.md`                                            | `PLANNING` |
 | 1     | Plan: Add Config Package `_backlog/6-plan/plan-add-config/plan.md`                                            | `PLANNING` |
@@ -120,7 +121,7 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ### Next
 
-- Green sequence, no blockers: **Plan: Add FS Records Adapter** is `READY` (hold lifted 2026-10-13 — chain verdict confirmed the adapter is decoupled from `@art-js/records`); delegate its three iterations, starting with the layout-only `refactor-module-layout`. Then write instructions for **Plan: Add Logger Package**, then **Plan: Add Operations Package** (needs the logger `Message` interface). **Plan: Add Config Package** is independent — can run anytime, in parallel.
+- **Plan: Add FS Records Knowledge** is `READY` — delegate its three iterations (update README, verify guide, add knowledge directory). Then write instructions for **Plan: Add Logger Package**, then **Plan: Add Operations Package** (needs the logger `Message` interface). **Plan: Add Config Package** is independent — can run anytime, in parallel.
 
 ### Blockers
 
