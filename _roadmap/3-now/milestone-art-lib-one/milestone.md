@@ -109,7 +109,7 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 | ----- | ------------------------------------------------------------------------------------------------------------- | ---------- |
 | 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`     |
 | 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`     |
-| 1     | Plan: Add FS Records Adapter `_backlog/4-next/plan-add-fs-records-adapter/plan.md`                            | `READY`    |
+| 1     | Plan: Add FS Records Adapter `_backlog/3-now/plan-add-fs-records-adapter/plan.md`                             | `READY`    |
 | 1     | Plan: Add Operations Package `_backlog/6-plan/plan-add-operations/plan.md`                                    | `PLANNING` |
 | 1     | Plan: Add Logger Package `_backlog/6-plan/plan-add-logger/plan.md`                                            | `PLANNING` |
 | 1     | Plan: Add Config Package `_backlog/6-plan/plan-add-config/plan.md`                                            | `PLANNING` |
