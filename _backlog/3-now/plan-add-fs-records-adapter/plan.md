@@ -125,7 +125,7 @@ Additionally verify that the package builds, lints, and tests green from `$PROJE
 
 | Iteration / Instructions              | Status  |
 | ------------------------------------- | ------- |
-| Iteration: Refactor Module Layout     | `READY` |
+| Iteration: Refactor Module Layout     | `DONE`  |
 | Iteration: Add FSRecordsAdapter Types | `READY` |
 | Iteration: Implement FSRecordsAdapter | `READY` |
 
@@ -135,9 +135,7 @@ Additionally verify that the package builds, lints, and tests green from `$PROJE
 
 **Id:** `refactor-module-layout`
 
-**Status:** `READY`
-
-**Purpose:** Reorganise the `fs-records` package into a clear module structure before adding the adapter.
+**Status:** `DONE`
 
 **Description:** Move existing modules into `files/`, `discover/`, and `test/helpers/` directories. Rename `FSRecordsPath` to `FSRecordsPattern`, remove `FSRecordsConfig`, rename `findRecordFiles()` to `discoverRecordFiles()` accepting `(basePath, patterns)`, and rename `FSRecordFile.searchPath` to `FSRecordFile.basePath`.
 
@@ -191,9 +189,9 @@ Update all consumers within the package:
 
 #### Commits:
 
-| ID                       | Repository / Checkout / Branch    | Policy       | Hash | Status     |
-| ------------------------ | --------------------------------- | ------------ | ---- | ---------- |
-| `refactor-module-layout` | Art Lib / `$PROJECT` / `building` | `AUTONOMOUS` |      | `AUTHORED` |
+| ID                       | Repository / Checkout / Branch    | Policy       | Hash      | Status      |
+| ------------------------ | --------------------------------- | ------------ | --------- | ----------- |
+| `refactor-module-layout` | Art Lib / `$PROJECT` / `building` | `AUTONOMOUS` | `607b000` | `COMMITTED` |
 
 ##### Commit: `refactor-module-layout`
 
