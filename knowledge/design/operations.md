@@ -2,7 +2,7 @@
 
 **Purpose:** Describe what a CLI needs from `@art-lib/operations` — the operation model and the operations log — as evidenced by the Art MD bin and Art Work CLI consumers.
 
-**Planned package:** `@art-lib/operations` — `_backlog/6-plan/plan-add-operations/plan.md`
+**Planned package:** `@art-lib/operations` — `_backlog/4-next/plan-add-operations/plan.md`
 
 ## Operation
 

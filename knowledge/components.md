@@ -16,7 +16,7 @@ Frameworks adopted (see [Decision: Frameworks](./adr/frameworks.md)): Commander,
 
 **Path:** `libs/operations`
 
-**Status:** PLANNED — plan drafted at `_backlog/6-plan/plan-add-operations/plan.md`
+**Status:** PLANNED — plan drafted at `_backlog/4-next/plan-add-operations/plan.md`
 
 The shared CLI operation plumbing, extracted from `@art-work/cli` and `@art-md/bin` as one package with two subpath modules:
 

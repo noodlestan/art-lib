@@ -2,7 +2,7 @@
 
 **ID:** `add-operations`
 
-**Status:** `PLANNING`
+**Status:** `READY`
 
 **Template:** `.agents/domains/plans/templates/plan.tart`
 
@@ -20,12 +20,11 @@
 
 ## Path Variables
 
-| Variable     | Resolved Path                           | Purpose                               |
-| ------------ | --------------------------------------- | ------------------------------------- |
-| `$WORKSPACE` | Current working directory               | Workspace root directory              |
-| `$DOMAINS`   | `$WORKSPACE/.agents/domains`            | Domain resources directory            |
-| `$PROJECT`   | `$WORKSPACE/checkouts/art-lib-planning` | Planning repository (upstream items). |
-| `$ART_LIB`   | `$WORKSPACE/checkouts/art-lib-building` | Art Lib repository.                   |
+| Variable     | Resolved Path                | Purpose                         |
+| ------------ | ---------------------------- | ------------------------------- |
+| `$WORKSPACE` | Current working directory    | Workspace root directory        |
+| `$DOMAINS`   | `$WORKSPACE/.agents/domains` | Domain resources directory      |
+| `$PROJECT`   | Provided with prompt         | Art Lib repository (this plan). |
 
 ## Summary
 
@@ -53,17 +52,18 @@ Create `@art-lib/operations` with subpath modules `/model` and `/log`, extractin
 
 ### Knowledge
 
-::READ `$ART_LIB/knowledge/index.md` (Model) — Package layout, publishing, and execution model. Relevant for Planning Work Item.
+::READ `$PROJECT/knowledge/design/operations.md` (Design) — Operation record contract and Operations Log semantics. Relevant for Planning Work Item.
+::READ `$PROJECT/knowledge/index.md` (Model) — Package layout, publishing, and execution model. Relevant for Planning Work Item.
 
 ## Scope
 
-Create `$ART_LIB/libs/operations` exposing two subpath modules — `/model` (operation types and factories; operations conform to the `Message` interface of `@art-lib/logger`) and `/log` (append-only operations log, created with the logger and forwarding every operation to it) — with tests, package records, and docs mirroring `libs/fs-records` conventions. Adoption refactors in `@art-work/cli` and `@art-md/bin` are out of scope.
+Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (operation types and factories; operations conform to the `Message` interface of `@art-lib/logger`) and `/log` (append-only operations log, created with the logger and forwarding every operation to it) — with tests, package records, and docs mirroring `libs/fs-records` conventions. Adoption refactors in `@art-work/cli` and `@art-md/bin` are out of scope.
 
 ## Work
 
 ### Next
 
-- Write instructions for the three `PLANNING` iterations, then delegate Iteration: Scaffold Operations Package. Sequencing: Iteration: Implement Operations Log runs after Plan: Add Logger Package has landed the `Message` interface.
+- Planning complete: all six iterations are `READY` with instructions. Delegate Iteration: Scaffold Operations Package (after Logger's package exists), Iteration: Implement Operations Model, Iteration: Implement Operations Log (after Logger's `Message` lands), Iteration: Apply Noodlestan Conventions (`MANUAL` commit), Iteration: Update Knowledge, then Iteration: Integrate in Consumer. Config and Logger may proceed independently.
 
 ### Blockers
 
@@ -86,7 +86,7 @@ npm ci # to install dependencies.
 npm run ci # to verify build is green before starting
 ```
 
-If any of these fail, resolve the issue before proceeding with implementation. Do NOT run `npm install` inside `$ART_LIB` (the package directory) — a local `node_modules` there shadows the monorepo resolution and breaks the build.
+If any of these fail, resolve the issue before proceeding with implementation. Do NOT run `npm install` inside `$PROJECT` (the package directory) — a local `node_modules` there shadows the monorepo resolution and breaks the build.
 
 ### Writing Commit Message
 
@@ -102,7 +102,7 @@ If any of these fail, resolve the issue before proceeding with implementation. D
 
 **Purpose:** Confirms that the work item has been completed and satisfies its intended outcome. Operation of Workflow: Executing Work, defined in `$DOMAINS/work/workflows/executing-work/ops/verifying-completion.art`.
 
-**Instructions:** (From `$ART_LIB/_guide.md`)
+**Instructions:** (From `$PROJECT/_guide.md`)
 
 Run from the package directory:
 
@@ -119,27 +119,30 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Items:
 
-| Iteration / Instructions               | Status     |
-| -------------------------------------- | ---------- |
-| Iteration: Scaffold Operations Package | `PLANNING` |
-| Iteration: Implement Operations Model  | `PLANNING` |
-| Iteration: Implement Operations Log    | `PLANNING` |
+| Iteration / Instructions                | Status  |
+| --------------------------------------- | ------- |
+| Iteration: Scaffold Operations Package  | `READY` |
+| Iteration: Implement Operations Model   | `READY` |
+| Iteration: Implement Operations Log     | `READY` |
+| Iteration: Apply Noodlestan Conventions | `READY` |
+| Iteration: Update Knowledge             | `READY` |
+| Iteration: Integrate in Consumer        | `READY` |
 
 ### Iteration: Scaffold Operations Package
 
 **Id:** `scaffold-operations-package`
 
-**Status:** `PLANNING`
+**Status:** `READY`
 
 **Purpose:** Create the `operations` package skeleton with subpath exports before adding modules.
 
-**Description:** Scaffold `$ART_LIB/libs/operations` mirroring `libs/fs-records` conventions: `package.json` with `exports` for `.`, `./model`, and `./log`; tsconfig; vitest config; npm scripts; `_guide.md`; `_records/package.art`; empty module directories with `index.ts` entry points.
+**Description:** Scaffold `$PROJECT/libs/operations` mirroring `libs/fs-records` conventions: `package.json` with `exports` for `.`, `./model`, and `./log`; tsconfig; vitest config; npm scripts; `_guide.md`; `_records/package.art`; empty module directories with `index.ts` entry points.
 
 **Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
 
 **Changes:**
 
-In `$ART_LIB/libs/operations`
+In `$PROJECT/libs/operations`
 
 - Create `package.json` — name `@art-lib/operations`, exports map with `.`, `./model`, `./log` subpaths, dependency `@art-lib/logger`, scripts mirroring `libs/fs-records`.
 - Create `tsconfig.json` and vitest config extending the monorepo configs.
@@ -147,15 +150,37 @@ In `$ART_LIB/libs/operations`
 - Create `_guide.md` describing the package, subpath modules, and operating instructions.
 - Create `_records/package.art` mirroring `libs/fs-records/_records`.
 
+**Instructions:**
+
+::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
+
+**GATE — do not start if the gate has not lifted:** this iteration requires `@art-lib/logger` to exist — Plan: Add Logger Package, Iteration: Scaffold Logger Package must be `DONE`. If `$PROJECT/libs/logger` is missing, REPORT A BLOCKER with "logger package not scaffolded yet" and STOP.
+
+Execute the Changes listed above, mirroring `libs/fs-records` conventions.
+
+Before starting:
+
+- Run `npm ci` from the `$WORKSPACE` root.
+
+Validate that:
+
+- `package.json` carries the name `@art-lib/operations`, the root export `./src/index.ts`, and dependency `@art-lib/logger`.
+- No `node_modules` directory is created inside `$PROJECT/libs/operations`.
+
+After executing:
+
+- Execute the **Verifying Completion** instructions from the Operating Instructions section, from `$PROJECT/libs/operations/`.
+- Commit `scaffold-operations` with the blueprint message below.
+
 **Dependencies:**
 
 - Plan: Add Logger Package, Iteration: Scaffold Logger Package — the manifest depends on `@art-lib/logger`.
 
 #### Commits:
 
-| ID                    | Repository / Checkout / Branch    | Policy       | Hash    | Status        |
-| --------------------- | --------------------------------- | ------------ | ------- | ------------- |
-| `scaffold-operations` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` | `(TBD)` | `PLACEHOLDER` |
+| ID                    | Repository / Checkout / Branch | Policy       | Hash    | Status     |
+| --------------------- | ------------------------------ | ------------ | ------- | ---------- |
+| `scaffold-operations` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
 
 ##### Commit: `scaffold-operations`
 
@@ -172,7 +197,7 @@ scaffold(operations): Scaffold package with subpath exports.
 
 **Id:** `implement-operations-model`
 
-**Status:** `PLANNING`
+**Status:** `READY`
 
 **Purpose:** Add the pure operation outcome model and factories shared by all CLIs.
 
@@ -180,14 +205,17 @@ scaffold(operations): Scaffold package with subpath exports.
 
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
+**Instructions:** `./instructions/implement-operations-model.md`
+
 **Changes:**
 
-In `$ART_LIB/libs/operations/src/model/`
+In `$PROJECT/libs/operations/src/model/`
 
 - `types.ts` — `OperationOutcome`, `OperationBase { operation, ts, finishedTs?, outcome, message(), timing() }`, `OperationPending` (adds `data?`), `OperationSuccess`, `OperationFailure` (adds `error`, `errorSerialized()`).
 - `createGenericOperation.ts` — `createGenericOperation(operation, data?): OperationPending`.
 - `createOperationSuccess.ts` — `createOperationSuccess(pending, message?): OperationSuccess`.
 - `createOperationFailure.ts` — `createOperationFailure(pending, error, options?: { label?: string }): OperationFailure`.
+- `types.ts` conformance members — `level` (derived from the outcome: pending → `debug`, success → `info`, failure → `error`) and `text()` (aliases `message()`) on `OperationBase`, so operations satisfy `Message` of `@art-lib/logger` structurally.
 - `types.test.ts` / factory tests — outcomes, timing, label application.
 - Update `src/index.ts` and `src/model/index.ts` exports.
 
@@ -197,9 +225,9 @@ In `$ART_LIB/libs/operations/src/model/`
 
 #### Commits:
 
-| ID                     | Repository / Checkout / Branch    | Policy       | Hash    | Status        |
-| ---------------------- | --------------------------------- | ------------ | ------- | ------------- |
-| `add-operations-model` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` | `(TBD)` | `PLACEHOLDER` |
+| ID                     | Repository / Checkout / Branch | Policy       | Hash    | Status     |
+| ---------------------- | ------------------------------ | ------------ | ------- | ---------- |
+| `add-operations-model` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
 
 ##### Commit: `add-operations-model`
 
@@ -216,7 +244,7 @@ build(operations): Add operation model and factories.
 
 **Id:** `implement-operations-log`
 
-**Status:** `PLANNING`
+**Status:** `READY`
 
 **Purpose:** Add the append-only operations log, created with the logger and forwarding every operation to it.
 
@@ -224,9 +252,11 @@ build(operations): Add operation model and factories.
 
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
+**Instructions:** `./instructions/implement-operations-log.md`
+
 **Changes:**
 
-In `$ART_LIB/libs/operations/src/log/`
+In `$PROJECT/libs/operations/src/log/`
 
 - `types.ts` — `OperationsLog` interface.
 - `createOperationsLog.ts` — `createOperationsLog(logger, options?): OperationsLog`; forwards every operation to `logger.log`; stores finished ops only; `since`/`latest` query semantics.
@@ -240,9 +270,9 @@ In `$ART_LIB/libs/operations/src/log/`
 
 #### Commits:
 
-| ID                   | Repository / Checkout / Branch    | Policy       | Hash    | Status        |
-| -------------------- | --------------------------------- | ------------ | ------- | ------------- |
-| `add-operations-log` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` | `(TBD)` | `PLACEHOLDER` |
+| ID                   | Repository / Checkout / Branch | Policy       | Hash    | Status     |
+| -------------------- | ------------------------------ | ------------ | ------- | ---------- |
+| `add-operations-log` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
 
 ##### Commit: `add-operations-log`
 
@@ -255,18 +285,205 @@ build(operations): Add operations log module.
 - Store finished operations only; cover `since` and `latest` queries with tests.
 ```
 
+### Iteration: Apply Noodlestan Conventions
+
+**Id:** `apply-noodlestan-conventions`
+
+**Status:** `READY`
+
+**Purpose:** Align `libs/operations` with the Noodlestan conventions adopted in this workspace.
+
+**Description:** Audit the package against the conventions declared in `$PROJECT/_guide.md` (TypeScript, unit tests) using the `manage-conventions` skill, install what is missing, and resolve the findings — without changing the package behaviour. Commit as `style(operations): Apply Noodlestan conventions.`
+
+**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+
+**Changes:**
+
+In `$PROJECT/libs/operations`
+
+- Discover, install, and audit the conventions applicable to the package with the `manage-conventions` skill.
+- Resolve findings: package scripts, tsconfig, lint/test wiring, and convention-mandated files.
+- Declare newly installed conventions in `$PROJECT/_guide.md` under `## Conventions`.
+
+**Instructions:**
+
+::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
+
+Execute the Changes listed above, keeping the package behaviour identical.
+
+Before starting:
+
+- Run `npm ci` from the `$WORKSPACE` root.
+
+Validate that:
+
+- Every convention that applies to the package is installed and its findings are resolved.
+- `npm run ci` passes from the `$WORKSPACE` root.
+
+After executing:
+
+- Execute the **Verifying Completion** instructions from the Operating Instructions section, from `$PROJECT/libs/operations/`.
+- The commit `apply-conventions-operations` has policy `MANUAL` — stage the changes, report back with the proposed commit message; do not commit.
+
+**Dependencies:**
+
+- Iteration: Implement Operations Log.
+
+#### Commits:
+
+| ID                             | Repository / Checkout / Branch | Policy   | Hash    | Status     |
+| ------------------------------ | ------------------------------ | -------- | ------- | ---------- |
+| `apply-conventions-operations` | Art Lib / `$PROJECT` / `main`  | `MANUAL` | `(TBD)` | `AUTHORED` |
+
+##### Commit: `apply-conventions-operations`
+
+**Message:**
+
+```text
+style(operations): Apply Noodlestan conventions.
+
+- Adopt the conventions that apply to the package and resolve audit findings.
+```
+
+### Iteration: Update Knowledge
+
+**Id:** `update-knowledge`
+
+**Status:** `READY`
+
+**Purpose:** Publish the package knowledge base and wire `@art-lib/operations` into the repository artefacts.
+
+**Description:** Add a consumer-facing README and a package knowledge base, then update the repository knowledge, project record, and guide to list the package and link its knowledge. Commit as `docs(operations): Add package knowledge base and README usage.`
+
+**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+
+**Changes:**
+
+- `$PROJECT/libs/operations/README.md` — consumer-facing `## Usage` following the pattern of `$WORKSPACE/checkouts/workspace-tooling/cli/esbuild-cli/README.md`: what it is, install, configure, example, options.
+- `$PROJECT/libs/operations/knowledge/` — package knowledge base following `$WORKSPACE/checkouts/art-md/cli/bin/knowledge`: at least `index.md`, `overview.md`, and `design/operations.md`; add `adr/` records where decisions exist.
+- `$PROJECT/libs/operations/_guide.md` — reference the local knowledge base (`knowledge/index.md`).
+- `$PROJECT/knowledge/components.md` — move the Operations entry to `IMPLEMENTED` and link its package knowledge.
+- `$PROJECT/knowledge/index.md` — add a Package Knowledge References row linking `libs/operations/knowledge/index.md` (see `$WORKSPACE/checkouts/art-md/knowledge/index.md`).
+- `$PROJECT/_records/project.art` — add `- Package: Art Lib Operations` to Resources.
+- `$PROJECT/_guide.md` — list the package under the repository layout and its knowledge base under Knowledge References.
+- Keep `$PROJECT/knowledge/design/operations.md` as the repository-level design record.
+
+**Instructions:**
+
+::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
+
+Execute the Changes listed above.
+
+Before starting:
+
+- Run `npm ci` from the `$WORKSPACE` root.
+
+Validate that:
+
+- The package knowledge links resolve and the README `## Usage` is self-sufficient for a new consumer.
+- Every repository reference lists the package: `knowledge/index.md`, `knowledge/components.md`, `_records/project.art`, `_guide.md`.
+
+After executing:
+
+- Execute the **Verifying Completion** instructions from the Operating Instructions section, from `$PROJECT/libs/operations/`.
+- Commit `update-knowledge-operations` with the blueprint message below.
+
+**Dependencies:**
+
+- Iteration: Apply Noodlestan Conventions.
+
+#### Commits:
+
+| ID                            | Repository / Checkout / Branch | Policy       | Hash    | Status     |
+| ----------------------------- | ------------------------------ | ------------ | ------- | ---------- |
+| `update-knowledge-operations` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+
+##### Commit: `update-knowledge-operations`
+
+**Message:**
+
+```text
+docs(operations): Add package knowledge base and README usage.
+
+- Add the package knowledge base, a consumer-facing README, and repository references.
+- Link the package knowledge from the repository knowledge index.
+```
+
+### Iteration: Integrate in Consumer
+
+**Id:** `integrate-in-consumer`
+
+**Status:** `READY`
+
+**Purpose:** Adopt `@art-lib/operations` in the Art Work CLI and retire its duplicated implementation.
+
+**Description:** Refactor `$WORKSPACE/checkouts/art-work/cli/work` to consume `@art-lib/operations`, keeping CLI-specific conventions on the CLI side. Commit in the Art Work repository as `refactor(work): Adopt @art-lib/operations in the Work CLI.`
+
+**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+
+**Changes:**
+
+In `$WORKSPACE/checkouts/art-work` (Art Work repository)
+
+- `cli/work/package.json` — declare `@art-lib/operations` the way `@art-lib/fs-records` is declared.
+- `cli/work/src/private/operations/` — replace `types.ts`, `createGenericOperation.ts`, `createOperationSuccess.ts`, and `createOperationFailure.ts` with the `@art-lib/operations` model; keep the command-specific builders under `src/private/commands/operations/`.
+- `cli/work/src/private/log/createOperationsLog.ts` — replace with `createOperationsLog` from `@art-lib/operations/log`.
+- Update callers and test helpers; keep the operations output identical.
+
+**Instructions:**
+
+::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
+
+**GATE — do not start if the gate has not lifted:** this iteration requires the whole `@art-lib/operations` plan to be `DONE`, including the `MANUAL` conventions commit. If `$PROJECT/libs/operations` does not expose the landed API, REPORT A BLOCKER with "operations package not landed yet" and STOP.
+
+Execute the Changes listed above, keeping the CLI behaviour identical.
+
+Before starting:
+
+- Run `npm ci` from `$WORKSPACE/checkouts/art-work`.
+
+Validate that:
+
+- `npm run ci` passes from `$WORKSPACE/checkouts/art-work/cli/work`.
+- The CLI behaviour is unchanged: the same inputs produce the same outputs.
+
+After executing:
+
+- Commit `integrate-operations-in-consumer` in the Art Work repository with the blueprint message below.
+
+**Dependencies:**
+
+- Iteration: Update Knowledge.
+
+#### Commits:
+
+| ID                                 | Repository / Checkout / Branch                      | Policy       | Hash    | Status     |
+| ---------------------------------- | --------------------------------------------------- | ------------ | ------- | ---------- |
+| `integrate-operations-in-consumer` | Art Work / `$WORKSPACE/checkouts/art-work` / `main` | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+
+##### Commit: `integrate-operations-in-consumer`
+
+**Message:**
+
+```text
+refactor(work): Adopt @art-lib/operations in the Work CLI.
+
+- Replace the local operations model, stores, and log with @art-lib/operations.
+- Keep CLI behaviour and its test suite green.
+```
+
 ---
 
 ## Coordination
 
 ### Not In Scope
 
-- **Adoption refactors in `@art-work/cli` and `@art-md/bin`** are out of scope — each consumer migrates in its own project after this package publishes.
+- **Consumer adoption beyond Art Work** — `@art-work/cli` is the first consumer (Iteration: Integrate in Consumer); `@art-md/bin` migrates in its own project after this package publishes.
 - **`cli-command-runner`, `cli-test-helpers`, `cli-present`** are rejected per the milestone decision; revisit triggers recorded as milestone follow ups.
 
 ### Evidence
 
-- `@art-lib/operations` builds, lints, and tests green from `$ART_LIB/libs/operations`; both subpaths resolve via the exports map.
+- `@art-lib/operations` builds, lints, and tests green from `$PROJECT/libs/operations`; both subpaths resolve via the exports map.
 
 ### Findings
 
@@ -286,7 +503,7 @@ build(operations): Add operations log module.
 
 ### Follow Ups
 
-- Consumers (`@art-work/cli`, `@art-md/bin`) adopt the package in their own milestones.
+- `@art-work/cli` adoption is planned here (Iteration: Integrate in Consumer); `@art-md/bin` migrates in its own project.
 - Revisit `cli-command-runner` when a third CLI exists; dedup temp-dir test helpers as a later chore (milestone follow ups).
 
 ### Feedback
