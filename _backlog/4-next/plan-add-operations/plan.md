@@ -135,6 +135,8 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 **Description:** Scaffold `$ART_LIB/libs/operations` mirroring `libs/fs-records` conventions: `package.json` with `exports` for `.`, `./model`, and `./log`; tsconfig; vitest config; npm scripts; `_guide.md`; `_records/package.art`; empty module directories with `index.ts` entry points.
 
+**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+
 **Changes:**
 
 In `$ART_LIB/libs/operations`
@@ -147,13 +149,13 @@ In `$ART_LIB/libs/operations`
 
 **Dependencies:**
 
-- None.
+- Plan: Add Logger Package, Iteration: Scaffold Logger Package — the manifest depends on `@art-lib/logger`.
 
 #### Commits:
 
-| ID                    | Repository / Checkout / Branch    | Policy       | Hash | Status     |
-| --------------------- | --------------------------------- | ------------ | ---- | ---------- |
-| `scaffold-operations` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` |      | `PLANNING` |
+| ID                    | Repository / Checkout / Branch    | Policy       | Hash    | Status        |
+| --------------------- | --------------------------------- | ------------ | ------- | ------------- |
+| `scaffold-operations` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` | `(TBD)` | `PLACEHOLDER` |
 
 ##### Commit: `scaffold-operations`
 
@@ -161,6 +163,9 @@ In `$ART_LIB/libs/operations`
 
 ```text
 scaffold(operations): Scaffold package with subpath exports.
+
+- Create the manifest exporting `.`, `./model`, and `./log` with the `@art-lib/logger` dependency.
+- Add `_guide.md`, `_records/package.art`, and placeholder module entry points.
 ```
 
 ### Iteration: Implement Operations Model
@@ -172,6 +177,8 @@ scaffold(operations): Scaffold package with subpath exports.
 **Purpose:** Add the pure operation outcome model and factories shared by all CLIs.
 
 **Description:** Implement `src/model/` with `OperationOutcome`, `OperationBase`, `OperationPending`, `OperationSuccess`, `OperationFailure`, `createGenericOperation()`, `createOperationSuccess()`, and `createOperationFailure(pending, error, options?)` supporting an optional `{ label }` (replaces Art Work's hardcoded `errorLabels` map). Export from `src/model/index.ts` and the root. Unit tests.
+
+**Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
 **Changes:**
 
@@ -186,13 +193,13 @@ In `$ART_LIB/libs/operations/src/model/`
 
 **Dependencies:**
 
-- Iteration: Scaffold CLI Operations Package.
+- Iteration: Scaffold Operations Package.
 
 #### Commits:
 
-| ID                     | Repository / Checkout / Branch    | Policy       | Hash | Status     |
-| ---------------------- | --------------------------------- | ------------ | ---- | ---------- |
-| `add-operations-model` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` |      | `PLANNING` |
+| ID                     | Repository / Checkout / Branch    | Policy       | Hash    | Status        |
+| ---------------------- | --------------------------------- | ------------ | ------- | ------------- |
+| `add-operations-model` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` | `(TBD)` | `PLACEHOLDER` |
 
 ##### Commit: `add-operations-model`
 
@@ -200,6 +207,9 @@ In `$ART_LIB/libs/operations/src/model/`
 
 ```text
 build(operations): Add operation model and factories.
+
+- Add outcome types and pending/success/failure factories with optional error labels.
+- Export the pure model from the `./model` subpath and the package root.
 ```
 
 ### Iteration: Implement Operations Log
@@ -211,6 +221,8 @@ build(operations): Add operation model and factories.
 **Purpose:** Add the append-only operations log, created with the logger and forwarding every operation to it.
 
 **Description:** Implement `src/log/` with `OperationsLog { log(op), all(), since(ts), latest(n) }` and `createOperationsLog(logger, options?)`. Every recorded operation is forwarded to `logger.log(...)`; pending operations pass through to the logger but only finished operations are stored. Operations conform to the `Message` interface of `@art-lib/logger` (level derived from the outcome). Export and unit test.
+
+**Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
 **Changes:**
 
@@ -228,9 +240,9 @@ In `$ART_LIB/libs/operations/src/log/`
 
 #### Commits:
 
-| ID                   | Repository / Checkout / Branch    | Policy       | Hash | Status     |
-| -------------------- | --------------------------------- | ------------ | ---- | ---------- |
-| `add-operations-log` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` |      | `PLANNING` |
+| ID                   | Repository / Checkout / Branch    | Policy       | Hash    | Status        |
+| -------------------- | --------------------------------- | ------------ | ------- | ------------- |
+| `add-operations-log` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` | `(TBD)` | `PLACEHOLDER` |
 
 ##### Commit: `add-operations-log`
 
@@ -238,6 +250,9 @@ In `$ART_LIB/libs/operations/src/log/`
 
 ```text
 build(operations): Add operations log module.
+
+- Add `createOperationsLog(logger)` forwarding every operation to the logger.
+- Store finished operations only; cover `since` and `latest` queries with tests.
 ```
 
 ---

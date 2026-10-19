@@ -2,7 +2,7 @@
 
 **Purpose:** Describe what a CLI implementor imports from `@art-lib/config` — the compile/cache/import mechanism — extracted from the Art Work CLI config implementation and its config-cache plan.
 
-**Planned package:** `@art-lib/config` — `_backlog/6-plan/plan-add-config/plan.md`
+**Planned package:** `@art-lib/config` — `_backlog/4-next/plan-add-config/plan.md`
 
 ## Positioning
 

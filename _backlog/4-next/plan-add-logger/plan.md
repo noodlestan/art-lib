@@ -136,6 +136,8 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 **Description:** Scaffold `$ART_LIB/libs/logger` mirroring `libs/fs-records` conventions: `package.json` (root export; no internal dependencies — the logger knows only messages), tsconfig, vitest config, npm scripts, `_guide.md`, `_records/package.art`, `src/index.ts` placeholder.
 
+**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+
 **Changes:**
 
 In `$ART_LIB/libs/logger`
@@ -152,9 +154,9 @@ In `$ART_LIB/libs/logger`
 
 #### Commits:
 
-| ID                | Repository / Checkout / Branch    | Policy       | Hash | Status     |
-| ----------------- | --------------------------------- | ------------ | ---- | ---------- |
-| `scaffold-logger` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` |      | `PLANNING` |
+| ID                | Repository / Checkout / Branch    | Policy       | Hash    | Status        |
+| ----------------- | --------------------------------- | ------------ | ------- | ------------- |
+| `scaffold-logger` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` | `(TBD)` | `PLACEHOLDER` |
 
 ##### Commit: `scaffold-logger`
 
@@ -162,6 +164,9 @@ In `$ART_LIB/libs/logger`
 
 ```text
 scaffold(logger): Scaffold package skeleton.
+
+- Create manifest, tsconfig, vitest config, and scripts mirroring `libs/fs-records`.
+- Add `_guide.md` and `_records/package.art`.
 ```
 
 ### Iteration: Implement Buffering Logger
@@ -173,6 +178,8 @@ scaffold(logger): Scaffold package skeleton.
 **Purpose:** Implement the message model and the buffering logger with output modes, injected formatter, and injectable writer.
 
 **Description:** Implement `src/` with the message model — `Message { level, text(), ts }`, `createMessage(options)`, `createDebugMessage`, `createInfoMessage`, `createWarningMessage`, `createErrorMessage(error: MaybeError, message?)` — and the logger — `LoggerAPI { log(message), setOutputMode(mode) }`, `LogFormatter { format(message): string[] }`, `LogWriter { write(lines): void }`, `createLogger(options?: { formatter?, writer? })`. Buffer messages until the mode is set: `quiet` discards the buffer and then logs only `warning`/`error`; `verbose` flushes and logs everything. Default writer wraps `console.error`; formatting delegates to the injected formatter. The logger never imports operations — they conform to `Message` structurally. Unit tests.
+
+**Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
 **Changes:**
 
@@ -191,9 +198,9 @@ In `$ART_LIB/libs/logger/src/`
 
 #### Commits:
 
-| ID                     | Repository / Checkout / Branch    | Policy       | Hash | Status     |
-| ---------------------- | --------------------------------- | ------------ | ---- | ---------- |
-| `add-buffering-logger` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` |      | `PLANNING` |
+| ID                     | Repository / Checkout / Branch    | Policy       | Hash    | Status        |
+| ---------------------- | --------------------------------- | ------------ | ------- | ------------- |
+| `add-buffering-logger` | Art Lib / `$ART_LIB` / `building` | `AUTONOMOUS` | `(TBD)` | `PLACEHOLDER` |
 
 ##### Commit: `add-buffering-logger`
 
@@ -201,6 +208,9 @@ In `$ART_LIB/libs/logger/src/`
 
 ```text
 build(logger): Add message model and buffering logger.
+
+- Add `Message` creators, `LoggerAPI`, injected formatter, and injectable writer.
+- Buffer messages until the output mode is set; cover `quiet`/`verbose` with tests.
 ```
 
 ---
