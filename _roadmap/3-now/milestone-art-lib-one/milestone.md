@@ -105,15 +105,15 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ## Items:
 
-| Phase | Resource / Record                                                                                             | Status     |
-| ----- | ------------------------------------------------------------------------------------------------------------- | ---------- |
-| 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`     |
-| 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`     |
-| 1     | Plan: Add FS Records Adapter `_backlog/3-now/plan-add-fs-records-adapter/plan.md`                             | `DONE`     |
-| 1     | Plan: Add FS Records Knowledge `_backlog/4-next/plan-add-fs-records-knowledge/plan.md`                        | `READY`    |
-| 1     | Plan: Add Operations Package `_backlog/6-plan/plan-add-operations/plan.md`                                    | `PLANNING` |
-| 1     | Plan: Add Logger Package `_backlog/6-plan/plan-add-logger/plan.md`                                            | `PLANNING` |
-| 1     | Plan: Add Config Package `_backlog/6-plan/plan-add-config/plan.md`                                            | `PLANNING` |
+| Phase | Resource / Record                                                                                             | Status  |
+| ----- | ------------------------------------------------------------------------------------------------------------- | ------- |
+| 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`  |
+| 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`  |
+| 1     | Plan: Add FS Records Adapter `_backlog/3-now/plan-add-fs-records-adapter/plan.md`                             | `DONE`  |
+| 1     | Plan: Add FS Records Knowledge `_backlog/4-next/plan-add-fs-records-knowledge/plan.md`                        | `READY` |
+| 1     | Plan: Add Operations Package `_backlog/4-next/plan-add-operations/plan.md`                                    | `READY` |
+| 1     | Plan: Add Logger Package `_backlog/4-next/plan-add-logger/plan.md`                                            | `READY` |
+| 1     | Plan: Add Config Package `_backlog/4-next/plan-add-config/plan.md`                                            | `READY` |
 
 ---
 
@@ -121,7 +121,7 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ### Next
 
-- **Plan: Add FS Records Knowledge** is `READY` — delegate its three iterations (update README, verify guide, add knowledge directory). Then write instructions for **Plan: Add Logger Package**, then **Plan: Add Operations Package** (needs the logger `Message` interface). **Plan: Add Config Package** is independent — can run anytime, in parallel.
+- **Plans: Add Config Package, Add Logger Package, and Add Operations Package** are `READY` with complete instructions and commit blueprints. Delegate each plan's scaffold first, then its implementation iterations; each plan closes with Apply Noodlestan Conventions (`MANUAL` commit), Update Knowledge, and Integrate in Consumer. Logger lands its `Message` interface before Operations' log iteration; Config is independent. **Plan: Add FS Records Knowledge** remains `READY` — delegate its three iterations (update README, verify guide, add knowledge directory).
 
 ### Blockers
 
