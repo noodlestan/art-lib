@@ -105,15 +105,15 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ## Items:
 
-| Phase | Resource / Record                                                                                             | Status  |
-| ----- | ------------------------------------------------------------------------------------------------------------- | ------- |
-| 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`  |
-| 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`  |
-| 1     | Plan: Add FS Records Adapter `_backlog/3-now/plan-add-fs-records-adapter/plan.md`                             | `DONE`  |
-| 1     | Plan: Add FS Records Knowledge `_backlog/4-next/plan-add-fs-records-knowledge/plan.md`                        | `READY` |
-| 1     | Plan: Add Operations Package `_backlog/4-next/plan-add-operations/plan.md`                                    | `READY` |
-| 1     | Plan: Add Logger Package `_backlog/4-next/plan-add-logger/plan.md`                                            | `READY` |
-| 1     | Plan: Add Config Package `_backlog/4-next/plan-add-config/plan.md`                                            | `READY` |
+| Phase | Resource / Record                                                                                             | Status     |
+| ----- | ------------------------------------------------------------------------------------------------------------- | ---------- |
+| 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`     |
+| 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`     |
+| 1     | Plan: Add FS Records Adapter `_backlog/3-now/plan-add-fs-records-adapter/plan.md`                             | `DONE`     |
+| 1     | Plan: Add FS Records Knowledge `_backlog/3-now/plan-add-fs-records-knowledge/plan.md`                         | `READY`    |
+| 1     | Plan: Add Config Package `_backlog/4-next/plan-add-config/plan.md`                                            | `READY`    |
+| 1     | Plan: Add Operations Package `_backlog/4-next/plan-add-operations/plan.md`                                    | `PLANNING` |
+| 1     | Plan: Add Logger Package `_backlog/4-next/plan-add-logger/plan.md`                                            | `PLANNING` |
 
 ---
 
@@ -121,11 +121,11 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ### Next
 
-- **Plans: Add Config Package, Add Logger Package, and Add Operations Package** are `READY` with complete instructions and commit blueprints. Delegate each plan's scaffold first, then its implementation iterations; each plan closes with Apply Noodlestan Conventions (`MANUAL` commit), Update Knowledge, and Integrate in Consumer. Logger lands its `Message` interface before Operations' log iteration; Config is independent. **Plan: Add FS Records Knowledge** remains `READY` — delegate its three iterations (update README, verify guide, add knowledge directory).
+- **Plan: Add Config Package** is `READY` with six prepared iterations. Delegate its scaffold first; proceed through loading, cache, conventions, and knowledge, then publish/install the package before consumer integration. **Plans: Add Logger Package and Add Operations Package** remain `PLANNING`; Logger must land its `Message` interface before Operations' log iteration. **Plan: Add FS Records Knowledge** remains `READY` — delegate its three iterations (update README, verify guide, add knowledge directory).
 
 ### Blockers
 
-- None. The **`@art-js/records` hold on Plan: Add FS Records Adapter was lifted 2026-10-13** — `ART_JS` (producer) and `ART_WORK` (consumer) both confirmed the adapter imports nothing from `@art-js/records`; its only upstream dependency is `ArtContentSource` from the published `@art-md/primitives@0.0.3`. All three iterations are `READY` and their instruction files are current. Residual note, tracked in the plan's Follow Ups: the agreed symbol names (`discoverRecordFiles`, `FSRecordsPattern`, `FSRecordFile.basePath`) land with iteration 1 and are **not** in the published `0.0.1` — consumers verifying exports against `0.0.1` must expect the pre-rename names until then.
+- None. The FS Records Adapter plan is complete and its `0.0.2` release includes the agreed names. Config consumer integration is gated on the package implementation being complete and a consumable version being published.
 
 ---
 

@@ -14,35 +14,41 @@ RULE: If at any point you are instructed to **REPORT A BLOCKER** or you encounte
 
 ## How to Report Back to the Delegator
 
+This section describes how to report back to the delegator after completing the instruction.
+
 1. Summarise the current context, asking: are you reporting completion or a BLOCKER?
 2. Gather the evidence of changes made and outcomes achieved, or the blocker error details.
-3. Use the `render-template` skill with the `.agents/domains/plans/templates/instructions-report.tart` to render your report and write it next to this instruction file: `./instructions/implement-config-loading__report.md`.
+3. Use the `render-template` skill with the `.agents/domains/plans/templates/instructions-report.tart` to render your report and write it next to this instruction file: `plan-add-config/instructions/implement-config-loading__report.md`. No separate delegation record is created.
 4. If your prompt included a `DIRECTIVE FEEDBACK:` include the feedback sections in the rendered report.
 5. Generate the response and send it back to the delegator.
-6. Keep the response terse: happy face + up to 3 bullet points. The full trail lives in the report file; never repeat it in chat.
+6. Keep the response terse per the Working Agreements: happy face + up to 3 bullet points (done `implement-config-loading`, created `{artefacts}`, thumbs up). The full trail lives in the report file; never repeat it in chat.
 
 ## Path Variables
 
-| Variable     | Resolved Path             | Purpose                         |
-| ------------ | ------------------------- | ------------------------------- |
-| `$WORKSPACE` | Current working directory | Workspace root directory        |
-| `$PROJECT`   | Provided with prompt      | Art Lib repository (this plan). |
+| Variable     | Resolved Path             | Purpose                        |
+| ------------ | ------------------------- | ------------------------------ |
+| `$WORKSPACE` | Current working directory | Workspace root directory       |
+| `$PROJECT`   | Provided with Prompt      | Art Lib repository             |
+| `$PACKAGE`   | `$PROJECT/libs/config`    | The `config` package to modify |
 
 ## Working Agreements
 
-1. **This instructions file is self-contained.** Everything you need is here plus its mandatory reading — never rely on session memory or chat context.
-2. **Your report is mandatory.** The rendered report file carries the full trail; your chat response is only a pointer to it.
-3. **User interaction is minimal.** A happy face and up to 3 bullet points. If something goes horribly wrong, report the blocker instead of a summary.
+The plan workflow (see the entry point guide → Planning Workflow → Working Together) runs on three working agreements:
+
+1. **This instructions file is self-contained.** Everything you need is in this file plus its mandatory reading — never rely on session memory, chat context, or details relayed by the user.
+2. **Your report is mandatory.** The rendered report file carries the full trail: evidence, changes, verification results, blockers, feedback. Your chat response is only a pointer to it.
+3. **User interaction is minimal.** The user relays this instructions file to the delegator and expects a light confirmation: a happy face and up to 3 bullet points — done `implement-config-loading`, created `{artefacts}`, thumbs up. If something goes horribly wrong, report the blocker instead of a summary.
 
 ## Goals
 
-Implement the typed config loading pipeline of `@art-lib/config`: `loadConfigModule<T>(entryPath, options?)` orchestrating `compileConfig` (esbuild bundle-at-runtime) and `importConfigModule` (typed dynamic import). No cache reuse yet — the content-hash cache lands in the next iteration. Commit as `build(config): Add typed config loading with bundle-at-runtime.`
+Implement typed config authoring and esbuild bundle-at-runtime loading. `loadConfigModule<T>(entryPath, options?)` compiles a caller-supplied config entry with esbuild and imports the default export.
 
 ## Mandatory Reading
 
-- plan: `$PROJECT/_backlog/4-next/plan-add-config/plan.md` — this plan; the iteration Changes list the exact files.
-- design: `$PROJECT/knowledge/design/config.md` — behavioural contracts: default externals, temp-dir fallback, import semantics.
-- knowledge: `$PROJECT/knowledge/index.md` — package layout and publishing conventions.
+- `$PROJECT/_guide.md` — repository layout, records management, conventions, and operating instructions.
+- `$PROJECT/libs/fs-records/_guide.md` — package layout and conventions to mirror.
+- `$PROJECT/knowledge/components.md` — package components and planned packages.
+- `$PROJECT/knowledge/design/config.md` — API and behavioral contracts for config loading.
 
 - RULE: You MUST follow any links under `## Mandatory Reading` sections found in the listed files.
 - RULE: If you are unable to read a file linked under `## Mandatory Reading` you must stop and REPORT A BLOCKER.
@@ -53,31 +59,30 @@ Implement the typed config loading pipeline of `@art-lib/config`: `loadConfigMod
 
 ### Setting Up
 
+**Purpose:** Prepare the execution environment.
+
 **Instructions:** (From `$WORKSPACE/_guide.md`)
 
 Run from the `$WORKSPACE` root:
 
 ```bash
-npm ci
-npm run ci # verify build is green before starting
+npm ci # to install dependencies.
+npm run ci # to verify build is green before starting
 ```
 
-Do NOT run `npm install` inside `$PROJECT/libs/config` — a local `node_modules` there shadows the monorepo resolution and breaks the build.
-
-### Writing Commit Message
-
-**Instructions:** (From `$WORKSPACE/_guide.md`)
-
-1. Read commit message conventions from `$WORKSPACE/knowledge/conventions/writing-commit-message.art`.
-2. Write the commit message following the rules defined there.
+If either command fails, resolve the issue before implementation. Do NOT run `npm install` inside `$PROJECT/libs/config` — a local `node_modules` there shadows monorepo resolution and breaks the build.
 
 ### Verifying Completion
 
-**Instructions:** (From `$PROJECT/_guide.md`) — from `$PROJECT/libs/config/`:
+**Purpose:** Confirms that the work item has been completed and satisfies its intended outcome.
+
+**Instructions:** (From `$PROJECT/_guide.md`)
+
+Run from `$PROJECT/libs/config`:
 
 ```bash
-npm run lint:fix
-npm run lint
+npm run lint:fix # to fix formatting issues automatically
+npm run lint # to report other issues (prettier, eslint, tsc --noEmit)
 npm run build
 npm run test
 ```
@@ -88,30 +93,33 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Changes
 
-- Step 1 / 4 — Add config types in `types.ts`.
-- Step 2 / 4 — Implement `compileConfig`, `importConfigModule`, and `loadConfigModule`.
-- Step 3 / 4 — Add unit tests and export from `src/index.ts`.
-- Step 4 / 4 — Commit `add-config-loading`.
+This iteration implements typed config loading with esbuild bundle-at-runtime. No cache reuse yet (next iteration).
+
+- Step 1 / 7 — Create `types.ts`
+- Step 2 / 7 — Create `compileConfig.ts`
+- Step 3 / 7 — Create `importConfigModule.ts`
+- Step 4 / 7 — Create `loadConfigModule.ts`
+- Step 5 / 7 — Create `loadConfigModule.test.ts`
+- Step 6 / 7 — Update `src/index.ts` exports
+- Step 7 / 7 — Commit `add-config-loading`
 
 ## Steps
 
-### Step `1 / 4` — Add config types
+### Step `1 / 7` — Create `types.ts`
 
-**`$PROJECT/libs/config/src/types.ts`**
+Create `$PACKAGE/src/types.ts`:
 
 ```ts
-import type { Metafile } from 'esbuild';
-
 export interface LoadConfigOptions {
-  cacheDir?: string; // where bundle + metadata live; omit to compile without caching
-  cache?: boolean; // false = bypass reuse, rebuild, refresh (default true)
-  baseDir?: string; // base for recording input paths relatively (default: entry dir)
-  externals?: string[]; // extra esbuild externals, merged over package defaults
+  cacheDir?: string;
+  cache?: boolean;
+  baseDir?: string;
+  externals?: string[];
 }
 
 export interface CompiledConfig {
-  bundlePath: string; // where the compiled bundle was written
-  metafile: Metafile; // esbuild metafile (inputs are hashed by the cache iteration)
+  bundlePath: string;
+  metafile?: esbuild.Metafile;
 }
 
 export interface ConfigCacheInput {
@@ -122,66 +130,81 @@ export interface ConfigCacheInput {
 export interface ConfigCacheMeta {
   version: number;
   compiledAt: string;
-  entry: string;
+  manifest: string;
   inputs: ConfigCacheInput[];
 }
 ```
 
-- `ConfigCacheInput` and `ConfigCacheMeta` are declared here for the cache iteration that follows; export them now, do not write metadata files yet beyond what `compileConfig` produces when `cacheDir` is given (step 2).
+Expected outcome: type declarations for the config package.
 
-### Step `2 / 4` — Implement the loading modules
+### Step `2 / 7` — Create `compileConfig.ts`
 
-**`$PROJECT/libs/config/src/compileConfig.ts`**
+Create `$PACKAGE/src/compileConfig.ts` with esbuild bundle-at-runtime:
 
-```ts
-export async function compileConfig(
-  entryPath: string,
-  options?: LoadConfigOptions,
-): Promise<CompiledConfig>;
-```
+- `compileConfig(entryPath, options)` — esbuild `bundle-at-runtime` with `metafile: true`; externals = package defaults merged with caller `externals`.
+- Default externals: node builtins + `esbuild`.
+- When `cacheDir` is given, write bundle + metadata there.
+- Temp-dir fallback on write failure (graceful degradation).
+- Returns `CompiledConfig` with `bundlePath` and `metafile`.
 
-- Throw a clear error when `entryPath` does not exist: `Config entry not found: {entryPath}` — do not let esbuild produce the only signal.
-- Build with esbuild: `{ entryPoints: [entryPath], bundle: true, write: false, format: 'esm', platform: 'node', metafile: true, external: [...] }`.
-- Default externals are the node builtins (`builtinModules` from `node:module`) plus `'esbuild'`; `options.externals` only adds consumer entries over those defaults.
-- When `options.cacheDir` is given: write the bundle to `{cacheDir}/config.bundle.mjs`. When it is absent: write the bundle to a fresh temp directory (`os.tmpdir()`).
-- If writing to `cacheDir` fails (unwritable directory), degrade: emit a warning with `console.warn` and fall back to a temp-dir bundle. A cache write failure must never fail the run.
-- Return `{ bundlePath, metafile }`.
+Expected outcome: `compileConfig.ts` compiles a config entry to a bundle.
 
-**`$PROJECT/libs/config/src/importConfigModule.ts`**
+### Step `3 / 7` — Create `importConfigModule.ts`
 
-```ts
-export async function importConfigModule<T>(bundlePath: string): Promise<T>;
-```
+Create `$PACKAGE/src/importConfigModule.ts`:
 
-- `const mod = await import(pathToFileURL(bundlePath).href); return (mod as { default: T }).default;`
+- `importConfigModule<T>(bundlePath)` — dynamic import via `import(pathToFileURL(bundlePath))`; returns the default export as `T`.
 
-**`$PROJECT/libs/config/src/loadConfigModule.ts`**
+Expected outcome: `importConfigModule.ts` dynamically imports a compiled bundle.
+
+### Step `4 / 7` — Create `loadConfigModule.ts`
+
+Create `$PACKAGE/src/loadConfigModule.ts` orchestrating compile → import:
 
 ```ts
 export async function loadConfigModule<T>(
   entryPath: string,
   options?: LoadConfigOptions,
-): Promise<T>;
+): Promise<T> {
+  const compiled = await compileConfig(entryPath, options);
+  return importConfigModule<T>(compiled.bundlePath);
+}
 ```
 
-- Orchestrate: `compileConfig(entryPath, options)` → `importConfigModule<T>(compiled.bundlePath)`.
-- There is no cache reuse in this iteration — a later iteration inserts `findReusableBundle` between compile and import. Leave a single, obvious seam for it.
-- Apply `baseDir` defaulting here or in `compileConfig` consistently: when absent, default to the entry file's directory (`path.dirname(entryPath)`).
+Expected outcome: `loadConfigModule.ts` orchestrates compile → import.
 
-### Step `3 / 4` — Add unit tests and exports
+### Step `5 / 7` — Create `loadConfigModule.test.ts`
 
-**`$PROJECT/libs/config/src/loadConfigModule.test.ts`** (plus a small fixture config entry under the package's test fixtures, mirroring `libs/fs-records` test layout):
+Create `$PACKAGE/src/loadConfigModule.test.ts` with tests:
 
-- loads a fixture config entry from a caller-supplied path and returns its default export;
-- resolves imports that come from the consumer `node_modules` (the fixture imports one workspace dependency);
-- throws the clear `Config entry not found:` error when the entry is missing;
-- works without a `cacheDir` (temp-bundle path) and with a `cacheDir` (bundle written there).
+- loads a fixture config entry from a caller-supplied path
+- resolves imports from the consumer `node_modules`
+- propagates the compiler's actionable error when the entry is missing; do not add a consumer-specific fallback or messaging policy
+- works without a `cacheDir` (temp bundle)
 
-Update `$PROJECT/libs/config/src/index.ts` to export `loadConfigModule`, `compileConfig`, `importConfigModule`, and the types from step 1.
+Expected outcome: tests pass.
 
-Verify from `$PROJECT/libs/config/`: `npm run lint`, `npm run build`, `npm run test`.
+### Step `6 / 7` — Update `src/index.ts` exports
 
-### Step `4 / 4` — Commit `add-config-loading`
+Update `$PACKAGE/src/index.ts` to export:
+
+```ts
+export { loadConfigModule } from './loadConfigModule.js';
+export { compileConfig } from './compileConfig.js';
+export { importConfigModule } from './importConfigModule.js';
+export type {
+  LoadConfigOptions,
+  CompiledConfig,
+  ConfigCacheInput,
+  ConfigCacheMeta,
+} from './types.js';
+```
+
+Expected outcome: public surface exported.
+
+### Step `7 / 7` — Commit `add-config-loading`
+
+---
 
 #### Commit: `add-config-loading`
 
@@ -189,7 +212,7 @@ Verify from `$PROJECT/libs/config/`: `npm run lint`, `npm run build`, `npm run t
 
 **Message:**
 
-```text
+```
 build(config): Add typed config loading with bundle-at-runtime.
 
 - Add `compileConfig`, `importConfigModule`, and the `loadConfigModule` orchestrator.
@@ -200,10 +223,13 @@ build(config): Add typed config loading with bundle-at-runtime.
 
 ## Final Verification
 
-- Verify that the commit has been executed according to the commit's policy.
-- Verify `loadConfigModule` is the only orchestration surface and the compile→import seam is obvious for the cache iteration.
-- Verify `compileConfig` never fails on an unwritable `cacheDir` — it warns and falls back to a temp bundle.
-- Verify the default externals are node builtins + `esbuild`, merged with caller `externals`.
-- Verify no cache reuse logic exists yet (that is the next iteration).
+**Instructions:**
+
+- Verify that commits have been executed and pushed (or not pushed) according to the commit's policy.
+- Verify `@art-lib/config` builds, lints, and tests green from `$PACKAGE`.
+- Verify `loadConfigModule<T>(entryPath, options?)` compiles and imports a config entry.
+- Verify `compileConfig` uses esbuild bundle-at-runtime with `metafile: true`.
+- Verify `importConfigModule` returns the default export as `T`.
+- Verify all new modules are exported from `src/index.ts`.
 - Execute the **Verifying Completion** step as defined in the "Operating Instructions" section.
 - Report according to the "How to Report Back to the Delegator" instructions.

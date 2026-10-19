@@ -20,11 +20,12 @@
 
 ## Path Variables
 
-| Variable     | Resolved Path                | Purpose                         |
-| ------------ | ---------------------------- | ------------------------------- |
-| `$WORKSPACE` | Current working directory    | Workspace root directory        |
-| `$DOMAINS`   | `$WORKSPACE/.agents/domains` | Domain resources directory      |
-| `$PROJECT`   | Provided with prompt         | Art Lib repository (this plan). |
+| Variable     | Resolved Path                            | Purpose                                                   |
+| ------------ | ---------------------------------------- | --------------------------------------------------------- |
+| `$WORKSPACE` | Current working directory                | Workspace root directory                                  |
+| `$PROJECT`   | Provided with Prompt                     | Art Lib repository .                                      |
+| `$ART_WORK`  | `$WORKSPACE/checkouts/art-work-planning` | Art Work checkout for the consumer integration iteration. |
+| `$DOMAINS`   | `$WORKSPACE/.agents/domains`             | Domain resources directory                                |
 
 ## Summary
 
@@ -58,7 +59,7 @@ Create `@art-lib/config` with `loadConfigModule<T>(entryPath, options?)`: esbuil
 
 ## Scope
 
-Create `$PROJECT/libs/config` exposing `loadConfigModule`, the lower-level `compileConfig` / `findReusableBundle` / `importConfigModule` pieces, and the cache metadata types — with esbuild bundle-at-runtime compilation, a caller-supplied cache directory, and a bypass option — plus tests, package records, and docs mirroring `libs/fs-records` conventions. Config location, cache location, defaults, and schema stay with each consumer CLI.
+Create `$PROJECT/libs/config` exposing `loadConfigModule`, the lower-level `compileConfig` / `findReusableBundle` / `importConfigModule` pieces, and the cache metadata types — with esbuild bundle-at-runtime compilation, a caller-supplied cache directory, and a bypass option — plus tests, package records, and docs mirroring `libs/fs-records` conventions. Integrate the published package into the Art Work CLI at `$ART_WORK/cli/work`. Config location, cache location, defaults, and schema stay with each consumer CLI.
 
 ## Work
 
@@ -139,7 +140,9 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 **Description:** Scaffold `$PROJECT/libs/config` mirroring `libs/fs-records` conventions: `package.json` (root export; runtime dependency on `esbuild`), tsconfig, vitest config, npm scripts, `_guide.md`, `_records/package.art`, `src/index.ts` placeholder.
 
-**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+**Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
+
+**Instructions:** `./instructions/scaffold-config-package.md`
 
 **Changes:**
 
@@ -150,26 +153,6 @@ In `$PROJECT/libs/config`
 - Create `src/index.ts` as placeholder entry point.
 - Create `_guide.md` describing the package and operating instructions.
 - Create `_records/package.art` mirroring `libs/fs-records/_records`.
-
-**Instructions:**
-
-::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
-
-Execute the Changes listed above, mirroring `libs/fs-records` conventions.
-
-Before starting:
-
-- Run `npm ci` from the `$WORKSPACE` root.
-
-Validate that:
-
-- `package.json` carries the name `@art-lib/config`, the root export `./src/index.ts`, runtime dependency `esbuild`, and the standard scripts.
-- No `node_modules` directory is created inside `$PROJECT/libs/config`.
-
-After executing:
-
-- Execute the **Verifying Completion** instructions from the Operating Instructions section, from `$PROJECT/libs/config/`.
-- Commit `scaffold-config` with the blueprint message below.
 
 **Dependencies:**
 
@@ -198,13 +181,13 @@ scaffold(config): Scaffold package skeleton.
 
 **Status:** `READY`
 
-**Purpose:** Implement typed config authoring and esbuild bundle-at-runtime loading.
-
-**Description:** Implement `src/` with `loadConfigModule<T>(entryPath, options?)` and the pieces beneath it: `compileConfig(entryPath, options)` (esbuild `bundle-at-runtime` with `metafile: true`; externals = package defaults merged with caller `externals`), `importConfigModule<T>(bundlePath)` (dynamic import, default export). Without a `cacheDir`, compile to a temp `.mjs` and import; with one, write bundle + metadata there. Unit tests.
-
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
 **Instructions:** `./instructions/implement-config-loading.md`
+
+**Purpose:** Implement typed config authoring and esbuild bundle-at-runtime loading.
+
+**Description:** Implement `src/` with `loadConfigModule<T>(entryPath, options?)` and the pieces beneath it: `compileConfig(entryPath, options)` (esbuild `bundle-at-runtime` with `metafile: true`; externals = package defaults merged with caller `externals`), `importConfigModule<T>(bundlePath)` (dynamic import, default export). Without a `cacheDir`, compile to a temp `.mjs` and import; with one, write bundle + metadata there. Unit tests.
 
 **Changes:**
 
@@ -214,7 +197,7 @@ In `$PROJECT/libs/config/src/`
 - `compileConfig.ts` — esbuild bundle-at-runtime with default externals (node builtins + `esbuild`) merged with caller `externals`; writes bundle + metadata when `cacheDir` is given; temp-dir fallback on write failure.
 - `importConfigModule.ts` — `import(pathToFileURL(bundlePath))`; returns the default export as `T`.
 - `loadConfigModule.ts` — orchestrates compile-or-reuse (cache lands next iteration) → import.
-- `loadConfigModule.test.ts` — loads a fixture config entry from a caller-supplied path; resolves imports from the consumer `node_modules`; throws a clear error when the entry is missing; works without a `cacheDir` (temp bundle).
+- `loadConfigModule.test.ts` — loads a fixture config entry from a caller-supplied path; resolves imports from the consumer `node_modules`; propagates the compiler's actionable error when the entry is missing (without adding a consumer-specific fallback or messaging policy); works without a `cacheDir` (temp bundle).
 - Update `src/index.ts` exports.
 
 **Dependencies:**
@@ -311,6 +294,7 @@ Execute the Changes listed above, keeping the package behaviour identical.
 Before starting:
 
 - Run `npm ci` from the `$WORKSPACE` root.
+- Read `$PROJECT/knowledge/design/config.md`; keep the package behavior aligned with its contracts while applying conventions.
 
 Validate that:
 
@@ -321,6 +305,14 @@ After executing:
 
 - Execute the **Verifying Completion** instructions from the Operating Instructions section, from `$PROJECT/libs/config/`.
 - The commit `apply-conventions-config` has policy `MANUAL` — stage the changes, report back with the proposed commit message; do not commit.
+
+Proposed message:
+
+```text
+style(config): Apply Noodlestan conventions.
+
+- Adopt the conventions that apply to the package and resolve audit findings.
+```
 
 **Dependencies:**
 
@@ -357,10 +349,10 @@ style(config): Apply Noodlestan conventions.
 **Changes:**
 
 - `$PROJECT/libs/config/README.md` — consumer-facing `## Usage` following the pattern of `$WORKSPACE/checkouts/workspace-tooling/cli/esbuild-cli/README.md`: what it is, install, configure, example, options.
-- `$PROJECT/libs/config/knowledge/` — package knowledge base following `$WORKSPACE/checkouts/art-md/cli/bin/knowledge`: at least `index.md`, `overview.md`, and `design/config.md`; add `adr/` records where decisions exist.
+- `$PROJECT/libs/config/knowledge/` — package knowledge base following `$WORKSPACE/checkouts/art-md-planning/cli/bin/knowledge`: at least `index.md`, `overview.md`, and `design/config.md`; add `adr/` records where decisions exist.
 - `$PROJECT/libs/config/_guide.md` — reference the local knowledge base (`knowledge/index.md`).
 - `$PROJECT/knowledge/components.md` — move the Config entry to `IMPLEMENTED` and link its package knowledge.
-- `$PROJECT/knowledge/index.md` — add a Package Knowledge References row linking `libs/config/knowledge/index.md` (see `$WORKSPACE/checkouts/art-md/knowledge/index.md`).
+- `$PROJECT/knowledge/index.md` — add a Package Knowledge References row linking `libs/config/knowledge/index.md` (see `$WORKSPACE/checkouts/art-md-planning/knowledge/index.md`).
 - `$PROJECT/_records/project.art` — add `- Package: Art Lib Config` to Resources.
 - `$PROJECT/_guide.md` — list the package under the repository layout and its knowledge base under Knowledge References.
 - Keep `$PROJECT/knowledge/design/config.md` as the repository-level design record.
@@ -374,6 +366,7 @@ Execute the Changes listed above.
 Before starting:
 
 - Run `npm ci` from the `$WORKSPACE` root.
+- Read `$PROJECT/knowledge/design/config.md` and preserve its package boundaries and loading/cache contracts.
 
 Validate that:
 
@@ -384,6 +377,13 @@ After executing:
 
 - Execute the **Verifying Completion** instructions from the Operating Instructions section, from `$PROJECT/libs/config/`.
 - Commit `update-knowledge-config` with the blueprint message below.
+
+```text
+docs(config): Add package knowledge base and README usage.
+
+- Add the package knowledge base, a consumer-facing README, and repository references.
+- Link the package knowledge from the repository knowledge index.
+```
 
 **Dependencies:**
 
@@ -414,13 +414,13 @@ docs(config): Add package knowledge base and README usage.
 
 **Purpose:** Adopt `@art-lib/config` in the Art Work CLI and retire its duplicated implementation.
 
-**Description:** Refactor `$WORKSPACE/checkouts/art-work/cli/work` to consume `@art-lib/config`, keeping CLI-specific conventions on the CLI side. Commit in the Art Work repository as `refactor(work): Adopt @art-lib/config in the Work CLI.`
+**Description:** Refactor `$ART_WORK/cli/work` to consume `@art-lib/config`, keeping CLI-specific conventions on the CLI side. Commit in the Art Work repository as `refactor(work): Adopt @art-lib/config in the Work CLI.`
 
 **Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
 
 **Changes:**
 
-In `$WORKSPACE/checkouts/art-work` (Art Work repository)
+In `$ART_WORK` (Art Work repository checkout)
 
 - `cli/work/package.json` — declare `@art-lib/config` the way `@art-lib/fs-records` is declared.
 - `cli/work/src/config/loadWorkspaceConfig.ts` — load through `loadConfigModule` from `@art-lib/config`; keep `defineConfig`, the config types, and the `node_modules/.art-work/` cache conventions on the CLI side.
@@ -432,22 +432,30 @@ In `$WORKSPACE/checkouts/art-work` (Art Work repository)
 
 ::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
 
-**GATE — do not start if the gate has not lifted:** this iteration requires the whole `@art-lib/config` plan to be `DONE`, including the `MANUAL` conventions commit. If `$PROJECT/libs/config` does not expose the landed API, REPORT A BLOCKER with "config package not landed yet" and STOP.
+**GATE — do not start until the package is consumable:** Iterations `Scaffold Config Package`, `Implement Config Loading`, `Implement Config Cache`, `Apply Noodlestan Conventions` (including its MANUAL commit), and `Update Knowledge` must be complete. The resulting `@art-lib/config` package version must be published to npm (or the agreed package registry) and installable from the Art Work checkout; verify it exposes the documented API before proceeding. This consumer-integration iteration is deliberately excluded from the gate. If the package is not yet available or the API is missing, REPORT A BLOCKER with "config package not published/consumable yet" and STOP.
 
 Execute the Changes listed above, keeping the CLI behaviour identical.
 
 Before starting:
 
-- Run `npm ci` from `$WORKSPACE/checkouts/art-work`.
+- Run `npm ci` from `$ART_WORK`.
+- Read `$PROJECT/knowledge/design/config.md` and preserve its consumer/package boundary and API contracts.
 
 Validate that:
 
-- `npm run ci` passes from `$WORKSPACE/checkouts/art-work/cli/work`.
+- `npm run ci` passes from `$ART_WORK/cli/work`.
 - The CLI behaviour is unchanged: the same inputs produce the same outputs.
 
 After executing:
 
 - Commit `integrate-config-in-consumer` in the Art Work repository with the blueprint message below.
+
+```text
+refactor(work): Adopt @art-lib/config in the Work CLI.
+
+- Replace the local config loading pipeline with @art-lib/config.
+- Keep CLI behaviour and its test suite green.
+```
 
 **Dependencies:**
 
@@ -455,9 +463,9 @@ After executing:
 
 #### Commits:
 
-| ID                             | Repository / Checkout / Branch                      | Policy       | Hash    | Status     |
-| ------------------------------ | --------------------------------------------------- | ------------ | ------- | ---------- |
-| `integrate-config-in-consumer` | Art Work / `$WORKSPACE/checkouts/art-work` / `main` | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                             | Repository / Checkout / Branch  | Policy       | Hash    | Status     |
+| ------------------------------ | ------------------------------- | ------------ | ------- | ---------- |
+| `integrate-config-in-consumer` | Art Work / `$ART_WORK` / `main` | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
 
 ##### Commit: `integrate-config-in-consumer`
 
@@ -476,7 +484,7 @@ refactor(work): Adopt @art-lib/config in the Work CLI.
 
 ### Not In Scope
 
-- **Config schema and discovery rules** — each consumer CLI defines its own config shape and manifest name conventions on top of `loadConfig()`.
+- **Config schema and discovery rules** — each consumer CLI defines its own config shape and manifest name conventions on top of `loadConfigModule()`.
 - **Consumer adoption beyond Art Work** — `@art-work/cli` is the first consumer (Iteration: Integrate in Consumer); other CLIs migrate in their own projects.
 
 ### Evidence

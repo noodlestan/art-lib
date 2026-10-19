@@ -57,7 +57,7 @@ interface ConfigCacheInput {
 interface ConfigCacheMeta {
   version: number;
   compiledAt: string;
-  entry: string;
+  manifest: string;
   inputs: ConfigCacheInput[];
 }
 ```
@@ -88,7 +88,7 @@ The consumer keeps: manifest name, cache directory choice, defaults/normalisatio
 
 ## Sources
 
-- Art Work loader: `$ART_WORK/cli/work/src/config/loadWorkspaceConfig.ts`
-- Art Work private pipeline: `$ART_WORK/cli/work/src/config/private/` (`compileConfigBundle`, `findReusableBundlePath`, `importConfigBundle`, `hashConfigInputs`, `cache/*`)
-- Art Work cache plan: `$ART_WORK/_backlog/3-now/plan-add-config-cache/plan.md`
-- Consumer `defineConfig`: `$ART_WORK/cli/work/src/config/defineConfig.ts`
+- Art Work loader: `$WORKSPACE/checkouts/art-work-planning/cli/work/src/config/loadWorkspaceConfig.ts`
+- Art Work private pipeline: `$WORKSPACE/checkouts/art-work-planning/cli/work/src/config/private/` (`compileConfigBundle`, `findReusableBundlePath`, `importConfigBundle`, `hashConfigInputs`, `cache/*`)
+- Art Work cache plan: `$WORKSPACE/checkouts/art-work-planning/_backlog/0-archive/2026-10-13-plan-add-config-cache/plan.md`
+- Consumer `defineConfig`: `$WORKSPACE/checkouts/art-work-planning/cli/work/src/config/defineConfig.ts`
