@@ -2,7 +2,7 @@
 
 **Purpose:** Describe what a CLI needs from `@art-lib/logger` — one logging interface for messages, buffering, output modes, log lines, and the writer — as evidenced by the Art Work CLI and Art MD bin consumers.
 
-**Planned package:** `@art-lib/logger` — `_backlog/6-plan/plan-add-logger/plan.md`
+**Planned package:** `@art-lib/logger` — `_backlog/4-next/plan-add-logger/plan.md`
 
 ## Principle: Messages Only
 
