@@ -1,8 +1,55 @@
 # @art-lib/fs-records
 
-> Generic Art MD record read/write modules for CLIs.
+> Filesystem discovery and content acquisition for Art MD records.
 
 This package is part of the [Art Lib toolkit](../../README.md).
+
+## Design
+
+The package has two units. `FSRecordsAdapter` discovers record files and creates
+an `FSContentSource` for each file. Each `FSContentSource` implements the
+`ArtContentSource` contract from `@art-md/primitives` and handles content
+reading and writing for one file.
+
+## Exports
+
+| Export                                            | Description                                                            |
+| ------------------------------------------------- | ---------------------------------------------------------------------- |
+| `createFSRecordsAdapter(options)`                 | Create an adapter for discovering files and creating content sources.  |
+| `createFSContentSource(file)`                     | Create a content source for one file.                                  |
+| `discoverRecordFiles(basePath, patterns, kinds?)` | Discover matching record files, optionally filtered by kind.           |
+| `readRecordFileContent(file)`                     | Read the content of a record file.                                     |
+| `FSRecordsAdapter` (type)                         | Adapter interface for discovery and content-source creation.           |
+| `FSRecordsAdapterOptions` (type)                  | Options containing the base path and discovery patterns.               |
+| `FSContentSource` (type)                          | One-file source implementing `ArtContentSource`.                       |
+| `FSRecordFile` (type)                             | Metadata and optional content or error for a discovered file.          |
+| `FSRecordsPattern` (type)                         | Base, glob patterns, exclusions, and gitignore settings for discovery. |
+
+## Usage
+
+```ts
+import { createFSRecordsAdapter } from '@art-lib/fs-records';
+
+const adapter = createFSRecordsAdapter({
+  basePath: './records',
+  patterns: [
+    {
+      base: '.',
+      pattern: '**/*.art',
+      ignored: [],
+      excluded: [],
+      gitignore: true,
+    },
+  ],
+});
+
+const [file] = await adapter.discoverRecordFiles();
+if (file) {
+  const contentSource = adapter.createContentSource(file);
+  const content = await contentSource.readContent();
+  console.log(content);
+}
+```
 
 ## Development
 
