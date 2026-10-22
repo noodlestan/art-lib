@@ -1,6 +1,6 @@
 # Design: Logger
 
-**Purpose:** Describe what a CLI needs from `@art-lib/logger` — one logging interface for messages, buffering, output modes, log lines, and the writer — as evidenced by the Art Work CLI and Art MD bin consumers.
+**Purpose:** Describe what a CLI needs from `@art-lib/logger` — one logging interface for messages, buffering, output modes, log lines, and the writer — as evidenced by the Art Workspace Cli and Art MD bin consumers.
 
 **Planned package:** `@art-lib/logger` — `_backlog/4-next/plan-add-logger/plan.md`
 
@@ -47,7 +47,7 @@ Operations satisfy this interface structurally (see `design/operations.md`), so 
 The formatter returns cells joined with `|`; the default formatter renders four cells:
 
 ```
-🟢 | clone | checkouts/art-work | (8ms)
+🟢 | clone | checkouts/art-works | (8ms)
 ℹ️  | command | ["parse",{"file":"notes.art"}] |
 ```
 
@@ -68,5 +68,5 @@ The logger does not import operations. `@art-lib/operations` `/log` is created w
 
 ## Sources
 
-- Art Work CLI operations log (logger behaviour): `$ART_WORK/cli/work/knowledge/design/operations-log.md`
+- Art Workspace Cli operations log (logger behaviour): `$ART_WORK/cli/workspace/knowledge/design/operations-log.md`
 - Art MD bin operations (logger + log line): `$ART_MD/cli/bin/knowledge/design/operations.md`

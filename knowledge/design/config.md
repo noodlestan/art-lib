@@ -1,6 +1,6 @@
 # Design: Config
 
-**Purpose:** Describe what a CLI implementor imports from `@art-lib/config` — the compile/cache/import mechanism — extracted from the Art Work CLI config implementation and its config-cache plan.
+**Purpose:** Describe what a CLI implementor imports from `@art-lib/config` — the compile/cache/import mechanism — extracted from the Art Workspace Cli config implementation and its config-cache plan.
 
 **Planned package:** `@art-lib/config` — `_backlog/4-next/plan-add-config/plan.md`
 
@@ -8,13 +8,13 @@
 
 `@art-lib/config` publishes the **loading mechanism** for typed config modules: compile a TypeScript config entry with esbuild bundle-at-runtime, cache the compiled bundle with content-hash invalidation, and import it typed. The CLI implementor wires it; the package assumes nothing about:
 
-- **Config location** — the caller resolves and passes the entry path (art-work: `join(root, '.art-workspace.mts')`). No manifest-name or root convention lives in the package.
-- **Cache location** — the caller passes the cache directory (art-work: `join(root, 'node_modules', '.art-work')`). The package only defines the file names inside that directory (`config.bundle.mjs`, `config.cache.json`).
-- **Config data shape** — generic `T`; the package returns the module's default export untouched. Defaults, normalisation, and `defineConfig` stay in the consumer package (art-work: `cli/work/src/config/defineConfig.ts`).
+- **Config location** — the caller resolves and passes the entry path (`art-workspace-cli`: `join(root, '.art-workspace.mts')`). No manifest-name or root convention lives in the package.
+- **Cache location** — the caller passes the cache directory (`art-workspace-cli`: `join(root, 'node_modules', '.art-workspace')`). The package only defines the file names inside that directory (`config.bundle.mjs`, `config.cache.json`).
+- **Config data shape** — generic `T`; the package returns the module's default export untouched. Defaults, normalisation, and `defineConfig` stay in the consumer package (`art-workspace-cli`: `cli/workspace/src/config/defineConfig.ts`).
 
-## Use Cases (from Art Work)
+## Use Cases (from the Art Workspace Cli)
 
-| #   | Use case        | Art Work behaviour today                                                                                                                                                                   |
+| #   | Use case        | Art Workspace Cli behaviour today                                                                                                                                                          |
 | --- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 1   | **Load**        | `loadWorkspaceConfig(root, { cache?, verbose? })` resolves the manifest, loads-or-compiles it, imports the bundle, then applies `defineConfig` defaults.                                   |
 | 2   | **Compile**     | esbuild bundle-at-runtime: `build({ entryPoints, bundle, write: false, format: 'esm', platform: 'node', metafile: true, external: [...] })`; write the bundle + metadata to the cache dir. |
@@ -62,24 +62,24 @@ interface ConfigCacheMeta {
 }
 ```
 
-Behavioural contracts carried over from art-work:
+Behavioural contracts carried over from the workspace CLI:
 
-- **Default externals** — node builtins and `esbuild` are external by package default (art-work hardcodes exactly these plus `simple-git` in its private `compileConfigBundle.ts` today); `externals` only _adds_ consumer-specific entries.
+- **Default externals** — node builtins and `esbuild` are external by package default (`art-workspace-cli` hardcodes exactly these plus `simple-git` in its private `compileConfigBundle.ts` today); `externals` only _adds_ consumer-specific entries.
 - Metadata is **version-guarded and shape-guarded** — unparseable or mismatched metadata means rebuild.
 - Input hashing is **content-based (sha256), never mtime** — mtimes reset on checkout, restore, and container bind.
 - Cache **write failure degrades** to a temp bundle with a warning; the load still succeeds.
 - `cache: false` **refreshes** the cache during the bypassed run.
 
-## Adoption in Art Work
+## Adoption in the Art Workspace Cli
 
 ```ts
-// cli/work/src/config/loadWorkspaceConfig.ts — after adoption
+// cli/workspace/src/config/loadWorkspaceConfig.ts — after adoption
 const entryPath = join(rootPath, '.art-workspace.mts'); // config location: consumer
-const cacheDir = join(rootPath, 'node_modules', '.art-work'); // cache location: consumer
+const cacheDir = join(rootPath, 'node_modules', '.art-workspace'); // cache location: consumer
 const config = await loadConfigModule<PartialWorkspaceConfig>(entryPath, {
   cacheDir,
   cache: options.cache,
-  externals: ['simple-git'], // art-work's extra; builtins + esbuild are package defaults
+  externals: ['simple-git'], // the workspace CLI's extra; builtins + esbuild are package defaults
 });
 return defineConfig({ ...config, root: { path: rootPath } }); // shape policy: consumer
 ```
@@ -88,7 +88,7 @@ The consumer keeps: manifest name, cache directory choice, defaults/normalisatio
 
 ## Sources
 
-- Art Work loader: `$WORKSPACE/checkouts/art-work-planning/cli/work/src/config/loadWorkspaceConfig.ts`
-- Art Work private pipeline: `$WORKSPACE/checkouts/art-work-planning/cli/work/src/config/private/` (`compileConfigBundle`, `findReusableBundlePath`, `importConfigBundle`, `hashConfigInputs`, `cache/*`)
-- Art Work cache plan: `$WORKSPACE/checkouts/art-work-planning/_backlog/0-archive/2026-10-13-plan-add-config-cache/plan.md`
-- Consumer `defineConfig`: `$WORKSPACE/checkouts/art-work-planning/cli/work/src/config/defineConfig.ts`
+- Art Workspace Cli loader: `$ART_WORK/cli/workspace/src/config/loadWorkspaceConfig.ts`
+- Art Workspace Cli private pipeline: `$ART_WORK/cli/workspace/src/config/private/` (`compileConfigBundle`, `findReusableBundlePath`, `importConfigBundle`, `hashConfigInputs`, `cache/*`)
+- Art Workspace Cli cache plan: `$ART_WORK/_backlog/0-archive/2026-10-13-plan-add-config-cache/plan.md`
+- Consumer `defineConfig`: `$ART_WORK/cli/workspace/src/config/defineConfig.ts`

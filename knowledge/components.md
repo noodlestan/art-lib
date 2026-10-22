@@ -18,7 +18,7 @@ Frameworks adopted (see [Decision: Frameworks](./adr/frameworks.md)): Commander,
 
 **Status:** PLANNED — plan drafted at `_backlog/4-next/plan-add-operations/plan.md`
 
-The shared CLI operation plumbing, extracted from `@art-work/cli` and `@art-md/bin` as one package with two subpath modules:
+The shared CLI operation plumbing, extracted from `@art-works/workspace-cli` and `@art-md/bin` as one package with two subpath modules:
 
 - `/model` — operation outcome types and factories (`OperationPending`/`Success`/`Failure`); operations conform to the `Message` interface of `@art-lib/logger`.
 - `/log` — append-only operations log with `all`/`since`/`latest` queries; created with the logger and forwarding every operation to it.
@@ -89,7 +89,7 @@ Not so much a wrapper as a **recipes library** for creating the basics of a pers
 @art-lib/logger (messages) ◀─ @art-lib/operations (/model, /log — conform + forward)
 @art-lib/config (loading infra for CLI implementors)
 
-@art-lib/logger / @art-lib/operations / @art-lib/config ──▶ consumer CLIs (Art Work, Art MD, …)
+@art-lib/logger / @art-lib/operations / @art-lib/config ──▶ consumer CLIs (Art Works, Art MD, …)
 
 Commander ──▶ @art-lib/bin ────┐
 Clack ──────▶ @art-lib/prompts ─┼──▶ consumer CLIs

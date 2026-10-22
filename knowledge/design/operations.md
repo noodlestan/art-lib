@@ -1,6 +1,6 @@
 # Design: Operations
 
-**Purpose:** Describe what a CLI needs from `@art-lib/operations` — the operation model and the operations log — as evidenced by the Art MD bin and Art Work CLI consumers.
+**Purpose:** Describe what a CLI needs from `@art-lib/operations` — the operation model and the operations log — as evidenced by the Art MD bin and Art Workspace Cli consumers.
 
 **Planned package:** `@art-lib/operations` — `_backlog/4-next/plan-add-operations/plan.md`
 
@@ -66,4 +66,4 @@ ctx.operations.log(
 ## Sources
 
 - Art MD bin operations: `$ART_MD/cli/bin/knowledge/design/operations.md`
-- Art Work CLI operations log: `$ART_WORK/cli/work/knowledge/design/operations-log.md`
+- Art Workspace Cli operations log: `$ART_WORK/cli/workspace/knowledge/design/operations-log.md`
