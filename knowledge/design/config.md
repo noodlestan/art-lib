@@ -88,7 +88,7 @@ The consumer keeps: manifest name, cache directory choice, defaults/normalisatio
 
 ## Sources
 
-- Art Workspace Cli loader: `$ART_WORK/cli/workspace/src/config/loadWorkspaceConfig.ts`
-- Art Workspace Cli private pipeline: `$ART_WORK/cli/workspace/src/config/private/` (`compileConfigBundle`, `findReusableBundlePath`, `importConfigBundle`, `hashConfigInputs`, `cache/*`)
-- Art Workspace Cli cache plan: `$ART_WORK/_backlog/0-archive/2026-10-13-plan-add-config-cache/plan.md`
-- Consumer `defineConfig`: `$ART_WORK/cli/workspace/src/config/defineConfig.ts`
+- Art Workspace Cli loader: `$ART_WORKS/cli/workspace/src/config/loadWorkspaceConfig.ts`
+- Art Workspace Cli private pipeline: `$ART_WORKS/cli/workspace/src/config/private/` (`compileConfigBundle`, `findReusableBundlePath`, `importConfigBundle`, `hashConfigInputs`, `cache/*`)
+- Art Workspace Cli cache plan: `$ART_WORKS/_backlog/0-archive/2026-10-13-plan-add-config-cache/plan.md`
+- Consumer `defineConfig`: `$ART_WORKS/cli/workspace/src/config/defineConfig.ts`

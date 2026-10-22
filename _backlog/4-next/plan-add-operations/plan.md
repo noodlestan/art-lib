@@ -8,7 +8,7 @@
 
 **Skill:** `write-plan`
 
-**Purpose:** Provide the shared CLI operation model and operations log extracted from the Art Work CLI and the Art MD codec bin.
+**Purpose:** Provide the shared CLI operation model and operations log extracted from the Art Workspace Cli and the Art MD codec bin.
 
 **Description:** Create the `@art-lib/operations` package with two subpath modules — `/model` (operation types and factories) and `/log` (append-only operations log) — replacing duplicated plumbing in both CLIs. The buffering logger lives in the planned `@art-lib/logger` package.
 
@@ -28,7 +28,7 @@
 
 ## Summary
 
-Create `@art-lib/operations` with subpath modules `/model` and `/log`, extracting the identical operation plumbing from `@art-work/cli` and `@art-md/bin`.
+Create `@art-lib/operations` with subpath modules `/model` and `/log`, extracting the identical operation plumbing from `@art-works/workspace-cli` and `@art-md/bin`.
 
 ## Context
 
@@ -57,7 +57,7 @@ Create `@art-lib/operations` with subpath modules `/model` and `/log`, extractin
 
 ## Scope
 
-Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (operation types and factories; operations conform to the `Message` interface of `@art-lib/logger`) and `/log` (append-only operations log, created with the logger and forwarding every operation to it) — with tests, package records, and docs mirroring `libs/fs-records` conventions. Adoption refactors in `@art-work/cli` and `@art-md/bin` are out of scope.
+Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (operation types and factories; operations conform to the `Message` interface of `@art-lib/logger`) and `/log` (append-only operations log, created with the logger and forwarding every operation to it) — with tests, package records, and docs mirroring `libs/fs-records` conventions. Adoption refactors in `@art-works/workspace-cli` and `@art-md/bin` are out of scope.
 
 ## Work
 
@@ -201,7 +201,7 @@ scaffold(operations): Scaffold package with subpath exports.
 
 **Purpose:** Add the pure operation outcome model and factories shared by all CLIs.
 
-**Description:** Implement `src/model/` with `OperationOutcome`, `OperationBase`, `OperationPending`, `OperationSuccess`, `OperationFailure`, `createGenericOperation()`, `createOperationSuccess()`, and `createOperationFailure(pending, error, options?)` supporting an optional `{ label }` (replaces Art Work's hardcoded `errorLabels` map). Export from `src/model/index.ts` and the root. Unit tests.
+**Description:** Implement `src/model/` with `OperationOutcome`, `OperationBase`, `OperationPending`, `OperationSuccess`, `OperationFailure`, `createGenericOperation()`, `createOperationSuccess()`, and `createOperationFailure(pending, error, options?)` supporting an optional `{ label }` (replaces Art Works' hardcoded `errorLabels` map). Export from `src/model/index.ts` and the root. Unit tests.
 
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
@@ -415,19 +415,19 @@ docs(operations): Add package knowledge base and README usage.
 
 **Status:** `READY`
 
-**Purpose:** Adopt `@art-lib/operations` in the Art Work CLI and retire its duplicated implementation.
+**Purpose:** Adopt `@art-lib/operations` in the Art Workspace Cli and retire its duplicated implementation.
 
-**Description:** Refactor `$WORKSPACE/checkouts/art-work/cli/work` to consume `@art-lib/operations`, keeping CLI-specific conventions on the CLI side. Commit in the Art Work repository as `refactor(work): Adopt @art-lib/operations in the Work CLI.`
+**Description:** Refactor `$WORKSPACE/checkouts/art-works/cli/workspace` to consume `@art-lib/operations`, keeping CLI-specific conventions on the CLI side. Commit in the Art Works repository as `refactor(workspace-cli): Adopt @art-lib/operations in the Workspace Cli.`
 
 **Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
 
 **Changes:**
 
-In `$WORKSPACE/checkouts/art-work` (Art Work repository)
+In `$WORKSPACE/checkouts/art-works` (Art Works repository)
 
-- `cli/work/package.json` — declare `@art-lib/operations` the way `@art-lib/fs-records` is declared.
-- `cli/work/src/private/operations/` — replace `types.ts`, `createGenericOperation.ts`, `createOperationSuccess.ts`, and `createOperationFailure.ts` with the `@art-lib/operations` model; keep the command-specific builders under `src/private/commands/operations/`.
-- `cli/work/src/private/log/createOperationsLog.ts` — replace with `createOperationsLog` from `@art-lib/operations/log`.
+- `cli/workspace/package.json` — declare `@art-lib/operations` the way `@art-lib/fs-records` is declared.
+- `cli/workspace/src/private/operations/` — replace `types.ts`, `createGenericOperation.ts`, `createOperationSuccess.ts`, and `createOperationFailure.ts` with the `@art-lib/operations` model; keep the command-specific builders under `src/private/commands/operations/`.
+- `cli/workspace/src/private/log/createOperationsLog.ts` — replace with `createOperationsLog` from `@art-lib/operations/log`.
 - Update callers and test helpers; keep the operations output identical.
 
 **Instructions:**
@@ -440,16 +440,16 @@ Execute the Changes listed above, keeping the CLI behaviour identical.
 
 Before starting:
 
-- Run `npm ci` from `$WORKSPACE/checkouts/art-work`.
+- Run `npm ci` from `$WORKSPACE/checkouts/art-works`.
 
 Validate that:
 
-- `npm run ci` passes from `$WORKSPACE/checkouts/art-work/cli/work`.
+- `npm run ci` passes from `$WORKSPACE/checkouts/art-works/cli/workspace`.
 - The CLI behaviour is unchanged: the same inputs produce the same outputs.
 
 After executing:
 
-- Commit `integrate-operations-in-consumer` in the Art Work repository with the blueprint message below.
+- Commit `integrate-operations-in-consumer` in the Art Works repository with the blueprint message below.
 
 **Dependencies:**
 
@@ -457,16 +457,16 @@ After executing:
 
 #### Commits:
 
-| ID                                 | Repository / Checkout / Branch                      | Policy       | Hash    | Status     |
-| ---------------------------------- | --------------------------------------------------- | ------------ | ------- | ---------- |
-| `integrate-operations-in-consumer` | Art Work / `$WORKSPACE/checkouts/art-work` / `main` | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                                 | Repository / Checkout / Branch                        | Policy       | Hash    | Status     |
+| ---------------------------------- | ----------------------------------------------------- | ------------ | ------- | ---------- |
+| `integrate-operations-in-consumer` | Art Works / `$WORKSPACE/checkouts/art-works` / `main` | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
 
 ##### Commit: `integrate-operations-in-consumer`
 
 **Message:**
 
 ```text
-refactor(work): Adopt @art-lib/operations in the Work CLI.
+refactor(workspace-cli): Adopt @art-lib/operations in the Workspace Cli.
 
 - Replace the local operations model, stores, and log with @art-lib/operations.
 - Keep CLI behaviour and its test suite green.
@@ -478,7 +478,7 @@ refactor(work): Adopt @art-lib/operations in the Work CLI.
 
 ### Not In Scope
 
-- **Consumer adoption beyond Art Work** — `@art-work/cli` is the first consumer (Iteration: Integrate in Consumer); `@art-md/bin` migrates in its own project after this package publishes.
+- **Consumer adoption beyond Art Works** — `@art-works/workspace-cli` is the first consumer (Iteration: Integrate in Consumer); `@art-md/bin` migrates in its own project after this package publishes.
 - **`cli-command-runner`, `cli-test-helpers`, `cli-present`** are rejected per the milestone decision; revisit triggers recorded as milestone follow ups.
 
 ### Evidence
@@ -487,7 +487,7 @@ refactor(work): Adopt @art-lib/operations in the Work CLI.
 
 ### Findings
 
-- The Art MD proposal (`_backlog/_message-from-art-md-project.md`, since deleted) showed ~60% identical CLI plumbing across `@art-work/cli` and `@art-md/bin`; packages 1–3 of the proposal are merged into this single package (logger split out again per the milestone decision).
+- The Art MD proposal (`_backlog/_message-from-art-md-project.md`, since deleted) showed ~60% identical CLI plumbing across `@art-works/workspace-cli` and `@art-md/bin`; packages 1–3 of the proposal are merged into this single package (logger split out again per the milestone decision).
 - The operations log is intentionally created with the logger (`createOperationsLog(logger, options?)`) and forwards every operation to it — one-way dependency, operations → logger.
 
 ### Decisions
@@ -495,7 +495,7 @@ refactor(work): Adopt @art-lib/operations in the Work CLI.
 - One package with two subpath modules (`/model`, `/log`) — not three published packages; ~185 lines of total dedup does not justify separate version surfaces.
 - The buffering logger is split out into the planned `@art-lib/logger` package (effectful, wraps the log writer).
 - Operations conform to the logger's `Message` interface (level derived from outcome); the logger never knows about operations.
-- `createOperationFailure` takes `{ label }` per call — replaces Art Work's hardcoded `errorLabels` map.
+- `createOperationFailure` takes `{ label }` per call — replaces Art Works' hardcoded `errorLabels` map.
 
 ### Knowledge to Update
 
@@ -503,7 +503,7 @@ refactor(work): Adopt @art-lib/operations in the Work CLI.
 
 ### Follow Ups
 
-- `@art-work/cli` adoption is planned here (Iteration: Integrate in Consumer); `@art-md/bin` migrates in its own project.
+- `@art-works/workspace-cli` adoption is planned here (Iteration: Integrate in Consumer); `@art-md/bin` migrates in its own project.
 - Revisit `cli-command-runner` when a third CLI exists; dedup temp-dir test helpers as a later chore (milestone follow ups).
 
 ### Feedback

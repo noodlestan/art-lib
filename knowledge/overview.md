@@ -37,5 +37,5 @@ Planned package: `@art-lib/config`
 
 WIP - track progress at:
 
-- `$ART_WORK/cli/work/src/config`
-- `$ART_WORK/_backlog/{dir}/plan-add-config-cache/plan.md`
+- `$ART_WORKS/cli/work/src/config`
+- `$ART_WORKS/_backlog/{dir}/plan-add-config-cache/plan.md`

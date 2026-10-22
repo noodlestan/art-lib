@@ -52,7 +52,7 @@ Create `@art-lib/logger` with the `Message` interface and message creators, plus
 
 ### Knowledge
 
-::READ `$PROJECT/knowledge/design/logger.md` (Design) — Consumer requirements from Art Work and Art MD CLIs. Relevant for Planning Work Item.
+::READ `$PROJECT/knowledge/design/logger.md` (Design) — Consumer requirements from Art Works and Art MD CLIs. Relevant for Planning Work Item.
 
 ::READ `$PROJECT/knowledge/index.md` (Model) — Package layout and publishing conventions. Relevant for Planning Work Item.
 
@@ -367,19 +367,19 @@ docs(logger): Add package knowledge base and README usage.
 
 **Status:** `READY`
 
-**Purpose:** Adopt `@art-lib/logger` in the Art Work CLI and retire its duplicated implementation.
+**Purpose:** Adopt `@art-lib/logger` in the Art Workspace Cli and retire its duplicated implementation.
 
-**Description:** Refactor `$WORKSPACE/checkouts/art-work/cli/work` to consume `@art-lib/logger`, keeping CLI-specific conventions on the CLI side. Commit in the Art Work repository as `refactor(work): Adopt @art-lib/logger in the Work CLI.`
+**Description:** Refactor `$WORKSPACE/checkouts/art-works/cli/workspace` to consume `@art-lib/logger`, keeping CLI-specific conventions on the CLI side. Commit in the Art Works repository as `refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.`
 
 **Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
 
 **Changes:**
 
-In `$WORKSPACE/checkouts/art-work` (Art Work repository)
+In `$WORKSPACE/checkouts/art-works` (Art Works repository)
 
-- `cli/work/package.json` — declare `@art-lib/logger` the way `@art-lib/fs-records` is declared.
-- `cli/work/src/private/logger/createLogger.ts` — replace with `createLogger` from `@art-lib/logger`; inject the CLI's log-line formatter where it differs from the package default.
-- `cli/work/src/private/present/makeOperationLogLine.ts` — keep as the formatter passed to `createLogger`, or retire it when the package default covers the CLI's log line.
+- `cli/workspace/package.json` — declare `@art-lib/logger` the way `@art-lib/fs-records` is declared.
+- `cli/workspace/src/private/logger/createLogger.ts` — replace with `createLogger` from `@art-lib/logger`; inject the CLI's log-line formatter where it differs from the package default.
+- `cli/workspace/src/private/present/makeOperationLogLine.ts` — keep as the formatter passed to `createLogger`, or retire it when the package default covers the CLI's log line.
 - Update callers and test helpers; keep the logged output identical.
 
 **Instructions:**
@@ -392,16 +392,16 @@ Execute the Changes listed above, keeping the CLI behaviour identical.
 
 Before starting:
 
-- Run `npm ci` from `$WORKSPACE/checkouts/art-work`.
+- Run `npm ci` from `$WORKSPACE/checkouts/art-works`.
 
 Validate that:
 
-- `npm run ci` passes from `$WORKSPACE/checkouts/art-work/cli/work`.
+- `npm run ci` passes from `$WORKSPACE/checkouts/art-works/cli/workspace`.
 - The CLI behaviour is unchanged: the same inputs produce the same outputs.
 
 After executing:
 
-- Commit `integrate-logger-in-consumer` in the Art Work repository with the blueprint message below.
+- Commit `integrate-logger-in-consumer` in the Art Works repository with the blueprint message below.
 
 **Dependencies:**
 
@@ -409,16 +409,16 @@ After executing:
 
 #### Commits:
 
-| ID                             | Repository / Checkout / Branch                      | Policy       | Hash    | Status     |
-| ------------------------------ | --------------------------------------------------- | ------------ | ------- | ---------- |
-| `integrate-logger-in-consumer` | Art Work / `$WORKSPACE/checkouts/art-work` / `main` | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                             | Repository / Checkout / Branch                        | Policy       | Hash    | Status     |
+| ------------------------------ | ----------------------------------------------------- | ------------ | ------- | ---------- |
+| `integrate-logger-in-consumer` | Art Works / `$WORKSPACE/checkouts/art-works` / `main` | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
 
 ##### Commit: `integrate-logger-in-consumer`
 
 **Message:**
 
 ```text
-refactor(work): Adopt @art-lib/logger in the Work CLI.
+refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.
 
 - Replace the local local buffering logger with @art-lib/logger.
 - Keep CLI behaviour and its test suite green.
@@ -431,7 +431,7 @@ refactor(work): Adopt @art-lib/logger in the Work CLI.
 ### Not In Scope
 
 - **Operation model and operations log** — stay in `@art-lib/operations` (`/model`, `/log`).
-- **Consumer adoption beyond Art Work** — `@art-work/cli` is the first consumer (Iteration: Integrate in Consumer); other CLIs migrate in their own projects.
+- **Consumer adoption beyond Art Works** — `@art-works/workspace-cli` is the first consumer (Iteration: Integrate in Consumer); other CLIs migrate in their own projects.
 
 ### Evidence
 
@@ -439,7 +439,7 @@ refactor(work): Adopt @art-lib/logger in the Work CLI.
 
 ### Findings
 
-- Art Work and Art MD both implement the same buffering logger (quiet/verbose, buffer until mode set); the only variation is the log-line formatter and the writer target.
+- Art Works and Art MD both implement the same buffering logger (quiet/verbose, buffer until mode set); the only variation is the log-line formatter and the writer target.
 
 ### Decisions
 
@@ -453,7 +453,7 @@ refactor(work): Adopt @art-lib/logger in the Work CLI.
 
 ### Follow Ups
 
-- `@art-work/cli` adoption is planned here (Iteration: Integrate in Consumer); `@art-md/bin` migrates in its own project.
+- `@art-works/workspace-cli` adoption is planned here (Iteration: Integrate in Consumer); `@art-md/bin` migrates in its own project.
 
 ### Feedback
 

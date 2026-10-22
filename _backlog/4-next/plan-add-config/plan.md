@@ -20,12 +20,12 @@
 
 ## Path Variables
 
-| Variable     | Resolved Path                            | Purpose                                                   |
-| ------------ | ---------------------------------------- | --------------------------------------------------------- |
-| `$WORKSPACE` | Current working directory                | Workspace root directory                                  |
-| `$PROJECT`   | Provided with Prompt                     | Art Lib repository .                                      |
-| `$ART_WORK`  | `$WORKSPACE/checkouts/art-work-planning` | Art Work checkout for the consumer integration iteration. |
-| `$DOMAINS`   | `$WORKSPACE/.agents/domains`             | Domain resources directory                                |
+| Variable     | Resolved Path                    | Purpose                                                    |
+| ------------ | -------------------------------- | ---------------------------------------------------------- |
+| `$WORKSPACE` | Current working directory        | Workspace root directory                                   |
+| `$PROJECT`   | Provided with Prompt             | Art Lib repository .                                       |
+| `$ART_WORKS` | `$WORKSPACE/checkouts/art-works` | Art Works checkout for the consumer integration iteration. |
+| `$DOMAINS`   | `$WORKSPACE/.agents/domains`     | Domain resources directory                                 |
 
 ## Summary
 
@@ -53,13 +53,13 @@ Create `@art-lib/config` with `loadConfigModule<T>(entryPath, options?)`: esbuil
 
 ### Knowledge
 
-::READ `$PROJECT/knowledge/design/config.md` (Design) — Consumer requirements from the Art Work CLI and its config-cache plan. Relevant for Planning Work Item.
+::READ `$PROJECT/knowledge/design/config.md` (Design) — Consumer requirements from the Art Workspace Cli and its config-cache plan. Relevant for Planning Work Item.
 
 ::READ `$PROJECT/knowledge/index.md` (Model) — Package layout and publishing conventions. Relevant for Planning Work Item.
 
 ## Scope
 
-Create `$PROJECT/libs/config` exposing `loadConfigModule`, the lower-level `compileConfig` / `findReusableBundle` / `importConfigModule` pieces, and the cache metadata types — with esbuild bundle-at-runtime compilation, a caller-supplied cache directory, and a bypass option — plus tests, package records, and docs mirroring `libs/fs-records` conventions. Integrate the published package into the Art Work CLI at `$ART_WORK/cli/work`. Config location, cache location, defaults, and schema stay with each consumer CLI.
+Create `$PROJECT/libs/config` exposing `loadConfigModule`, the lower-level `compileConfig` / `findReusableBundle` / `importConfigModule` pieces, and the cache metadata types — with esbuild bundle-at-runtime compilation, a caller-supplied cache directory, and a bypass option — plus tests, package records, and docs mirroring `libs/fs-records` conventions. Integrate the published package into the Art Workspace Cli at `$ART_WORKS/cli/workspace`. Config location, cache location, defaults, and schema stay with each consumer CLI.
 
 ## Work
 
@@ -412,46 +412,46 @@ docs(config): Add package knowledge base and README usage.
 
 **Status:** `READY`
 
-**Purpose:** Adopt `@art-lib/config` in the Art Work CLI and retire its duplicated implementation.
+**Purpose:** Adopt `@art-lib/config` in the Art Workspace Cli and retire its duplicated implementation.
 
-**Description:** Refactor `$ART_WORK/cli/work` to consume `@art-lib/config`, keeping CLI-specific conventions on the CLI side. Commit in the Art Work repository as `refactor(work): Adopt @art-lib/config in the Work CLI.`
+**Description:** Refactor `$ART_WORKS/cli/workspace` to consume `@art-lib/config`, keeping CLI-specific conventions on the CLI side. Commit in the Art Works repository as `refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.`
 
 **Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
 
 **Changes:**
 
-In `$ART_WORK` (Art Work repository checkout)
+In `$ART_WORKS` (Art Works repository checkout)
 
-- `cli/work/package.json` — declare `@art-lib/config` the way `@art-lib/fs-records` is declared.
-- `cli/work/src/config/loadWorkspaceConfig.ts` — load through `loadConfigModule` from `@art-lib/config`; keep `defineConfig`, the config types, and the `node_modules/.art-work/` cache conventions on the CLI side.
-- `cli/work/src/config/private/` — delete the superseded compile/cache/import modules and their tests.
-- `cli/work/src/index.ts` and the `./config` export — rewire the public surface to the adopted loader.
+- `cli/workspace/package.json` — declare `@art-lib/config` the way `@art-lib/fs-records` is declared.
+- `cli/workspace/src/config/loadWorkspaceConfig.ts` — load through `loadConfigModule` from `@art-lib/config`; keep `defineConfig`, the config types, and the `node_modules/.art-workspace/` cache conventions on the CLI side.
+- `cli/workspace/src/config/private/` — delete the superseded compile/cache/import modules and their tests.
+- `cli/workspace/src/index.ts` and the `./config` export — rewire the public surface to the adopted loader.
 - Rewire callers and test helpers; keep the CLI behaviour identical.
 
 **Instructions:**
 
 ::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
 
-**GATE — do not start until the package is consumable:** Iterations `Scaffold Config Package`, `Implement Config Loading`, `Implement Config Cache`, `Apply Noodlestan Conventions` (including its MANUAL commit), and `Update Knowledge` must be complete. The resulting `@art-lib/config` package version must be published to npm (or the agreed package registry) and installable from the Art Work checkout; verify it exposes the documented API before proceeding. This consumer-integration iteration is deliberately excluded from the gate. If the package is not yet available or the API is missing, REPORT A BLOCKER with "config package not published/consumable yet" and STOP.
+**GATE — do not start until the package is consumable:** Iterations `Scaffold Config Package`, `Implement Config Loading`, `Implement Config Cache`, `Apply Noodlestan Conventions` (including its MANUAL commit), and `Update Knowledge` must be complete. The resulting `@art-lib/config` package version must be published to npm (or the agreed package registry) and installable from the Art Works checkout; verify it exposes the documented API before proceeding. This consumer-integration iteration is deliberately excluded from the gate. If the package is not yet available or the API is missing, REPORT A BLOCKER with "config package not published/consumable yet" and STOP.
 
 Execute the Changes listed above, keeping the CLI behaviour identical.
 
 Before starting:
 
-- Run `npm ci` from `$ART_WORK`.
+- Run `npm ci` from `$ART_WORKS`.
 - Read `$PROJECT/knowledge/design/config.md` and preserve its consumer/package boundary and API contracts.
 
 Validate that:
 
-- `npm run ci` passes from `$ART_WORK/cli/work`.
+- `npm run ci` passes from `$ART_WORKS/cli/workspace`.
 - The CLI behaviour is unchanged: the same inputs produce the same outputs.
 
 After executing:
 
-- Commit `integrate-config-in-consumer` in the Art Work repository with the blueprint message below.
+- Commit `integrate-config-in-consumer` in the Art Works repository with the blueprint message below.
 
 ```text
-refactor(work): Adopt @art-lib/config in the Work CLI.
+refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 
 - Replace the local config loading pipeline with @art-lib/config.
 - Keep CLI behaviour and its test suite green.
@@ -463,16 +463,16 @@ refactor(work): Adopt @art-lib/config in the Work CLI.
 
 #### Commits:
 
-| ID                             | Repository / Checkout / Branch  | Policy       | Hash    | Status     |
-| ------------------------------ | ------------------------------- | ------------ | ------- | ---------- |
-| `integrate-config-in-consumer` | Art Work / `$ART_WORK` / `main` | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                             | Repository / Checkout / Branch    | Policy       | Hash    | Status     |
+| ------------------------------ | --------------------------------- | ------------ | ------- | ---------- |
+| `integrate-config-in-consumer` | Art Works / `$ART_WORKS` / `main` | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
 
 ##### Commit: `integrate-config-in-consumer`
 
 **Message:**
 
 ```text
-refactor(work): Adopt @art-lib/config in the Work CLI.
+refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 
 - Replace the local config loading pipeline with @art-lib/config.
 - Keep CLI behaviour and its test suite green.
@@ -485,7 +485,7 @@ refactor(work): Adopt @art-lib/config in the Work CLI.
 ### Not In Scope
 
 - **Config schema and discovery rules** — each consumer CLI defines its own config shape and manifest name conventions on top of `loadConfigModule()`.
-- **Consumer adoption beyond Art Work** — `@art-work/cli` is the first consumer (Iteration: Integrate in Consumer); other CLIs migrate in their own projects.
+- **Consumer adoption beyond Art Works** — `@art-works/workspace-cli` is the first consumer (Iteration: Integrate in Consumer); other CLIs migrate in their own projects.
 
 ### Evidence
 
@@ -493,11 +493,11 @@ refactor(work): Adopt @art-lib/config in the Work CLI.
 
 ### Findings
 
-- Art Work already implements esbuild bundle-at-runtime loading and is mid-flight adding a content-hash cache (`plan-add-config-cache` in `$ART_WORK`) — its design and decisions (cache under `node_modules/`, content hash over mtime, graceful degradation, bypass refreshes the cache) are the proven basis for this package.
+- Art Works already implements esbuild bundle-at-runtime loading and is mid-flight adding a content-hash cache (`plan-add-config-cache` in `$ART_WORKS`) — its design and decisions (cache under `node_modules/`, content hash over mtime, graceful degradation, bypass refreshes the cache) are the proven basis for this package.
 
 ### Decisions
 
-- **No conventions in the package** — config entry path, cache directory, and config shape are caller parameters; art-work keeps `.art-workspace.mts`, `node_modules/.art-work/`, and `defineConfig` on its side.
+- **No conventions in the package** — config entry path, cache directory, and config shape are caller parameters; the workspace CLI keeps `.art-workspace.mts`, `node_modules/.art-workspace/`, and `defineConfig` on its side.
 - **Content hash (sha256 of every esbuild `metafile.inputs` entry), not mtime** — mtimes are unreliable across checkouts and container binds; input paths are recorded relative to `baseDir`.
 - **Degrade gracefully** — an unwritable cache falls back to a temp-dir bundle with a warning; caching never fails the run.
 - **Bypass refreshes the cache** — `cache: false` rebuilds and rewrites the metadata so the next run is warm.
@@ -508,7 +508,7 @@ refactor(work): Adopt @art-lib/config in the Work CLI.
 
 ### Follow Ups
 
-- `@art-work/cli` adoption is planned here (Iteration: Integrate in Consumer); `plan-art-work-cli-global-install` remains tracked in `$ART_WORK`.
+- `@art-works/workspace-cli` adoption is planned here (Iteration: Integrate in Consumer); `plan-art-work-cli-global-install` remains tracked in `$ART_WORKS`.
 
 ### Feedback
 

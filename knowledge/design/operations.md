@@ -66,4 +66,4 @@ ctx.operations.log(
 ## Sources
 
 - Art MD bin operations: `$ART_MD/cli/bin/knowledge/design/operations.md`
-- Art Workspace Cli operations log: `$ART_WORK/cli/workspace/knowledge/design/operations-log.md`
+- Art Workspace Cli operations log: `$ART_WORKS/cli/workspace/knowledge/design/operations-log.md`
