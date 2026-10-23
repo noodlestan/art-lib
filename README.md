@@ -6,6 +6,12 @@ Shared libraries and tools for building CLIs and Tools.
 
 **Keywords:** art, terminal-apps.
 
+## Packages
+
+| namespace  | dir                | package               | description                                                |
+| ---------- | ------------------ | --------------------- | ---------------------------------------------------------- |
+| `@art-lib` | `libs/fs-records/` | `@art-lib/fs-records` | Generic record read/write modules for Art MD record files. |
+
 ## Development
 
 ### Scripts

@@ -2,7 +2,7 @@
 
 **ID:** `add-fs-records-knowledge`
 
-**Status:** `READY`
+**Status:** `WORKING`
 
 **Template:** `.agents/domains/plans/templates/plan.tart`
 
@@ -67,7 +67,7 @@ Document the `@art-lib/fs-records` package surface: the adapter, content source,
 
 | Iteration / Instructions                | Status  |
 | --------------------------------------- | ------- |
-| Iteration: Update FS Records README     | `READY` |
+| Iteration: Update FS Records README     | `DONE`  |
 | Iteration: Verify FS Records Guide      | `READY` |
 | Iteration: Add FS Records Knowledge Dir | `READY` |
 
@@ -75,7 +75,7 @@ Document the `@art-lib/fs-records` package surface: the adapter, content source,
 
 **Id:** `update-readme`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Replace the generic README with one that documents the adapter surface, exports, and basic usage.
 
@@ -84,6 +84,10 @@ Document the `@art-lib/fs-records` package surface: the adapter, content source,
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
 **Instructions:** `./plan-add-fs-records-knowledge/instructions/update-readme.md`
+
+**Report:** `./plan-add-fs-records-knowledge/instructions/update-readme__report.md`
+
+**Delegation:** `COMPLETED` — started `2026-10-20T01:40:25+02:00`; worker session `ses_ea9766ab0ffeHa0UOuRaQu55Ep`.
 
 **Changes:**
 
@@ -101,9 +105,9 @@ In `$PROJECT/libs/fs-records/README.md`:
 
 #### Commits:
 
-| ID              | Repository / Checkout / Branch    | Policy       | Hash | Status     |
-| --------------- | --------------------------------- | ------------ | ---- | ---------- |
-| `update-readme` | Art Lib / `$PROJECT` / `building` | `AUTONOMOUS` |      | `AUTHORED` |
+| ID              | Repository / Checkout / Branch    | Policy       | Hash      | Status      |
+| --------------- | --------------------------------- | ------------ | --------- | ----------- |
+| `update-readme` | Art Lib / `$PROJECT` / `building` | `AUTONOMOUS` | `1b41ef3` | `COMMITTED` |
 
 ##### Commit: `update-readme`
 
@@ -112,6 +116,10 @@ In `$PROJECT/libs/fs-records/README.md`:
 ```text
 docs(fs-records): Update README with adapter surface and usage example.
 ```
+
+**Hash:** `1b41ef3` — pushed to `origin/building`.
+
+**Status:** `COMMITTED`
 
 ### Iteration: Verify FS Records Guide
 
@@ -230,7 +238,7 @@ docs(fs-records): Add knowledge directory with overview, components, and ADR.
 
 ### Evidence
 
-- None.
+- **README iteration completed.** The adapter API, nine public exports, and usage example are documented; package lint, build, tests, and commit-hook CI passed. See `./plan-add-fs-records-knowledge/instructions/update-readme__report.md`.
 
 ### Findings
 
