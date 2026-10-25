@@ -14,19 +14,35 @@
   ],
   "author": "Noodlestan Collective",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/noodlestan/art-lib.git",
+    "directory": "libs/fs-records"
+  },
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE-MIT",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
   "type": "module",
+  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs"
+    },
+    "./test-helpers/*": {
+      "import": "./src/test/helpers/*"
     }
   },
-  "files": [
-    "dist",
-    "LICENSE-MIT",
-    "README.md"
-  ],
   "scripts": {
     "dev": "esbuild-cli-watch",
     "lint": "prettier . -c && eslint . && tsc --noEmit",
@@ -39,7 +55,7 @@
     "ci": "npm run lint && npm run build && npm run test:ci"
   },
   "dependencies": {
-    "@art-md/primitives": "0.0.5"
+    "@art-md/primitives": "0.0.6"
   },
   "devDependencies": {}
 }
