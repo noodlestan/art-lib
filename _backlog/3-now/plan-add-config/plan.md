@@ -65,7 +65,9 @@ Create `$PROJECT/libs/config` exposing `loadConfigModule`, the lower-level `comp
 
 ### Next
 
-- **Iterations `Scaffold Config Package` and `Implement Config Loading` are `DONE`** (`ef23a68`, `b5de21e`, both pushed to `origin/main`): `libs/config/` now has the skeleton plus `types.ts`, `compileConfig`, `importConfigModule`, `loadConfigModule`, four `private/` helpers, and 6 passing tests. Next: **Iteration: Implement Config Cache** (content-hash reuse, `cache: false` bypass), then `Apply Noodlestan Conventions` (`MANUAL` commit), `Update Knowledge`, and `Integrate in Consumer` (gated on a published, consumable package).
+- **Iterations `Scaffold Config Package`, `Implement Config Loading`, and `Implement Config Cache` are `DONE`** (`ef23a68`, `b5de21e`, `92619ad`, all pushed to `origin/main`) — the implementation is complete: 16/16 tests green, coverage 97/92.85/100/100, and the plan's acceptance criteria (unchanged fixture skips the esbuild build; `cache: false` forces a rebuild) are covered by tests.
+- Next: **Iteration: Apply Noodlestan Conventions** — this one carries a `MANUAL` commit (`apply-conventions-config`): stage the changes, report the proposed message, do NOT commit. It also owns the two open follow-ups that fit its lint/test-wiring remit: adding `libs/config/.prettierignore` and declaring any installed conventions in `$PROJECT/_guide.md`.
+- Then `Update Knowledge` (includes correcting the stale `_guide.md` src tree) and `Integrate in Consumer`, which stays **gated** on `@art-lib/config` being published and consumable from the Art Works checkout.
 
 ### Blockers
 
@@ -125,7 +127,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | --------------------------------------- | ------- |
 | Iteration: Scaffold Config Package      | `DONE`  |
 | Iteration: Implement Config Loading     | `DONE`  |
-| Iteration: Implement Config Cache       | `READY` |
+| Iteration: Implement Config Cache       | `DONE`  |
 | Iteration: Apply Noodlestan Conventions | `READY` |
 | Iteration: Update Knowledge             | `READY` |
 | Iteration: Integrate in Consumer        | `READY` |
@@ -241,7 +243,7 @@ build(config): Add typed config loading with bundle-at-runtime.
 
 **Id:** `implement-config-cache`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Reuse the compiled config while its sources are unchanged; bypass on demand.
 
@@ -250,6 +252,10 @@ build(config): Add typed config loading with bundle-at-runtime.
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
 **Instructions:** `./plan-add-config/instructions/implement-config-cache.md`
+
+**Report:** `./plan-add-config/instructions/implement-config-cache__report.md`
+
+**Delegation:** `COMPLETED` — worker session `ses_e6bb955a2ffeVWAqVkvCACP2A7`.
 
 **Changes:**
 
@@ -266,9 +272,9 @@ In `$PROJECT/libs/config/src/`
 
 #### Commits:
 
-| ID                 | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| ------------------ | ------------------------------ | ------------ | ------- | ---------- |
-| `add-config-cache` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                 | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| ------------------ | ------------------------------ | ------------ | --------- | ----------- |
+| `add-config-cache` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `92619ad` | `COMMITTED` |
 
 ##### Commit: `add-config-cache`
 
@@ -280,6 +286,10 @@ build(config): Add content-hash config cache with bypass.
 - Reuse the cached bundle only while every recorded input hash matches.
 - Degrade to a temp bundle when the cache is unwritable; `cache: false` refreshes.
 ```
+
+**Hash:** `92619ad` — pushed to `origin/main` (`b5de21e..92619ad`).
+
+**Status:** `COMMITTED`
 
 ### Iteration: Apply Noodlestan Conventions
 
@@ -509,7 +519,8 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 - The worker correctly refused to run `npm install` inside `$PROJECT`, per the plan's Setting Up instructions.
 - **Config loading iteration completed (2026-11-01).** 9 source files in `libs/config/src/` (`types`, `compileConfig`, `importConfigModule`, `loadConfigModule`, 4 `private/` helpers, tests); 6/6 tests green, coverage 97.95/88.88/100/100. Commit `b5de21e` pushed to `origin/main`. See `./plan-add-config/instructions/implement-config-loading__report.md`.
 - **Verified non-blocking:** `libs/config/.prettierignore` was never scaffolded (both repo root and `libs/fs-records` carry one), so a bare `npm run lint` fails on `dist/`. The full Verifying Completion sequence still passes 4/4 because `lint:fix` runs first and `dist/` is gitignored (`**/dist`). Recorded as a follow-up, not a blocker.
-- **Pending — acceptance criteria for the implementation iterations:** `@art-lib/config` builds, lints, and tests green from `$PROJECT/libs/config`; a second `loadConfigModule()` call with an unchanged fixture and a valid `cacheDir` skips the esbuild build; `cache: false` forces a rebuild.
+- **Config cache iteration completed (2026-11-01).** `cache.ts` (`findReusableBundle`) plus 9 private helpers, cache reuse/bypass/degradation wired into `loadConfigModule`; 16/16 tests green, coverage 97/92.85/100/100. Commit `92619ad` pushed to `origin/main`. See `./plan-add-config/instructions/implement-config-cache__report.md`.
+- **Acceptance criteria met:** `@art-lib/config` builds, lints, and tests green from `$PROJECT/libs/config`; a second `loadConfigModule()` call with an unchanged fixture and a valid `cacheDir` skips the esbuild build; `cache: false` forces a rebuild. Both behaviours are covered by tests, so the bullet previously listed as pending is now delivered.
 
 ### Findings
 
