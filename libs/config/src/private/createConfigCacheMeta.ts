@@ -1,6 +1,6 @@
 import type { ConfigCacheInput, ConfigCacheMeta } from '../types.js';
 
-const CONFIG_CACHE_VERSION = 1;
+import { CONFIG_CACHE_VERSION } from './constants.js';
 
 export function createConfigCacheMeta(
 	manifest: string,

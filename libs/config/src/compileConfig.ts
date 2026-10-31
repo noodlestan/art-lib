@@ -1,9 +1,10 @@
-import { dirname, resolve } from 'node:path';
+import { resolve } from 'node:path';
 
 import { type BuildOptions, build } from 'esbuild';
 
 import { getConfigExternals } from './private/getConfigExternals.js';
 import { hashConfigInputs } from './private/hashConfigInputs.js';
+import { resolveConfigBaseDir } from './private/resolveConfigBaseDir.js';
 import { writeConfigBundle } from './private/writeConfigBundle.js';
 import type { CompiledConfig, LoadConfigOptions } from './types.js';
 
@@ -29,7 +30,7 @@ export async function compileConfig(
 		throw new Error(`Config entry compiled without a bundle: ${entryPath}`);
 	}
 
-	const baseDir = options?.baseDir ?? dirname(resolve(entryPath));
+	const baseDir = resolveConfigBaseDir(entryPath, options);
 	const inputs = await hashConfigInputs(metafile, baseDir);
 	const manifest = resolve(entryPath);
 	const bundlePath = await writeConfigBundle(
