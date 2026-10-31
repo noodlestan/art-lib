@@ -42,7 +42,7 @@ Implement the message model and the buffering logger of `@art-lib/logger`: `Mess
 
 ## Mandatory Reading
 
-- plan: `$PROJECT/_backlog/4-next/plan-add-logger/plan.md` — this plan; the iteration Changes list the exact files.
+- plan: `$PROJECT/_backlog/3-now/plan-add-logger/plan.md` — this plan; the iteration Changes list the exact files.
 - design: `$PROJECT/knowledge/design/logger.md` — Message, output-mode semantics, default log line, writer rules.
 - knowledge: `$PROJECT/knowledge/index.md` — package layout and publishing conventions.
 

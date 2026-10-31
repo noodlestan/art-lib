@@ -16,7 +16,7 @@ Frameworks adopted (see [Decision: Frameworks](./adr/frameworks.md)): Commander,
 
 **Path:** `libs/operations`
 
-**Status:** PLANNED — plan drafted at `_backlog/4-next/plan-add-operations/plan.md`
+**Status:** PLANNED — plan drafted at `_backlog/3-now/plan-add-operations/plan.md`
 
 The shared CLI operation plumbing, extracted from `@art-works/workspace-cli` and `@art-md/bin` as one package with two subpath modules:
 
@@ -47,7 +47,7 @@ Infrastructure for CLI implementors to load, compile, and cache typed config mod
 
 Generic record read/write modules for Art MD record files. Find, read, and filter record files across a search path, honouring gitignore and configured patterns. Exposes `discoverRecordFiles()`, `readRecordFileContent()`, and the `FSRecordFile`/`FSRecordsPattern` types.
 
-Extension delivered by `_backlog/3-now/plan-add-fs-records-adapter/plan.md` (`READY`, hold lifted 2026-10-13): the `FSRecordsAdapter` (discovery + content-source factory) and its per-file `FSContentSource`, which implements `ArtContentSource` from `@art-md/primitives` — the filesystem discovery and content-acquisition backend for the records chain. Naming and layering are chain-agreed in `$ART_JS/_backlog/whiteboard-art-records/whiteboard.md`: package `@art-lib/fs-records`, unit `FSRecordsAdapter`/`createFSRecordsAdapter`, method `discoverRecordFiles()`, persistence `writeContent(content)`; the adapter is not itself a content source (one URI per source, the adapter spans a search tree).
+Extension delivered by `_backlog/1-done/plan-add-fs-records-adapter/plan.md` (`DONE`, published as `@art-lib/fs-records@0.0.3`): the `FSRecordsAdapter` (discovery + content-source factory) and its per-file `FSContentSource`, which implements `ArtContentSource` from `@art-md/primitives` — the filesystem discovery and content-acquisition backend for the records chain. Naming and layering are chain-agreed in `$ART_JS/_backlog/whiteboard-art-records/whiteboard.md`: package `@art-lib/fs-records`, unit `FSRecordsAdapter`/`createFSRecordsAdapter`, method `discoverRecordFiles()`, persistence `writeContent(content)`; the adapter is not itself a content source (one URI per source, the adapter spans a search tree).
 
 ## Framework Wrappers
 
@@ -95,5 +95,5 @@ Commander ──▶ @art-lib/bin ────┐
 Clack ──────▶ @art-lib/prompts ─┼──▶ consumer CLIs
 OpenTUI ────▶ @art-lib/ui ─────┘
 
-@art-js/records (contracts) ◀── @art-lib/fs-records (FS backend, planned adapter)
+@art-js/records (contracts) ◀── @art-lib/fs-records (FS backend, adapter delivered)
 ```

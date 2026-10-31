@@ -42,7 +42,7 @@ Implement the `OperationsLog`: forward every operation to a `LoggerAPI` as a mes
 
 ## Mandatory Reading
 
-- plan: `$PROJECT/_backlog/4-next/plan-add-operations/plan.md` — this plan; the iteration Changes list the exact files.
+- plan: `$PROJECT/_backlog/3-now/plan-add-operations/plan.md` — this plan; the iteration Changes list the exact files.
 - design: `$PROJECT/knowledge/design/operations.md` — log contract: forward on `log`, append only when finished, query semantics.
 - design: `$PROJECT/knowledge/design/logger.md` — the `LoggerAPI` consumed and the `Message` conformance relied on.
 - knowledge: `$PROJECT/knowledge/index.md` — package layout and publishing conventions.

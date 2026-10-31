@@ -2,7 +2,7 @@
 
 **ID:** `add-fs-records-adapter`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Template:** `.agents/domains/plans/templates/plan.tart`
 
@@ -66,12 +66,12 @@ The adapter itself is not a content source — a content source addresses exactl
 
 ### Next
 
-- **ADVANCE** (2026-10-13, chain verdict). No longer held. Next move: delegate `Iteration: Refactor Module Layout` first (layout + renames, no records dependency), then the two adapter iterations. All three instruction files are current — see Blockers for the residual risk.
+- **DONE** (2026-10-31). All three iterations are committed and the package ships as `@art-lib/fs-records@0.0.3`; two real consumers depend on it from their `main` (`@art-works/workspace-cli`, `@art-js/tests/records`). No further work in this plan — package documentation continues in `Plan: Add FS Records Knowledge`.
 
 ### Blockers
 
 - None open. **Hold lifted 2026-10-13** — `ART_JS` (producer of the record-model symbols) confirmed the adapter is decoupled: it imports nothing from `@art-js/records`, `RecordPosition` never appears on its write path, and `ArtContentSource` belongs to `@art-md/primitives@0.0.3` (published). `ART_WORK` concurred. Release condition (1) — "`@art-js/records` green workspace-linked" — is **void**; the original 2026-10-11 rationale (WIP types duplicating records-domain abstractions) was retired when those types were deleted.
-- **Residual risk, recorded not blocking** — the chain's agreed symbols (`discoverRecordFiles`, `FSRecordsPattern`, `FSRecordFile.basePath`) are **not yet in the published `@art-lib/fs-records@0.0.1`**, which still exports `findRecordFiles` / `FSRecordsPath` / `FSRecordsConfig` / `searchPath`. They land with iteration 1 of this plan. Any consumer runtime-verifying exports against `0.0.1` must expect the pre-rename names until this plan ships. Filed on the whiteboard 2026-10-13 against both `ART_JS`'s and `ART_WORK`'s critiques, which assumed otherwise.
+- **Residual risk — closed 2026-10-31.** The chain's agreed symbols (`discoverRecordFiles`, `FSRecordsPattern`, `FSRecordFile.basePath`) shipped in `@art-lib/fs-records@0.0.3` (release commit `b815ddc`); the pre-rename exports (`findRecordFiles` / `FSRecordsPath` / `FSRecordsConfig` / `searchPath`) are gone. Both real consumers are pinned to `0.0.3`. Originally filed on the whiteboard 2026-10-13 against both `ART_JS`'s and `ART_WORK`'s critiques, which assumed otherwise.
 
 ---
 
@@ -129,7 +129,7 @@ Additionally verify that the package builds, lints, and tests green from `$PROJE
 | Iteration: Add FSRecordsAdapter Types | `DONE` |
 | Iteration: Implement FSRecordsAdapter | `DONE` |
 
-> All three iterations are `READY` — the plan-level hold was lifted 2026-10-13 (chain verdict: adapter decoupled from `@art-js/records`). `Refactor Module Layout` runs first: it owns the renames the other two iterations reference.
+> All three iterations are `DONE` and committed (`607b000`, `91aecab`, `7ec8c65`); the plan is complete and has moved to `_backlog/1-done/`. The plan-level hold was lifted 2026-10-13 (chain verdict: the adapter is decoupled from `@art-js/records`).
 
 ### Iteration: Refactor Module Layout
 
@@ -392,7 +392,8 @@ build(fs-records): Implement FSRecordsAdapter factory and tests.
 
 ### Evidence
 
-- None
+- Shipped as `@art-lib/fs-records@0.0.3` (release commit `b815ddc`), built on `@art-md/primitives@0.0.6`. `src/index.ts` exports `discoverRecordFiles`, `readRecordFileContent`, `FSRecordFile`, `FSRecordsPattern`, `FSContentSource`, `FSRecordsAdapter`, `FSRecordsAdapterOptions`, `createFSContentSource`, `createFSRecordsAdapter`.
+- Real consumers on `main`, both pinned to `0.0.3`: `@art-works/workspace-cli` (`$WORKSPACE/checkouts/art-works/cli/workspace/package.json`, commit `a2b8f5c`) and `@art-js/tests/records` (`$WORKSPACE/checkouts/art-js/tests/records/package.json`, commit `4635e66`). Both working trees clean on 2026-10-31.
 
 ### Findings
 
@@ -412,14 +413,14 @@ build(fs-records): Implement FSRecordsAdapter factory and tests.
 
 ### Knowledge to Update
 
-- Generate `libs/fs-records/knowledge/`.
+- ~~Generate `libs/fs-records/knowledge/`~~ — owned by `Plan: Add FS Records Knowledge` (`$PROJECT/_backlog/3-now/plan-add-fs-records-knowledge/plan.md`), `WORKING`.
 
 ### Follow Ups
 
 - ~~Degrade-not-fail~~ — **settled 2026-10-13**, see Decisions: tolerance lives at discovery (`error?` on `FSRecordFile`), content source is strict. Awaiting `ART_WORK`'s confirmation of the `PROPOSED` contract bullet.
 - ~~Stable discovery ordering~~ — **settled 2026-10-13**, see Decisions: ascending absolute path, promoted to explicit guarantee. Awaiting `ART_WORK`'s confirmation.
 - ~~Regenerate the two HELD instruction files~~ — **done 2026-10-13**: `add-adapter-types.md` and `implement-fs-records-adapter.md` regenerated against the two-unit design; `SUPERSEDED` banners removed.
-- **Publish `0.0.2` after iteration 1** — the agreed symbols (`discoverRecordFiles`, `FSRecordsPattern`, `FSRecordFile.basePath`) are not in the published `0.0.1`, which still exports `findRecordFiles`/`FSRecordsPath`/`FSRecordsConfig`/`searchPath`. Consumers runtime-verifying exports must expect pre-rename names until a post-iteration-1 release ships. _Filed on the whiteboard 2026-10-13 — both `ART_JS` and `ART_WORK` assumed `0.0.1` already had the new names._
+- ~~Publish `0.0.2` after iteration 1~~ — **done**: `@art-lib/fs-records@0.0.3` is published (release commit `b815ddc`) with the agreed names, and both consumers are pinned to it. _Filed on the whiteboard 2026-10-13._
 
 ### Feedback
 

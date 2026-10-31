@@ -63,7 +63,7 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 | ----- | ---------------------- | --------- |
 | 1     | Establish Lib baseline | `WORKING` |
 | 2     | Consolidate            | -         |
-| 3     | Decompose              | -         |
+| 3     | Integrate              | -         |
 
 ### Phase: 1 — Establish Lib baseline
 
@@ -105,15 +105,15 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ## Items:
 
-| Phase | Resource / Record                                                                                             | Status     |
-| ----- | ------------------------------------------------------------------------------------------------------------- | ---------- |
-| 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`     |
-| 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`     |
-| 1     | Plan: Add FS Records Adapter `_backlog/3-now/plan-add-fs-records-adapter/plan.md`                             | `DONE`     |
-| 1     | Plan: Add FS Records Knowledge `_backlog/3-now/plan-add-fs-records-knowledge/plan.md`                         | `READY`    |
-| 1     | Plan: Add Config Package `_backlog/4-next/plan-add-config/plan.md`                                            | `READY`    |
-| 1     | Plan: Add Operations Package `_backlog/4-next/plan-add-operations/plan.md`                                    | `PLANNING` |
-| 1     | Plan: Add Logger Package `_backlog/4-next/plan-add-logger/plan.md`                                            | `PLANNING` |
+| Phase | Resource / Record                                                                                             | Status    |
+| ----- | ------------------------------------------------------------------------------------------------------------- | --------- |
+| 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`    |
+| 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`    |
+| 1     | Plan: Add FS Records Adapter `_backlog/1-done/plan-add-fs-records-adapter/plan.md`                            | `DONE`    |
+| 1     | Plan: Add FS Records Knowledge `_backlog/3-now/plan-add-fs-records-knowledge/plan.md`                         | `WORKING` |
+| 1     | Plan: Add Config Package `_backlog/3-now/plan-add-config/plan.md`                                             | `READY`   |
+| 1     | Plan: Add Operations Package `_backlog/3-now/plan-add-operations/plan.md`                                     | `READY`   |
+| 1     | Plan: Add Logger Package `_backlog/3-now/plan-add-logger/plan.md`                                             | `READY`   |
 
 ---
 
@@ -121,11 +121,12 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ### Next
 
-- **Plan: Add Config Package** is `READY` with six prepared iterations. Delegate its scaffold first; proceed through loading, cache, conventions, and knowledge, then publish/install the package before consumer integration. **Plans: Add Logger Package and Add Operations Package** remain `PLANNING`; Logger must land its `Message` interface before Operations' log iteration. **Plan: Add FS Records Knowledge** remains `READY` — delegate its three iterations (update README, verify guide, add knowledge directory).
+- **Plan: Add FS Records Knowledge** is `WORKING` — its README iteration is `DONE`; delegate `Add FS Records Knowledge Dir` first, then `Verify FS Records Guide` (order corrected, see the plan). It no longer waits on Art Works feedback: two real consumers of `@art-lib/fs-records@0.0.3` are committed on `main` (`@art-works/workspace-cli`, `@art-js/tests/records`), which is the evidence base for the package knowledge.
+- **Plans: Add Config Package, Add Logger Package, Add Operations Package** are all `READY` with complete iterations and instructions — delegate their scaffold iterations next. Config is independent; Logger must land its `Message` interface before Operations' `Implement Operations Log`, and Operations' scaffold is gated on Logger's scaffold. Config's consumer-integration iteration stays gated on a published, consumable package.
 
 ### Blockers
 
-- None. The FS Records Adapter plan is complete and its `0.0.2` release includes the agreed names. Config consumer integration is gated on the package implementation being complete and a consumable version being published.
+- None. The FS Records Adapter plan is complete and `@art-lib/fs-records@0.0.3` carries the agreed names, so the residual naming risk is closed. Config consumer integration remains gated on the package implementation being complete and a consumable version being published.
 
 ---
 
