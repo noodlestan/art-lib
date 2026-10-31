@@ -1,0 +1,49 @@
+# Module
+
+## Package: Art Lib Config
+
+**Purpose:** Typed config loading with bundle-at-runtime compilation and content-hash cache.
+
+**Description:** Infrastructure for CLI implementors to load, compile, and cache typed config modules — esbuild bundle-at-runtime with a content-hash cache.
+
+**Owner:** Project: Art Lib
+
+**Namespace:** Namespace: Art Lib
+
+**Author:** Noodlestan Collective
+
+**Path:** `libs/config/`
+
+**Canonical Name:** `@art-lib/config`
+
+**Published:** `false`
+
+**Private:** `false`
+
+**Keywords:**
+
+- library
+- config
+- esbuild
+- cli
+- tooling
+- art
+- terminal-apps
+
+**Language:** TypeScript
+
+**Engines:**
+
+- Node: `>= 22`
+
+**PackageManager:** `npm@10.2.3`
+
+**PackageFile:** `package.json`
+
+**License:** License: Noodlestan 2026 MIT
+
+**Files:**
+
+- `dist`
+- `LICENSE-MIT`
+- `README.md`

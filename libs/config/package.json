@@ -1,0 +1,44 @@
+{
+  "name": "@art-lib/config",
+  "version": "0.0.1",
+  "description": "Typed config loading with bundle-at-runtime compilation and content-hash cache.",
+  "keywords": [
+    "library",
+    "config",
+    "esbuild",
+    "cli",
+    "tooling",
+    "art",
+    "terminal-apps"
+  ],
+  "author": "Noodlestan Collective",
+  "license": "MIT",
+  "private": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE-MIT",
+    "README.md"
+  ],
+  "scripts": {
+    "dev": "esbuild-cli-watch",
+    "lint": "prettier . -c && eslint . && tsc --noEmit",
+    "lint:fix": "prettier . -c --write && eslint . --fix",
+    "build": "esbuild-cli",
+    "build:clean": "rm -rf dist",
+    "test": "vitest run",
+    "test:ci": "vitest run --coverage",
+    "test:watch": "vitest",
+    "ci": "npm run lint && npm run build && npm run test:ci"
+  },
+  "dependencies": {
+    "esbuild": "^0.24.0"
+  },
+  "devDependencies": {}
+}
