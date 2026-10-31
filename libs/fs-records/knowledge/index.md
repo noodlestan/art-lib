@@ -4,25 +4,16 @@ The `@art-lib/fs-records` package provides filesystem discovery and content acqu
 
 ## Documents
 
-| Document                                             | Description                                                   |
-| ---------------------------------------------------- | ------------------------------------------------------------- |
-| [overview.md](overview.md)                           | Package purpose, two-unit design, contracts, and dependencies |
-| [components.md](components.md)                       | Module breakdown and responsibility of each                   |
-| [adr/adapter-contracts.md](adr/adapter-contracts.md) | Design decisions from the Art Records whiteboard              |
+| Document                       | Description                                                   |
+| ------------------------------ | ------------------------------------------------------------- |
+| [overview.md](overview.md)     | Package purpose, two-unit design, contracts, and dependencies |
+| [components.md](components.md) | Module breakdown and responsibility of each                   |
 
-## Layout
+## Decision Records
 
-Its `src/` layout:
-
-```
-src/
-├── adapter/ # FSRecordsAdapter factory and types
-├── discover/ # discoverRecordFiles and tests
-├── files/ # FSContentSource, types, readRecordFileContent
-├── private/ # internal helpers (glob, filter, gitignore)
-├── test/ # test helpers (config, tempDirs)
-└── index.ts # public exports
-```
+| Record                                               | Purpose                                          |
+| ---------------------------------------------------- | ------------------------------------------------ |
+| [adr/adapter-contracts.md](adr/adapter-contracts.md) | Design decisions from the Art Records whiteboard |
 
 ## Related Knowledge
 

@@ -49,15 +49,3 @@ Design decisions from the Art Records whiteboard, as agreed for `@art-lib/fs-rec
 **Consequences:** Stable and reproducible. Already true in the implementation (`.sort()` on the flattened candidate set); promoted from incidental behaviour to explicit guarantee.
 
 **Source:** Art Records whiteboard, `@art-lib/fs-records` contracts, settled 2026-10-13.
-
-## Decision: Naming conventions
-
-**Status:** Adopted
-
-**Context:** The original package exported `findRecordFiles`, `FSRecordsPath`, `FSRecordsConfig`, and `searchPath`. These were renamed to align with the agreed chain contracts.
-
-**Decision:** `findRecordFiles` → `discoverRecordFiles`, `FSRecordsPath` → `FSRecordsPattern`, `FSRecordsConfig` removed, `FSRecordFile.searchPath` → `FSRecordFile.basePath`.
-
-**Consequences:** Consumers must use the new names. They shipped in `@art-lib/fs-records@0.0.3` (release commit `b815ddc`); the pre-rename names are no longer exported.
-
-**Source:** Art Records whiteboard, `@art-lib/fs-records` contracts, agreed 2026-10-13.

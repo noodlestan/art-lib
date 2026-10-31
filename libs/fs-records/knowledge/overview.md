@@ -33,7 +33,7 @@ See Also: [Decisions: Adapter Contracts](./adr/adapter-contracts.md).
 
 ## Real Consumers (usage evidence)
 
-Both consumers depend on `@art-lib/fs-records@0.0.3` from their `main`:
+Both consumers depend on `@art-lib/fs-records`:
 
 - `@art-works/workspace-cli` (`$WORKSPACE/checkouts/art-works/cli/workspace/package.json`)
 - `@art-js/test-records` (`$WORKSPACE/checkouts/art-js/tests/records/package.json`)
