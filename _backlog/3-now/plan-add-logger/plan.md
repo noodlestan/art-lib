@@ -203,7 +203,7 @@ scaffold(logger): Scaffold package skeleton.
 
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
-**Instructions:** `./instructions/implement-buffering-logger.md`
+**Instructions:** `./plan-add-logger/instructions/implement-buffering-logger.md`
 
 **Changes:**
 

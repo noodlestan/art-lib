@@ -18,7 +18,7 @@ RULE: If at any point you are instructed to **REPORT A BLOCKER** or you encounte
 
 1. Summarise the current context, asking: are you reporting completion or a BLOCKER?
 2. Gather the evidence of changes made and outcomes achieved, or the blocker error details.
-3. Use the `render-template` skill with the `.agents/domains/plans/templates/instructions-report.tart` to render your report and write it next to this instruction file: `./instructions/implement-buffering-logger__report.md`.
+3. Use the `render-template` skill with the `.agents/domains/plans/templates/instructions-report.tart` to render your report and write it next to this instruction file: `./plan-add-logger/instructions/implement-buffering-logger__report.md`.
 4. If your prompt included a `DIRECTIVE FEEDBACK:` include the feedback sections in the rendered report.
 5. Generate the response and send it back to the delegator.
 6. Keep the response terse: happy face + up to 3 bullet points. The full trail lives in the report file; never repeat it in chat.

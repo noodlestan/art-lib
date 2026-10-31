@@ -142,7 +142,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
-**Instructions:** `./instructions/scaffold-config-package.md`
+**Instructions:** `./plan-add-config/instructions/scaffold-config-package.md`
 
 **Changes:**
 
@@ -183,7 +183,7 @@ scaffold(config): Scaffold package skeleton.
 
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
-**Instructions:** `./instructions/implement-config-loading.md`
+**Instructions:** `./plan-add-config/instructions/implement-config-loading.md`
 
 **Purpose:** Implement typed config authoring and esbuild bundle-at-runtime loading.
 
@@ -233,7 +233,7 @@ build(config): Add typed config loading with bundle-at-runtime.
 
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
-**Instructions:** `./instructions/implement-config-cache.md`
+**Instructions:** `./plan-add-config/instructions/implement-config-cache.md`
 
 **Changes:**
 
@@ -349,10 +349,10 @@ style(config): Apply Noodlestan conventions.
 **Changes:**
 
 - `$PROJECT/libs/config/README.md` — consumer-facing `## Usage` following the pattern of `$WORKSPACE/checkouts/workspace-tooling/cli/esbuild-cli/README.md`: what it is, install, configure, example, options.
-- `$PROJECT/libs/config/knowledge/` — package knowledge base following `$WORKSPACE/checkouts/art-md-planning/cli/bin/knowledge`: at least `index.md`, `overview.md`, and `design/config.md`; add `adr/` records where decisions exist.
+- `$PROJECT/libs/config/knowledge/` — package knowledge base following `$WORKSPACE/checkouts/art-md/cli/bin/knowledge`: at least `index.md`, `overview.md`, and `design/config.md`; add `adr/` records where decisions exist.
 - `$PROJECT/libs/config/_guide.md` — reference the local knowledge base (`knowledge/index.md`).
 - `$PROJECT/knowledge/components.md` — move the Config entry to `IMPLEMENTED` and link its package knowledge.
-- `$PROJECT/knowledge/index.md` — add a Package Knowledge References row linking `libs/config/knowledge/index.md` (see `$WORKSPACE/checkouts/art-md-planning/knowledge/index.md`).
+- `$PROJECT/knowledge/index.md` — add a Package Knowledge References row linking `libs/config/knowledge/index.md` (see `$WORKSPACE/checkouts/art-md/knowledge/index.md`).
 - `$PROJECT/_records/project.art` — add `- Package: Art Lib Config` to Resources.
 - `$PROJECT/_guide.md` — list the package under the repository layout and its knowledge base under Knowledge References.
 - Keep `$PROJECT/knowledge/design/config.md` as the repository-level design record.

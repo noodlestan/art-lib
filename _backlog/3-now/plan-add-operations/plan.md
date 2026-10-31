@@ -205,7 +205,7 @@ scaffold(operations): Scaffold package with subpath exports.
 
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
-**Instructions:** `./instructions/implement-operations-model.md`
+**Instructions:** `./plan-add-operations/instructions/implement-operations-model.md`
 
 **Changes:**
 
@@ -252,7 +252,7 @@ build(operations): Add operation model and factories.
 
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
-**Instructions:** `./instructions/implement-operations-log.md`
+**Instructions:** `./plan-add-operations/instructions/implement-operations-log.md`
 
 **Changes:**
 
