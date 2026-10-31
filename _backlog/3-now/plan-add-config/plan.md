@@ -65,7 +65,7 @@ Create `$PROJECT/libs/config` exposing `loadConfigModule`, the lower-level `comp
 
 ### Next
 
-- **Iteration: Scaffold Config Package** is `DONE` (commit `ef23a68`, pushed to `origin/main`) — `libs/config/` exists with manifest, tsconfig, vitest config, `build.config.mjs`, `src/index.ts`, `_guide.md`, and `_records/package.art`. Continue with **Iteration: Implement Config Loading**, then **Implement Config Cache**. After those, `Apply Noodlestan Conventions` (`MANUAL` commit), `Update Knowledge`, then `Integrate in Consumer` (gated on a published, consumable package).
+- **Iterations `Scaffold Config Package` and `Implement Config Loading` are `DONE`** (`ef23a68`, `b5de21e`, both pushed to `origin/main`): `libs/config/` now has the skeleton plus `types.ts`, `compileConfig`, `importConfigModule`, `loadConfigModule`, four `private/` helpers, and 6 passing tests. Next: **Iteration: Implement Config Cache** (content-hash reuse, `cache: false` bypass), then `Apply Noodlestan Conventions` (`MANUAL` commit), `Update Knowledge`, and `Integrate in Consumer` (gated on a published, consumable package).
 
 ### Blockers
 
@@ -124,7 +124,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration / Instructions                | Status  |
 | --------------------------------------- | ------- |
 | Iteration: Scaffold Config Package      | `DONE`  |
-| Iteration: Implement Config Loading     | `READY` |
+| Iteration: Implement Config Loading     | `DONE`  |
 | Iteration: Implement Config Cache       | `READY` |
 | Iteration: Apply Noodlestan Conventions | `READY` |
 | Iteration: Update Knowledge             | `READY` |
@@ -187,11 +187,15 @@ scaffold(config): Scaffold package skeleton.
 
 **Id:** `implement-config-loading`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
 **Instructions:** `./plan-add-config/instructions/implement-config-loading.md`
+
+**Report:** `./plan-add-config/instructions/implement-config-loading__report.md`
+
+**Delegation:** `COMPLETED` — worker session `ses_e6bd6578bffehB5CAiJxceUWzg`.
 
 **Purpose:** Implement typed config authoring and esbuild bundle-at-runtime loading.
 
@@ -214,9 +218,9 @@ In `$PROJECT/libs/config/src/`
 
 #### Commits:
 
-| ID                   | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| -------------------- | ------------------------------ | ------------ | ------- | ---------- |
-| `add-config-loading` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                   | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| -------------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `add-config-loading` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `b5de21e` | `COMMITTED` |
 
 ##### Commit: `add-config-loading`
 
@@ -228,6 +232,10 @@ build(config): Add typed config loading with bundle-at-runtime.
 - Add `compileConfig`, `importConfigModule`, and the `loadConfigModule` orchestrator.
 - Cover fixture loading, missing entry, and temp-bundle paths with tests.
 ```
+
+**Hash:** `b5de21e` — pushed to `origin/main` (`ef23a68..b5de21e`).
+
+**Status:** `COMMITTED`
 
 ### Iteration: Implement Config Cache
 
@@ -499,6 +507,8 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 
 - **Scaffold iteration completed (2026-10-31).** `libs/config/` created (8 files) mirroring `libs/fs-records`; package, repo, and workspace `npm run ci` all green, pre-commit hooks passed. Commit `ef23a68` pushed to `origin/main`. See `./plan-add-config/instructions/scaffold-config-package__report.md`.
 - The worker correctly refused to run `npm install` inside `$PROJECT`, per the plan's Setting Up instructions.
+- **Config loading iteration completed (2026-11-01).** 9 source files in `libs/config/src/` (`types`, `compileConfig`, `importConfigModule`, `loadConfigModule`, 4 `private/` helpers, tests); 6/6 tests green, coverage 97.95/88.88/100/100. Commit `b5de21e` pushed to `origin/main`. See `./plan-add-config/instructions/implement-config-loading__report.md`.
+- **Verified non-blocking:** `libs/config/.prettierignore` was never scaffolded (both repo root and `libs/fs-records` carry one), so a bare `npm run lint` fails on `dist/`. The full Verifying Completion sequence still passes 4/4 because `lint:fix` runs first and `dist/` is gitignored (`**/dist`). Recorded as a follow-up, not a blocker.
 - **Pending — acceptance criteria for the implementation iterations:** `@art-lib/config` builds, lints, and tests green from `$PROJECT/libs/config`; a second `loadConfigModule()` call with an unchanged fixture and a valid `cacheDir` skips the esbuild build; `cache: false` forces a rebuild.
 
 ### Findings
@@ -520,6 +530,8 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 
 - `@art-works/workspace-cli` adoption is planned here (Iteration: Integrate in Consumer); `plan-art-work-cli-global-install` remains tracked in `$ART_WORKS`.
 - **Refresh `package-lock.json` once `libs/config` has real dependencies.** The scaffold added `libs/config` to `workspaces: ["libs/**"]`, but the lockfile's `packages` map still lists only `libs/fs-records`, so turbo warns `Workspace 'libs/config' not found in lockfile`. Not a blocker today: no instruction runs `npm ci` inside `$PROJECT` (they run it from `$WORKSPACE` root), and the pre-commit hook runs the `npm run ci` _script_, which passes green. It does become a blocker for anyone running `npm ci` inside `$PROJECT` — refresh requires `npm install` in `$PROJECT`, which the plan's Setting Up forbids to `agent-worker`, so the delegator or plan owner must do it. _Surfaced by the scaffold worker; diagnosed 2026-10-31._
+- **Add `libs/config/.prettierignore`** mirroring the repo root and `libs/fs-records` (`.coverage/`, `coverage/`, `env.d.ts`, `dist/`). Without it a bare `npm run lint` from `$PACKAGE` fails on `dist/` build output; the standard Verifying Completion sequence survives only because `lint:fix` runs first and `dist/` is gitignored (`**/dist`). Belongs with `Iteration: Apply Noodlestan Conventions`, which owns lint/test wiring and convention-mandated files. _Surfaced by the config-loading worker; confirmed 2026-11-01._
+- **`libs/config/_guide.md` still describes `src/` as a placeholder `index.ts`** — now stale after the loading iteration. `Iteration: Update Knowledge` owns package knowledge and docs; correct the guide's Package Layout section alongside it. _Surfaced by the config-loading worker._
 
 ### Feedback
 
