@@ -127,7 +127,7 @@ Update `$PACKAGE/_guide.md`:
    ├── test/         # test helpers (config, tempDirs)
    └── index.ts      # public exports
    ```
-2. **Knowledge References** — update to point to `knowledge/index.md`.
+2. **Knowledge References** — update to point to `knowledge/index.md`. That directory is created by the `add-knowledge-dir` iteration, which runs **before** this one. If `$PACKAGE/knowledge/index.md` does not exist, REPORT A BLOCKER with "knowledge directory missing — run `add-knowledge-dir` first" and STOP.
 3. **Recommended Reading** — verify links resolve; update if needed.
 4. Keep all other sections unchanged.
 

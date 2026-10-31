@@ -61,6 +61,18 @@ Document the `@art-lib/fs-records` package: README, guide, knowledge directory w
 
 Document the `@art-lib/fs-records` package surface: the adapter, content source, discovery, and types. Honour the contracts agreed on the Art Records whiteboard (`$ART_JS/_backlog/whiteboard-art-records/whiteboard.md`). No code changes — documentation and knowledge only.
 
+Ground the documentation in hard evidence of real consumers rather than waiting on downstream feedback: `@art-works/workspace-cli` (`$WORKSPACE/checkouts/art-works/cli/workspace/package.json`) and `@art-js/tests/records` (`$WORKSPACE/checkouts/art-js/tests/records/package.json`) both depend on `@art-lib/fs-records@0.0.3` from their `main`. Reference those consumers as the usage evidence when describing the exported API and the two-unit design.
+
+## Work
+
+### Next
+
+- Delegate **Iteration: Add FS Records Knowledge Dir** first — it creates `$PROJECT/libs/fs-records/knowledge/` (`index.md`, `overview.md`, `components.md`, `adr/adapter-contracts.md`). Then delegate **Iteration: Verify FS Records Guide**, which points the package guide at the knowledge index. Both are `READY` with self-contained instruction files; `Iteration: Update FS Records README` is already `DONE` (commit `1b41ef3`).
+
+### Blockers
+
+- None. The wait on Art Works consumer feedback is lifted (2026-10-31): the consumers that motivated the stall are already committed on `main` and pinned to the published `0.0.3`, so the knowledge can be written from verified usage.
+
 ---
 
 ## Items:
@@ -68,8 +80,8 @@ Document the `@art-lib/fs-records` package surface: the adapter, content source,
 | Iteration / Instructions                | Status  |
 | --------------------------------------- | ------- |
 | Iteration: Update FS Records README     | `DONE`  |
-| Iteration: Verify FS Records Guide      | `READY` |
 | Iteration: Add FS Records Knowledge Dir | `READY` |
+| Iteration: Verify FS Records Guide      | `READY` |
 
 ### Iteration: Update FS Records README
 
@@ -146,7 +158,7 @@ In `$PROJECT/libs/fs-records/_guide.md`:
 
 **Dependencies:**
 
-- None.
+- Iteration: Add FS Records Knowledge Dir — the guide's Knowledge References section points at `knowledge/index.md`, which that iteration creates. Runs after it so the reference resolves on first write.
 
 #### Commits:
 
@@ -212,7 +224,8 @@ Create `adr/adapter-contracts.md`:
 **Dependencies:**
 
 - Iteration: Update FS Records README.
-- Iteration: Verify FS Records Guide.
+
+> Execution order corrected 2026-10-31: this iteration runs **before** `Iteration: Verify FS Records Guide`, which needs `knowledge/index.md` to exist in order to reference it.
 
 #### Commits:
 
@@ -247,6 +260,8 @@ docs(fs-records): Add knowledge directory with overview, components, and ADR.
 ### Decisions
 
 - **ADR records honour whiteboard contracts (2026-10-18).** The ADR file `adapter-contracts.md` records decisions agreed on the Art Records whiteboard (`$ART_JS/_backlog/whiteboard-art-records/whiteboard.md`): two-unit layering, content contract, degrade-not-fail, discovery ordering, and naming. Each decision references the whiteboard as the source of agreement.
+- **Document from real consumers, not from awaited feedback (2026-10-31).** The stall on Art Works feedback is lifted: `@art-works/workspace-cli` and `@art-js/tests/records` are committed consumers of the published `@art-lib/fs-records@0.0.3`, so the package knowledge is written against verified, on-main usage. Cite them as evidence wherever the API is described.
+- **Execution order corrected (2026-10-31).** `Add FS Records Knowledge Dir` now precedes `Verify FS Records Guide`: the guide's Knowledge References section points at `knowledge/index.md`, which did not exist while the original order had the guide verified first.
 
 ### Knowledge to Update
 

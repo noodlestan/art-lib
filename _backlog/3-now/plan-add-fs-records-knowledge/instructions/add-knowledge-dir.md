@@ -55,9 +55,11 @@ Create the `knowledge/` directory with overview, components, and ADR files honou
 - `$PACKAGE/src/discover/discoverRecordFiles.ts` — discovery function.
 - `$PACKAGE/src/files/types.ts` — FSRecordsPattern and FSRecordFile types.
 - `$ART_JS/_backlog/whiteboard-art-records/whiteboard.md` — agreed contracts under `## Contracts > @art-lib/fs-records`.
-- `$ART_MD/planning/libs/primitives/knowledge/index.md` — reference for knowledge directory format.
-- `$ART_MD/planning/libs/primitives/knowledge/overview.md` — reference for overview format.
+- `$ART_MD/libs/primitives/knowledge/index.md` — reference for knowledge directory format.
+- `$PROJECT/knowledge/overview.md` — reference for overview format (this repository's own overview; `art-md` primitives ships only `index.md`, `api.md`, and `implementation.md`).
 - `$PROJECT/knowledge/adr/frameworks.md` — reference for ADR format.
+- `$WORKSPACE/checkouts/art-works/cli/workspace/package.json` — real consumer of `@art-lib/fs-records@0.0.3` (usage evidence).
+- `$WORKSPACE/checkouts/art-js/tests/records/package.json` — real consumer of `@art-lib/fs-records@0.0.3` (usage evidence).
 
 - RULE: You MUST follow any links under `## Mandatory Reading` sections found in the listed files.
 - RULE: If you are unable to read a file linked under `## Mandatory Reading` you must stop and REPORT A BLOCKER.
@@ -124,7 +126,7 @@ This iteration creates the knowledge directory with four files.
 
 ### Step `1 / 6` — Create `knowledge/index.md`
 
-Create `$PACKAGE/knowledge/index.md` as the entry point for the knowledge directory. Follow the format from `$ART_MD/planning/libs/primitives/knowledge/index.md`.
+Create `$PACKAGE/knowledge/index.md` as the entry point for the knowledge directory. Follow the format from `$ART_MD/libs/primitives/knowledge/index.md`.
 
 Contents:
 
@@ -157,8 +159,10 @@ src/
 
 ## Related Knowledge
 
-- [Primitives](../../art-md-planning/libs/primitives/knowledge/index.md) — `ArtContentSource` contract.
-- [Art Records Whiteboard](../../art-js-planning/_backlog/whiteboard-art-records/whiteboard.md) — agreed contracts.
+- `$ART_MD/libs/primitives/knowledge/index.md` — `ArtContentSource` contract.
+- `$ART_JS/_backlog/whiteboard-art-records/whiteboard.md` — agreed contracts.
+
+> Use these as path-variable references (backticks), not as relative links: this repository has no precedent for links that escape the checkout, and such a link would break wherever the package is consumed without sibling checkouts.
 ````
 
 ### Step `2 / 6` — Create `knowledge/overview.md`
@@ -180,6 +184,8 @@ Contents should cover:
    - Naming: `discoverRecordFiles`, `FSRecordsPattern`, `FSRecordFile.basePath`.
 
 4. **Dependency** — `@art-md/primitives` for the `ArtContentSource` contract.
+
+5. **Real consumers (usage evidence)** — `@art-works/workspace-cli` (`$WORKSPACE/checkouts/art-works/cli/workspace/package.json`) and `@art-js/tests/records` (`$WORKSPACE/checkouts/art-js/tests/records/package.json`) both depend on `@art-lib/fs-records@0.0.3` from their `main`. Cite them as the evidence base for the exported API and the two-unit design — do not describe the package as unconsumed or awaiting adoption.
 
 ### Step `3 / 6` — Create `knowledge/components.md`
 
@@ -238,7 +244,7 @@ Record these decisions:
 - Status: Adopted
 - Context: The original package exported `findRecordFiles`, `FSRecordsPath`, `FSRecordsConfig`, and `searchPath`. These were renamed to align with the agreed chain contracts.
 - Decision: `findRecordFiles` → `discoverRecordFiles`, `FSRecordsPath` → `FSRecordsPattern`, `FSRecordsConfig` removed, `FSRecordFile.searchPath` → `FSRecordFile.basePath`.
-- Consequences: Consumers must use the new names. The published `0.0.1` still exports the old names; the new names land with `0.0.2`.
+- Consequences: Consumers must use the new names. They shipped in `@art-lib/fs-records@0.0.3` (release commit `b815ddc`); the pre-rename names are no longer exported.
 - Source: Art Records whiteboard, `@art-lib/fs-records` contracts, agreed 2026-10-13.
 
 ### Step `5 / 6` — Verify all files are well-formed
