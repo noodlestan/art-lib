@@ -65,7 +65,7 @@ Create `$PROJECT/libs/config` exposing `loadConfigModule`, the lower-level `comp
 
 ### Next
 
-- Planning complete: all six iterations are `READY` with instructions. Delegate Iteration: Scaffold Config Package, the two implementation iterations, Iteration: Apply Noodlestan Conventions (`MANUAL` commit), Iteration: Update Knowledge, then Iteration: Integrate in Consumer. Independent of Logger and Operations — may proceed in parallel with Plan: Add Logger Package.
+- **Iteration: Scaffold Config Package** is `DONE` (commit `ef23a68`, pushed to `origin/main`) — `libs/config/` exists with manifest, tsconfig, vitest config, `build.config.mjs`, `src/index.ts`, `_guide.md`, and `_records/package.art`. Continue with **Iteration: Implement Config Loading**, then **Implement Config Cache**. After those, `Apply Noodlestan Conventions` (`MANUAL` commit), `Update Knowledge`, then `Integrate in Consumer` (gated on a published, consumable package).
 
 ### Blockers
 
@@ -123,7 +123,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 | Iteration / Instructions                | Status  |
 | --------------------------------------- | ------- |
-| Iteration: Scaffold Config Package      | `READY` |
+| Iteration: Scaffold Config Package      | `DONE`  |
 | Iteration: Implement Config Loading     | `READY` |
 | Iteration: Implement Config Cache       | `READY` |
 | Iteration: Apply Noodlestan Conventions | `READY` |
@@ -134,7 +134,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 **Id:** `scaffold-config-package`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Create the `config` package skeleton before adding modules.
 
@@ -143,6 +143,10 @@ All steps MUST pass. No `it.todo()` tests may remain.
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
 **Instructions:** `./plan-add-config/instructions/scaffold-config-package.md`
+
+**Report:** `./plan-add-config/instructions/scaffold-config-package__report.md`
+
+**Delegation:** `COMPLETED` — worker session `ses_e6beade26ffeoL6MYKxdddrsZG`.
 
 **Changes:**
 
@@ -160,9 +164,9 @@ In `$PROJECT/libs/config`
 
 #### Commits:
 
-| ID                | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| ----------------- | ------------------------------ | ------------ | ------- | ---------- |
-| `scaffold-config` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| ----------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `scaffold-config` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `ef23a68` | `COMMITTED` |
 
 ##### Commit: `scaffold-config`
 
@@ -174,6 +178,10 @@ scaffold(config): Scaffold package skeleton.
 - Create manifest, tsconfig, vitest config, and scripts mirroring `libs/fs-records`.
 - Add `_guide.md` and `_records/package.art`.
 ```
+
+**Hash:** `ef23a68` — pushed to `origin/main`.
+
+**Status:** `COMMITTED`
 
 ### Iteration: Implement Config Loading
 
@@ -489,7 +497,9 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 
 ### Evidence
 
-- `@art-lib/config` builds, lints, and tests green from `$PROJECT/libs/config`; a second `loadConfigModule()` call with an unchanged fixture and a valid `cacheDir` skips the esbuild build; `cache: false` forces a rebuild.
+- **Scaffold iteration completed (2026-10-31).** `libs/config/` created (8 files) mirroring `libs/fs-records`; package, repo, and workspace `npm run ci` all green, pre-commit hooks passed. Commit `ef23a68` pushed to `origin/main`. See `./plan-add-config/instructions/scaffold-config-package__report.md`.
+- The worker correctly refused to run `npm install` inside `$PROJECT`, per the plan's Setting Up instructions.
+- **Pending — acceptance criteria for the implementation iterations:** `@art-lib/config` builds, lints, and tests green from `$PROJECT/libs/config`; a second `loadConfigModule()` call with an unchanged fixture and a valid `cacheDir` skips the esbuild build; `cache: false` forces a rebuild.
 
 ### Findings
 
@@ -509,6 +519,7 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 ### Follow Ups
 
 - `@art-works/workspace-cli` adoption is planned here (Iteration: Integrate in Consumer); `plan-art-work-cli-global-install` remains tracked in `$ART_WORKS`.
+- **Refresh `package-lock.json` once `libs/config` has real dependencies.** The scaffold added `libs/config` to `workspaces: ["libs/**"]`, but the lockfile's `packages` map still lists only `libs/fs-records`, so turbo warns `Workspace 'libs/config' not found in lockfile`. Not a blocker today: no instruction runs `npm ci` inside `$PROJECT` (they run it from `$WORKSPACE` root), and the pre-commit hook runs the `npm run ci` _script_, which passes green. It does become a blocker for anyone running `npm ci` inside `$PROJECT` — refresh requires `npm install` in `$PROJECT`, which the plan's Setting Up forbids to `agent-worker`, so the delegator or plan owner must do it. _Surfaced by the scaffold worker; diagnosed 2026-10-31._
 
 ### Feedback
 
