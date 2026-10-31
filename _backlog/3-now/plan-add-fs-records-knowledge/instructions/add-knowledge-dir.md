@@ -161,9 +161,9 @@ src/
 
 - `$ART_MD/libs/primitives/knowledge/index.md` — `ArtContentSource` contract.
 - `$ART_JS/_backlog/whiteboard-art-records/whiteboard.md` — agreed contracts.
-
-> Use these as path-variable references (backticks), not as relative links: this repository has no precedent for links that escape the checkout, and such a link would break wherever the package is consumed without sibling checkouts.
 ````
+
+NOTE for you, the worker — not part of the file contents above: write those two Related Knowledge entries as backticked path-variable references exactly as shown. Do NOT convert them into relative markdown links; this repository has no precedent for links that escape the checkout, and such a link would break wherever the package is consumed without sibling checkouts.
 
 ### Step `2 / 6` — Create `knowledge/overview.md`
 

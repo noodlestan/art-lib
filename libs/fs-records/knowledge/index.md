@@ -28,5 +28,3 @@ src/
 
 - `$ART_MD/libs/primitives/knowledge/index.md` — `ArtContentSource` contract.
 - `$ART_JS/_backlog/whiteboard-art-records/whiteboard.md` — agreed contracts.
-
-> Use these as path-variable references (backticks), not as relative links: this repository has no precedent for links that escape the checkout, and such a link would break wherever the package is consumed without sibling checkouts.

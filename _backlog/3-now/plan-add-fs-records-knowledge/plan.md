@@ -61,13 +61,13 @@ Document the `@art-lib/fs-records` package: README, guide, knowledge directory w
 
 Document the `@art-lib/fs-records` package surface: the adapter, content source, discovery, and types. Honour the contracts agreed on the Art Records whiteboard (`$ART_JS/_backlog/whiteboard-art-records/whiteboard.md`). No code changes — documentation and knowledge only.
 
-Ground the documentation in hard evidence of real consumers rather than waiting on downstream feedback: `@art-works/workspace-cli` (`$WORKSPACE/checkouts/art-works/cli/workspace/package.json`) and `@art-js/tests/records` (`$WORKSPACE/checkouts/art-js/tests/records/package.json`) both depend on `@art-lib/fs-records@0.0.3` from their `main`. Reference those consumers as the usage evidence when describing the exported API and the two-unit design.
+Ground the documentation in hard evidence of real consumers rather than waiting on downstream feedback: `@art-works/workspace-cli` (`$WORKSPACE/checkouts/art-works/cli/workspace/package.json`) and `@art-js/test-records` (`$WORKSPACE/checkouts/art-js/tests/records/package.json`) both depend on `@art-lib/fs-records@0.0.3` from their `main`. Reference those consumers as the usage evidence when describing the exported API and the two-unit design.
 
 ## Work
 
 ### Next
 
-- Delegate **Iteration: Add FS Records Knowledge Dir** first — it creates `$PROJECT/libs/fs-records/knowledge/` (`index.md`, `overview.md`, `components.md`, `adr/adapter-contracts.md`). Then delegate **Iteration: Verify FS Records Guide**, which points the package guide at the knowledge index. Both are `READY` with self-contained instruction files; `Iteration: Update FS Records README` is already `DONE` (commit `1b41ef3`).
+- **Iteration: Add FS Records Knowledge Dir** is `DONE` (commit `2931de2`, pushed to `origin/main`). One iteration remains: delegate **Iteration: Verify FS Records Guide** — its dependency has lifted and `knowledge/index.md` now exists, so the guide's Knowledge References section can be pointed at a real target. Both remaining iterations have self-contained instruction files; `Iteration: Update FS Records README` was already `DONE` (commit `1b41ef3`).
 
 ### Blockers
 
@@ -80,7 +80,7 @@ Ground the documentation in hard evidence of real consumers rather than waiting 
 | Iteration / Instructions                | Status  |
 | --------------------------------------- | ------- |
 | Iteration: Update FS Records README     | `DONE`  |
-| Iteration: Add FS Records Knowledge Dir | `READY` |
+| Iteration: Add FS Records Knowledge Dir | `DONE`  |
 | Iteration: Verify FS Records Guide      | `READY` |
 
 ### Iteration: Update FS Records README
@@ -178,7 +178,7 @@ docs(fs-records): Update guide with current layout and knowledge references.
 
 **Id:** `add-knowledge-dir`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Create the `knowledge/` directory with overview, components, and ADR files.
 
@@ -187,6 +187,10 @@ docs(fs-records): Update guide with current layout and knowledge references.
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
 **Instructions:** `./plan-add-fs-records-knowledge/instructions/add-knowledge-dir.md`
+
+**Report:** `./plan-add-fs-records-knowledge/instructions/add-knowledge-dir__report.md`
+
+**Delegation:** `COMPLETED` — worker session `ses_e6d14e7f5ffeRNHPpj1byW1yQ6`.
 
 **Changes:**
 
@@ -229,9 +233,9 @@ Create `adr/adapter-contracts.md`:
 
 #### Commits:
 
-| ID                  | Repository / Checkout / Branch    | Policy       | Hash | Status     |
-| ------------------- | --------------------------------- | ------------ | ---- | ---------- |
-| `add-knowledge-dir` | Art Lib / `$PROJECT` / `building` | `AUTONOMOUS` |      | `AUTHORED` |
+| ID                  | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| ------------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `add-knowledge-dir` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `2931de2` | `COMMITTED` |
 
 ##### Commit: `add-knowledge-dir`
 
@@ -240,6 +244,10 @@ Create `adr/adapter-contracts.md`:
 ```text
 docs(fs-records): Add knowledge directory with overview, components, and ADR.
 ```
+
+**Hash:** `2931de2` — pushed to `origin/main` (`b815ddc..2931de2`).
+
+**Status:** `COMMITTED`
 
 ---
 
@@ -252,15 +260,18 @@ docs(fs-records): Add knowledge directory with overview, components, and ADR.
 ### Evidence
 
 - **README iteration completed.** The adapter API, nine public exports, and usage example are documented; package lint, build, tests, and commit-hook CI passed. See `./plan-add-fs-records-knowledge/instructions/update-readme__report.md`.
+- **Knowledge dir iteration completed (2026-10-31).** `libs/fs-records/knowledge/` delivered with `index.md`, `overview.md`, `components.md`, and `adr/adapter-contracts.md` (five decisions). Package lint, build, and 20/20 tests green; commit `2931de2` pushed to `origin/main`. See `./plan-add-fs-records-knowledge/instructions/add-knowledge-dir__report.md`.
+- The new `overview.md` cites both real consumers as usage evidence, and `index.md`'s Related Knowledge entries are backticked path-variable references (no checkout-escaping links).
 
 ### Findings
 
-- None.
+- **A guidance blockquote inside the instruction's verbatim `index.md` fence was rendered into the file.** The worker copied it faithfully as instructed. The artefact was cleaned and the guidance moved outside the fence as an explicit note to the worker, so a re-run does not reproduce it. _Delegator-introduced defect, corrected during integration 2026-10-31._
+- **The second consumer's package name is `@art-js/test-records`, not `@art-js/tests/records`** — the latter is the directory path. The worker cited the true package name; this plan's Scope and Decisions were corrected to match.
 
 ### Decisions
 
 - **ADR records honour whiteboard contracts (2026-10-18).** The ADR file `adapter-contracts.md` records decisions agreed on the Art Records whiteboard (`$ART_JS/_backlog/whiteboard-art-records/whiteboard.md`): two-unit layering, content contract, degrade-not-fail, discovery ordering, and naming. Each decision references the whiteboard as the source of agreement.
-- **Document from real consumers, not from awaited feedback (2026-10-31).** The stall on Art Works feedback is lifted: `@art-works/workspace-cli` and `@art-js/tests/records` are committed consumers of the published `@art-lib/fs-records@0.0.3`, so the package knowledge is written against verified, on-main usage. Cite them as evidence wherever the API is described.
+- **Document from real consumers, not from awaited feedback (2026-10-31).** The stall on Art Works feedback is lifted: `@art-works/workspace-cli` and `@art-js/test-records` are committed consumers of the published `@art-lib/fs-records@0.0.3`, so the package knowledge is written against verified, on-main usage. Cite them as evidence wherever the API is described.
 - **Execution order corrected (2026-10-31).** `Add FS Records Knowledge Dir` now precedes `Verify FS Records Guide`: the guide's Knowledge References section points at `knowledge/index.md`, which did not exist while the original order had the guide verified first.
 
 ### Knowledge to Update
