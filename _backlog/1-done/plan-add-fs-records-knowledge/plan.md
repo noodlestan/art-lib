@@ -2,7 +2,7 @@
 
 **ID:** `add-fs-records-knowledge`
 
-**Status:** `WORKING`
+**Status:** `DONE`
 
 **Template:** `.agents/domains/plans/templates/plan.tart`
 
@@ -67,21 +67,23 @@ Ground the documentation in hard evidence of real consumers rather than waiting 
 
 ### Next
 
-- **Iteration: Add FS Records Knowledge Dir** is `DONE` (commit `2931de2`, pushed to `origin/main`). One iteration remains: delegate **Iteration: Verify FS Records Guide** — its dependency has lifted and `knowledge/index.md` now exists, so the guide's Knowledge References section can be pointed at a real target. Both remaining iterations have self-contained instruction files; `Iteration: Update FS Records README` was already `DONE` (commit `1b41ef3`).
+- **DONE** (2026-10-31). All three iterations are committed and pushed (`1b41ef3`, `2931de2`, `6d16766`). The `@art-lib/fs-records` package now carries a README documenting its adapter surface, a `_guide.md` matching the real `src/` layout, and a `knowledge/` directory (`index.md`, `overview.md`, `components.md`, `adr/adapter-contracts.md`) grounded in its two real consumers. No further work in this plan.
 
 ### Blockers
 
-- None. The wait on Art Works consumer feedback is lifted (2026-10-31): the consumers that motivated the stall are already committed on `main` and pinned to the published `0.0.3`, so the knowledge can be written from verified usage.
+- None. The wait on Art Works consumer feedback was lifted (2026-10-31) before execution: the consumers that motivated the stall were already committed on `main` and pinned to the published `0.0.3`, so the knowledge was written from verified usage.
 
 ---
 
 ## Items:
 
-| Iteration / Instructions                | Status  |
-| --------------------------------------- | ------- |
-| Iteration: Update FS Records README     | `DONE`  |
-| Iteration: Add FS Records Knowledge Dir | `DONE`  |
-| Iteration: Verify FS Records Guide      | `READY` |
+| Iteration / Instructions                | Status |
+| --------------------------------------- | ------ |
+| Iteration: Update FS Records README     | `DONE` |
+| Iteration: Add FS Records Knowledge Dir | `DONE` |
+| Iteration: Verify FS Records Guide      | `DONE` |
+
+> All three iterations are `DONE` (`1b41ef3`, `2931de2`, `6d16766`); the plan is complete and has moved to `_backlog/1-done/`.
 
 ### Iteration: Update FS Records README
 
@@ -137,7 +139,7 @@ docs(fs-records): Update README with adapter surface and usage example.
 
 **Id:** `verify-guide`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Verify the `_guide.md` is accurate and update it to reference the knowledge directory.
 
@@ -146,6 +148,10 @@ docs(fs-records): Update README with adapter surface and usage example.
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
 **Instructions:** `./plan-add-fs-records-knowledge/instructions/verify-guide.md`
+
+**Report:** `./plan-add-fs-records-knowledge/instructions/verify-guide__report.md`
+
+**Delegation:** `COMPLETED` — worker session `ses_e6d08fca9ffe3c7HPHSC63wlJb`.
 
 **Changes:**
 
@@ -162,9 +168,9 @@ In `$PROJECT/libs/fs-records/_guide.md`:
 
 #### Commits:
 
-| ID             | Repository / Checkout / Branch    | Policy       | Hash | Status     |
-| -------------- | --------------------------------- | ------------ | ---- | ---------- |
-| `verify-guide` | Art Lib / `$PROJECT` / `building` | `AUTONOMOUS` |      | `AUTHORED` |
+| ID             | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| -------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `verify-guide` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `6d16766` | `COMMITTED` |
 
 ##### Commit: `verify-guide`
 
@@ -173,6 +179,10 @@ In `$PROJECT/libs/fs-records/_guide.md`:
 ```text
 docs(fs-records): Update guide with current layout and knowledge references.
 ```
+
+**Hash:** `6d16766` — pushed to `origin/main` (`2931de2..6d16766`).
+
+**Status:** `COMMITTED`
 
 ### Iteration: Add FS Records Knowledge Dir
 
@@ -262,6 +272,8 @@ docs(fs-records): Add knowledge directory with overview, components, and ADR.
 - **README iteration completed.** The adapter API, nine public exports, and usage example are documented; package lint, build, tests, and commit-hook CI passed. See `./plan-add-fs-records-knowledge/instructions/update-readme__report.md`.
 - **Knowledge dir iteration completed (2026-10-31).** `libs/fs-records/knowledge/` delivered with `index.md`, `overview.md`, `components.md`, and `adr/adapter-contracts.md` (five decisions). Package lint, build, and 20/20 tests green; commit `2931de2` pushed to `origin/main`. See `./plan-add-fs-records-knowledge/instructions/add-knowledge-dir__report.md`.
 - The new `overview.md` cites both real consumers as usage evidence, and `index.md`'s Related Knowledge entries are backticked path-variable references (no checkout-escaping links).
+- **Verify-guide iteration completed (2026-10-31).** `libs/fs-records/_guide.md` now matches the real `src/` tree, and its Knowledge References point at `knowledge/index.md` and `knowledge/adr` — the ADR path was corrected from the non-existent `knowledge/records/adr`. Package lint, build, and 20/20 tests green; commit `6d16766` pushed to `origin/main`. See `./plan-add-fs-records-knowledge/instructions/verify-guide__report.md`.
+- The worker confirmed the dependency precondition held: `knowledge/index.md` already existed before it ran, so no blocker was raised.
 
 ### Findings
 
@@ -280,7 +292,7 @@ docs(fs-records): Add knowledge directory with overview, components, and ADR.
 
 ### Follow Ups
 
-- None.
+- **Wire `libs/fs-records/knowledge/index.md` into the repo-level `$PROJECT/knowledge/index.md`.** The repo index has no Package Knowledge References section yet; this plan's scope covered only the package-local knowledge, README, and guide. The `Update Knowledge` iterations of `Plan: Add Config`, `Plan: Add Logger`, and `Plan: Add Operations` each add such a row for their own package — add the fs-records row alongside them so the repo index lists all four packages consistently.
 
 ### Feedback
 

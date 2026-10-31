@@ -413,7 +413,7 @@ build(fs-records): Implement FSRecordsAdapter factory and tests.
 
 ### Knowledge to Update
 
-- ~~Generate `libs/fs-records/knowledge/`~~ — owned by `Plan: Add FS Records Knowledge` (`$PROJECT/_backlog/3-now/plan-add-fs-records-knowledge/plan.md`), `WORKING`.
+- ~~Generate `libs/fs-records/knowledge/`~~ — **delivered** by `Plan: Add FS Records Knowledge` (`$PROJECT/_backlog/1-done/plan-add-fs-records-knowledge/plan.md`), `DONE` 2026-10-31.
 
 ### Follow Ups
 

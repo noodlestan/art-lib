@@ -105,15 +105,15 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ## Items:
 
-| Phase | Resource / Record                                                                                             | Status    |
-| ----- | ------------------------------------------------------------------------------------------------------------- | --------- |
-| 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`    |
-| 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`    |
-| 1     | Plan: Add FS Records Adapter `_backlog/1-done/plan-add-fs-records-adapter/plan.md`                            | `DONE`    |
-| 1     | Plan: Add FS Records Knowledge `_backlog/3-now/plan-add-fs-records-knowledge/plan.md`                         | `WORKING` |
-| 1     | Plan: Add Config Package `_backlog/3-now/plan-add-config/plan.md`                                             | `READY`   |
-| 1     | Plan: Add Operations Package `_backlog/3-now/plan-add-operations/plan.md`                                     | `READY`   |
-| 1     | Plan: Add Logger Package `_backlog/3-now/plan-add-logger/plan.md`                                             | `READY`   |
+| Phase | Resource / Record                                                                                             | Status  |
+| ----- | ------------------------------------------------------------------------------------------------------------- | ------- |
+| 1     | Plan: Create Art Lib Project and Repo `_backlog/1-done/plan-create-art-lib-project-repo/plan.md`              | `DONE`  |
+| 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`  |
+| 1     | Plan: Add FS Records Adapter `_backlog/1-done/plan-add-fs-records-adapter/plan.md`                            | `DONE`  |
+| 1     | Plan: Add FS Records Knowledge `_backlog/1-done/plan-add-fs-records-knowledge/plan.md`                        | `DONE`  |
+| 1     | Plan: Add Config Package `_backlog/3-now/plan-add-config/plan.md`                                             | `READY` |
+| 1     | Plan: Add Operations Package `_backlog/3-now/plan-add-operations/plan.md`                                     | `READY` |
+| 1     | Plan: Add Logger Package `_backlog/3-now/plan-add-logger/plan.md`                                             | `READY` |
 
 ---
 
@@ -121,7 +121,7 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 
 ### Next
 
-- **Plan: Add FS Records Knowledge** is `WORKING` — its README iteration is `DONE`; delegate `Add FS Records Knowledge Dir` first, then `Verify FS Records Guide` (order corrected, see the plan). It no longer waits on Art Works feedback: two real consumers of `@art-lib/fs-records@0.0.3` are committed on `main` (`@art-works/workspace-cli`, `@art-js/tests/records`), which is the evidence base for the package knowledge.
+- **Plan: Add FS Records Knowledge** is `DONE` (2026-10-31) — all three iterations committed and pushed (`1b41ef3`, `2931de2`, `6d16766`). `@art-lib/fs-records` now ships a README documenting the adapter surface, a `_guide.md` matching the real `src/` layout, and a `knowledge/` directory grounded in its two real consumers (`@art-works/workspace-cli`, `@art-js/test-records`), both pinned to `@art-lib/fs-records@0.0.3` on `main`. One follow-up recorded: wire the package knowledge into the repo-level `knowledge/index.md` alongside the other packages.
 - **Plans: Add Config Package, Add Logger Package, Add Operations Package** are all `READY` with complete iterations and instructions — delegate their scaffold iterations next. Config is independent; Logger must land its `Message` interface before Operations' `Implement Operations Log`, and Operations' scaffold is gated on Logger's scaffold. Config's consumer-integration iteration stays gated on a published, consumable package.
 
 ### Blockers
