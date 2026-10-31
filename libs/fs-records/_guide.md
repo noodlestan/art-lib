@@ -6,15 +6,27 @@ The Art Lib FS Records package (`@art-lib/fs-records`) provides generic Art MD r
 
 Agents SHOULD scan these files for relevant clarifications when faced with ambiguity or omissions that may result from missing definitions.
 
-- `_guide.md` — the workspace CLI overview, plan workflow, and agent interactions.
-- `knowledge/index.md` — How the workspace CLI is structured, how it works, structures, use cases, and auxiliary functions.
+- `_guide.md` — this file: package overview, layout, and operating instructions.
+- `knowledge/index.md` — package purpose, layout, components, and design decisions.
 
 ## Package Layout
 
 ```
-knowledge/       — knowledge index, docs, decision records (records/adr)
-src/             — the CLI source (commands, config, shared, private)
+knowledge/       — knowledge index, docs, decision records (adr/)
+src/             — the package source (see tree below)
 CHANGELOG.md
+```
+
+Its `src/` layout:
+
+```
+src/
+├── adapter/      # FSRecordsAdapter factory and types
+├── discover/     # discoverRecordFiles and tests
+├── files/        # FSContentSource, types, readRecordFileContent
+├── private/      # internal helpers (glob, filter, gitignore)
+├── test/         # test helpers (config, tempDirs)
+└── index.ts      # public exports
 ```
 
 ## Records Management
@@ -28,8 +40,8 @@ Records are co-located with the resources they describe in `_records/` directori
 
 This package maintains:
 
-- knowledge reference at `knowledge/index.md` describing commands, models, reports, configuration, and logs.
-- decision records at `knowledge/records/adr`.
+- knowledge reference at `knowledge/index.md` describing the package purpose, layout, components, and design decisions.
+- decision records at `knowledge/adr`.
 
 ## Conventions
 
