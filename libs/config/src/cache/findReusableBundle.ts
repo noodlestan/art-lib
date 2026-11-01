@@ -1,10 +1,11 @@
 import { join } from 'node:path';
 
-import { CONFIG_BUNDLE_FILENAME } from './private/constants.js';
-import { hasUnchangedConfigInputs } from './private/hasUnchangedConfigInputs.js';
-import { isFilePresent } from './private/isFilePresent.js';
-import { readConfigCacheMeta } from './private/readConfigCacheMeta.js';
-import { tryHashConfigCacheInputs } from './private/tryHashConfigCacheInputs.js';
+import { CONFIG_BUNDLE_FILENAME } from '../private/constants.js';
+
+import { hasUnchangedConfigInputs } from './hasUnchangedConfigInputs.js';
+import { isFilePresent } from './isFilePresent.js';
+import { readConfigCacheMeta } from './readConfigCacheMeta.js';
+import { tryHashConfigCacheInputs } from './tryHashConfigCacheInputs.js';
 
 export async function findReusableBundle(
 	cacheDir: string,
@@ -32,6 +33,3 @@ export async function findReusableBundle(
 
 	return inputsUnchanged ? bundlePath : null;
 }
-
-export { readConfigCacheMeta } from './private/readConfigCacheMeta.js';
-export { isConfigCacheMeta } from './private/isConfigCacheMeta.js';

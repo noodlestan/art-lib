@@ -7,10 +7,11 @@ import { join } from 'node:path';
 import { build } from 'esbuild';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { compileConfig } from './compileConfig.js';
-import { importConfigModule } from './importConfigModule.js';
+import { compileConfig } from '../compile/compileConfig.js';
+import { importConfigModule } from '../module/importConfigModule.js';
+import type { ConfigCacheMeta } from '../types.js';
+
 import { loadConfigModule } from './loadConfigModule.js';
-import type { ConfigCacheMeta } from './types.js';
 
 vi.mock('esbuild', async importOriginal => {
 	const actual = await importOriginal<typeof import('esbuild')>();

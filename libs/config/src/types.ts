@@ -1,25 +1,25 @@
 import type * as esbuild from 'esbuild';
 
-export interface LoadConfigOptions {
+export type LoadConfigOptions = {
 	cacheDir?: string;
 	cache?: boolean;
 	baseDir?: string;
 	externals?: string[];
-}
+};
 
-export interface CompiledConfig {
+export type CompiledConfig = {
 	bundlePath: string;
 	metafile?: esbuild.Metafile;
-}
+};
 
-export interface ConfigCacheInput {
+export type ConfigCacheInput = {
 	path: string;
 	hash: string;
-}
+};
 
-export interface ConfigCacheMeta {
+export type ConfigCacheMeta = {
 	version: number;
 	compiledAt: string;
 	manifest: string;
 	inputs: ConfigCacheInput[];
-}
+};

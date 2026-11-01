@@ -2,9 +2,13 @@ import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
+import {
+	CONFIG_BUNDLE_FILENAME,
+	CONFIG_CACHE_FILENAME,
+	TEMP_DIR_PREFIX,
+} from '../private/constants.js';
 import type { ConfigCacheInput } from '../types.js';
 
-import { CONFIG_BUNDLE_FILENAME, CONFIG_CACHE_FILENAME, TEMP_DIR_PREFIX } from './constants.js';
 import { createConfigCacheMeta } from './createConfigCacheMeta.js';
 
 async function writeConfigArtifacts(

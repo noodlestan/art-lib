@@ -2,9 +2,8 @@ import { resolve } from 'node:path';
 
 import type { Metafile } from 'esbuild';
 
+import { hashConfigInputPaths } from '../private/hashConfigInputPaths.js';
 import type { ConfigCacheInput } from '../types.js';
-
-import { hashConfigInputPaths } from './hashConfigInputPaths.js';
 
 export async function hashConfigInputs(
 	metafile: Metafile,

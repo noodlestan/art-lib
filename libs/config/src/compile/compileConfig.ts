@@ -2,11 +2,12 @@ import { resolve } from 'node:path';
 
 import { type BuildOptions, build } from 'esbuild';
 
-import { getConfigExternals } from './private/getConfigExternals.js';
-import { hashConfigInputs } from './private/hashConfigInputs.js';
-import { resolveConfigBaseDir } from './private/resolveConfigBaseDir.js';
-import { writeConfigBundle } from './private/writeConfigBundle.js';
-import type { CompiledConfig, LoadConfigOptions } from './types.js';
+import { resolveConfigBaseDir } from '../private/resolveConfigBaseDir.js';
+import type { CompiledConfig, LoadConfigOptions } from '../types.js';
+
+import { getConfigExternals } from './getConfigExternals.js';
+import { hashConfigInputs } from './hashConfigInputs.js';
+import { writeConfigBundle } from './writeConfigBundle.js';
 
 export async function compileConfig(
 	entryPath: string,

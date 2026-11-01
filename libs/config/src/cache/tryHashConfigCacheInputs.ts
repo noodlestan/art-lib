@@ -1,9 +1,8 @@
 import { realpath } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
+import { hashConfigInputPaths } from '../private/hashConfigInputPaths.js';
 import type { ConfigCacheInput } from '../types.js';
-
-import { hashConfigInputPaths } from './hashConfigInputPaths.js';
 
 export async function tryHashConfigCacheInputs(
 	recordedInputs: ConfigCacheInput[],

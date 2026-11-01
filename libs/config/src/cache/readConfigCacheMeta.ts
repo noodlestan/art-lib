@@ -1,9 +1,9 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
+import { CONFIG_CACHE_FILENAME } from '../private/constants.js';
 import type { ConfigCacheMeta } from '../types.js';
 
-import { CONFIG_CACHE_FILENAME } from './constants.js';
 import { isConfigCacheMeta } from './isConfigCacheMeta.js';
 
 export async function readConfigCacheMeta(cacheDir: string): Promise<ConfigCacheMeta | null> {

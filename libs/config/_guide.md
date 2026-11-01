@@ -20,7 +20,13 @@ Its `src/` layout:
 
 ```
 src/
-└── index.ts    # public exports (placeholder; public surface lands in subsequent iterations)
+├── cache.ts               # findReusableBundle: content-hash cache reuse check
+├── compileConfig.ts       # esbuild bundle-at-runtime compilation
+├── importConfigModule.ts  # dynamic import of the compiled bundle
+├── loadConfigModule.ts    # orchestrator: reuse or compile, then import
+├── types.ts               # options, compiled result, and cache metadata types
+├── private/               # internal helpers (constants, hashing, cache meta, fs)
+└── index.ts               # public exports
 ```
 
 ## Records Management

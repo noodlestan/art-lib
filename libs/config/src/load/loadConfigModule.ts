@@ -1,8 +1,8 @@
-import { findReusableBundle } from './cache.js';
-import { compileConfig } from './compileConfig.js';
-import { importConfigModule } from './importConfigModule.js';
-import { resolveConfigBaseDir } from './private/resolveConfigBaseDir.js';
-import type { LoadConfigOptions } from './types.js';
+import { findReusableBundle } from '../cache/findReusableBundle.js';
+import { compileConfig } from '../compile/compileConfig.js';
+import { importConfigModule } from '../module/importConfigModule.js';
+import { resolveConfigBaseDir } from '../private/resolveConfigBaseDir.js';
+import type { LoadConfigOptions } from '../types.js';
 
 export async function loadConfigModule<T>(
 	entryPath: string,

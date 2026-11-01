@@ -14,18 +14,22 @@
   "author": "Noodlestan Collective",
   "license": "MIT",
   "private": false,
+  "files": [
+    "dist",
+    "LICENSE-MIT",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
   "type": "module",
+  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs"
     }
   },
-  "files": [
-    "dist",
-    "LICENSE-MIT",
-    "README.md"
-  ],
   "scripts": {
     "dev": "esbuild-cli-watch",
     "lint": "prettier . -c && eslint . && tsc --noEmit",
@@ -38,7 +42,7 @@
     "ci": "npm run lint && npm run build && npm run test:ci"
   },
   "dependencies": {
-    "esbuild": "^0.24.0"
+    "esbuild": "0.28.2"
   },
   "devDependencies": {}
 }

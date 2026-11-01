@@ -1,6 +1,6 @@
+import { CONFIG_CACHE_VERSION } from '../private/constants.js';
 import type { ConfigCacheMeta } from '../types.js';
 
-import { CONFIG_CACHE_VERSION } from './constants.js';
 import { isConfigCacheInput } from './isConfigCacheInput.js';
 
 export function isConfigCacheMeta(value: unknown): value is ConfigCacheMeta {
