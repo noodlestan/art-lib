@@ -2,7 +2,7 @@
 
 **ID:** `add-logger`
 
-**Status:** `READY`
+**Status:** `WORKING`
 
 **Template:** `.agents/domains/plans/templates/plan.tart`
 
@@ -64,7 +64,9 @@ Create `$PROJECT/libs/logger` exposing the message model (`Message`, creators) a
 
 ### Next
 
-- Planning complete: all five iterations are `READY` with instructions. Delegate Iteration: Scaffold Logger Package, Iteration: Implement Buffering Logger, Iteration: Apply Noodlestan Conventions (`MANUAL` commit), Iteration: Update Knowledge, then Iteration: Integrate in Consumer. No dependencies on other plans; land the `Message` interface before Plan: Add Operations Package implements its Operations Log.
+- **Iteration: Scaffold Logger Package** is `DONE` (`ac059a8`, pushed to `origin/main`) — `libs/logger/` exists as a policy-compliant package with both records, all build and ignore files, `LICENSE-MIT`, and `CHANGELOG.md`. No `README.md` or `knowledge/` yet; both belong to `Iteration: Update Knowledge`.
+- Next: **Iteration: Implement Buffering Logger** (`READY`, self-contained instruction file at `./plan-add-logger/instructions/implement-buffering-logger.md`) — the `Message` model with creators, `LoggerAPI`, `LogFormatter`, injectable `LogWriter`, and buffer-until-mode-set semantics. **This must land before `Plan: Add Operations Package`** implements its Operations Log, and before its scaffold, which declares a dependency on `@art-lib/logger`.
+- Then `Apply Noodlestan Conventions` (note: its commit is `MANUAL`, so it stages and reports rather than committing), `Update Knowledge`, and `Integrate in Consumer`, which will be **gated** on `@art-lib/logger` being published and consumable from the Art Works checkout.
 
 ### Blockers
 
@@ -122,7 +124,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 | Iteration / Instructions                | Status  |
 | --------------------------------------- | ------- |
-| Iteration: Scaffold Logger Package      | `READY` |
+| Iteration: Scaffold Logger Package      | `DONE`  |
 | Iteration: Implement Buffering Logger   | `READY` |
 | Iteration: Apply Noodlestan Conventions | `READY` |
 | Iteration: Update Knowledge             | `READY` |
@@ -132,7 +134,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 **Id:** `scaffold-logger-package`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Create the `logger` package skeleton before adding the module.
 
@@ -222,9 +224,9 @@ After executing:
 
 #### Commits:
 
-| ID                | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| ----------------- | ------------------------------ | ------------ | ------- | ---------- |
-| `scaffold-logger` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| ----------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `scaffold-logger` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `ac059a8` | `COMMITTED` |
 
 ##### Commit: `scaffold-logger`
 
@@ -481,11 +483,13 @@ refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.
 
 ### Evidence
 
-- `@art-lib/logger` builds, lints, and tests green from `$PROJECT/libs/logger`; buffering, modes, formatter, and writer covered by passing unit tests.
+- **Scaffold iteration completed (2026-11-01).** `libs/logger/` created as a fully policy-compliant package: `_records/package.art` written first, with the manifest rendered from it. `package.json` carries `repository` (https endpoint, repo-relative `directory`), `publishConfig` `{ "access": "public" }`, policy key order, and `files` with all three required artefacts; keywords are composed per the matrix — own `library, logging, messages` plus Art Lib's `art, terminal-apps` — with no set copied from another package. Build files present (`build.config.mjs`, `tsconfig.build.json`, `.prettierignore`, `.npmignore`), plus `LICENSE-MIT`, `CHANGELOG.md`, and both records (`npm-deployment.art` is `PLANNED`). The description is byte-identical between record and manifest; `npm run build` and a bare `npm run lint` both pass on a built tree; `npm pack --dry-run` lists LICENSE and CHANGELOG. Commit `ac059a8`.
+- **Pending — acceptance criteria for `Iteration: Implement Buffering Logger`** (the bullet below assumes the implementation is delivered, which it is not yet).
 
 ### Findings
 
 - Art Works and Art MD both implement the same buffering logger (quiet/verbose, buffer until mode set); the only variation is the log-line formatter and the writer target.
+- `libs/logger/package.json` omits the `dependencies` and `devDependencies` keys entirely, whereas `libs/fs-records` and `libs/config` both declare `"devDependencies": {}`. Policy does not require the key when a package has none, so this is not a compliance failure — only a sibling inconsistency. Harmless; align it if a later iteration touches the manifest.
 
 ### Decisions
 
@@ -500,6 +504,8 @@ refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.
 ### Follow Ups
 
 - `@art-works/workspace-cli` adoption is planned here (Iteration: Integrate in Consumer); `@art-md/bin` migrates in its own project.
+- **The keywords matrix row is staged in a different repository and is not committed.** `$WORKSPACE/checkouts/management` has `_ops/keywords/matrix.md` staged with the new `@art-lib/logger` row (own keywords only, per the matrix model). It lives in the management repo, not this one, and this plan prescribes a single commit — so the worker correctly left it staged. It needs its own commit in `checkouts/management` before the matrix is truthful again.
+- **`@art-lib/config` still has no row in that matrix**, and its manifest is missing `repository` and `publishConfig`. Both are tracked on `Plan: Add Config Package`'s Follow Ups and remain open.
 
 ### Feedback
 
