@@ -17,7 +17,8 @@
   "files": [
     "dist",
     "LICENSE-MIT",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "engines": {
     "node": ">=22"
