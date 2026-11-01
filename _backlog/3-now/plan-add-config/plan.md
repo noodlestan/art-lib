@@ -506,17 +506,17 @@ refactor(config): Restructure src into domain modules and complete package metad
 
 **Purpose:** Publish the package knowledge base and wire `@art-lib/config` into the repository artefacts.
 
-**Description:** Add a consumer-facing README and a package knowledge base, then update the repository knowledge, project record, and guide to list the package and link its knowledge. Commit as `docs(config): Add package knowledge base and README usage.`
+**Description:** Add a package knowledge base, correct the package guide against the post-restructure layout, and update the repository knowledge, project record, and guide to list the package and link its knowledge. Commit as `docs(config): Add package knowledge base and repository references.`
 
 **Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
 
 **Changes:**
 
-- `$PROJECT/libs/config/README.md` — consumer-facing `## Usage` following the pattern of `$WORKSPACE/checkouts/workspace-tooling/cli/esbuild-cli/README.md`: what it is, install, configure, example, options.
+- `$PROJECT/libs/config/README.md` — **already delivered, leave it as written** (commit `3f3a975`). It covers `loadConfigModule`, its four options, and the piecewise `findReusableBundle` → `compileConfig` → `importConfigModule` pipeline. Do not regenerate or overwrite it; your validation step below still checks it is self-sufficient.
 - `$PROJECT/libs/config/knowledge/` — package knowledge base following `$WORKSPACE/checkouts/art-md/cli/bin/knowledge`: at least `index.md`, `overview.md`, and `design/config.md`; add `adr/` records where decisions exist.
-- `$PROJECT/libs/config/_guide.md` — reference the local knowledge base (`knowledge/index.md`).
+- `$PROJECT/libs/config/_guide.md` — reference the local knowledge base (`knowledge/index.md`), **and correct the `## Package Layout` `src/` tree to the current domain layout**: `compile/`, `load/`, `module/`, `cache/`, `private/`, plus `index.ts` and `types.ts` at the root. The flat tree it currently shows (`cache.ts`, `compileConfig.ts`, `importConfigModule.ts`, `loadConfigModule.ts`) predates `Iteration: Restructure Config Package` and is stale. Also update its Knowledge References if it names paths that have moved.
 - `$PROJECT/knowledge/components.md` — move the Config entry to `IMPLEMENTED` and link its package knowledge.
-- `$PROJECT/knowledge/index.md` — add a Package Knowledge References row linking `libs/config/knowledge/index.md` (see `$WORKSPACE/checkouts/art-md/knowledge/index.md`).
+- `$PROJECT/knowledge/index.md` — add a Package Knowledge References row linking `libs/config/knowledge/index.md` (see `$WORKSPACE/checkouts/art-md/knowledge/index.md`). This repository's index has no such section yet — create it alongside the existing Documents, Design Documents, and Decision Records sections.
 - `$PROJECT/_records/project.art` — add `- Package: Art Lib Config` to Resources.
 - `$PROJECT/_guide.md` — list the package under the repository layout and its knowledge base under Knowledge References.
 - Keep `$PROJECT/knowledge/design/config.md` as the repository-level design record.
@@ -535,6 +535,7 @@ Before starting:
 Validate that:
 
 - The package knowledge links resolve and the README `## Usage` is self-sufficient for a new consumer.
+- The package guide's `## Package Layout` tree matches the actual `src/` domain layout — no flat-tree entries (`cache.ts`, `compileConfig.ts`, `loadConfigModule.ts`, `importConfigModule.ts` at the root) remain.
 - Every repository reference lists the package: `knowledge/index.md`, `knowledge/components.md`, `_records/project.art`, `_guide.md`.
 
 After executing:
@@ -543,10 +544,10 @@ After executing:
 - Commit `update-knowledge-config` with the blueprint message below.
 
 ```text
-docs(config): Add package knowledge base and README usage.
+docs(config): Add package knowledge base and repository references.
 
-- Add the package knowledge base, a consumer-facing README, and repository references.
-- Link the package knowledge from the repository knowledge index.
+- Create the package knowledge base and correct the guide's post-restructure layout.
+- Link the package knowledge from the repository knowledge index and records.
 ```
 
 **Dependencies:**
@@ -564,10 +565,10 @@ docs(config): Add package knowledge base and README usage.
 **Message:**
 
 ```text
-docs(config): Add package knowledge base and README usage.
+docs(config): Add package knowledge base and repository references.
 
-- Add the package knowledge base, a consumer-facing README, and repository references.
-- Link the package knowledge from the repository knowledge index.
+- Create the package knowledge base and correct the guide's post-restructure layout.
+- Link the package knowledge from the repository knowledge index and records.
 ```
 
 ### Iteration: Integrate in Consumer
