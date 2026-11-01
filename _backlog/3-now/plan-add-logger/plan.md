@@ -136,7 +136,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 **Purpose:** Create the `logger` package skeleton before adding the module.
 
-**Description:** Scaffold `$PROJECT/libs/logger` mirroring `libs/fs-records` conventions: `package.json` (root export; no internal dependencies — the logger knows only messages), tsconfig, vitest config, npm scripts, `_guide.md`, `_records/package.art`, `src/index.ts` placeholder.
+**Description:** Scaffold `$PROJECT/libs/logger` as a fully-formed, policy-compliant package: build files, a manifest derived from the package record under `$WORKSPACE/checkouts/management/_ops/packages/policy.md`, the metadata files, and both records. The logger knows only messages, so it declares no internal dependencies.
 
 **Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
 
@@ -144,26 +144,72 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 In `$PROJECT/libs/logger`
 
-- Create `package.json` — name `@art-lib/logger`, root export, no internal dependencies, scripts mirroring `libs/fs-records`.
-- Create `tsconfig.json` and vitest config extending the monorepo configs.
-- Create `src/index.ts` as placeholder entry point.
-- Create `_guide.md` describing the package and operating instructions.
-- Create `_records/package.art` mirroring `libs/fs-records/_records`.
+**1 — Build and tooling files.**
+
+- `tsconfig.json` and `vitest.config.ts` extending the monorepo configs, plus `tsconfig.build.json` for declaration emit (`dist/index.d.ts`).
+- `build.config.mjs` — the `esbuild-cli` build config: bundle `src/index.ts` → `dist/index.mjs` with declarations, `external: ['esbuild']`. **Required**: `npm run build` exits without it; `esbuild-cli` reads it next to `package.json`.
+- `.prettierignore` — `.coverage/`, `coverage/`, `env.d.ts`, `dist/`. Without it a bare `npm run lint` fails on `dist/` once the package has been built.
+- `.npmignore` — `*.test.ts`, `*.test.tsx`.
+- `src/index.ts` — placeholder entry point.
+
+**2 — `_records/package.art` first: it is the source of truth.**
+
+Mirror the shape of `libs/fs-records/_records/package.art`: Purpose, Description, Owner, Namespace, Author, Path, Canonical Name, Published `false`, Private `false`, Keywords, Language, Engines, PackageManager, PackageFile, License, Files. Write this before the manifest — the manifest is a _rendering_ of it.
+
+**3 — `package.json`: derive every field, never assemble one from parts.**
+
+Read `$WORKSPACE/checkouts/management/_ops/packages/policy.md` first. It is authoritative for which fields are required, what value each takes, and the exact key order.
+
+- `name` `@art-lib/logger`; `version` `0.0.1`; `private` `false`; `type` `module`; `sideEffects` `false`; `exports` root only (`./src/index.ts`); no internal dependencies.
+- `description` — copied from the `**Description:**` field of `_records/package.art`, verbatim. `author`, `engines`, and `files` likewise derive from the record.
+- `license` `MIT`; `engines.node` `>=22`; `publishConfig` `{ "access": "public" }`; `repository` with the https endpoint and `directory` set repo-relative to `libs/logger`. Both `repository` and `publishConfig` are mandatory for a public package.
+- `files` — `dist`, `README.md`, `LICENSE-MIT`, `CHANGELOG.md`. Policy requires the last three on every public package; `README.md` is listed here even though `Iteration: Update Knowledge` creates it later.
+- `keywords` — per `$WORKSPACE/checkouts/management/_ops/keywords/matrix.md`: this package's **own** keywords first, then the Art Lib project keywords `art, terminal-apps`, deduplicated, first occurrence wins. Never copy another package's keyword set.
+- Scripts mirroring `libs/fs-records`.
+- Key order must match the **Field Ordering** section of the policy exactly.
+
+**4 — Artefact relationships: one description, one keyword set, one canonical name, across every carrier.**
+
+- `_records/package.art` is the **source of truth**. Its description feeds `package.json` `description` and the README tagline; its keywords feed `package.json` `keywords` (composed with the project's per the matrix); its Author, Canonical Name, Path, Engines, and Files feed the matching manifest fields.
+- `_records/npm-deployment.art` is the **deployment record for the same canonical name** — `PLANNED` until the first publish, then `DEPLOYED`. Mirror `libs/fs-records/_records/npm-deployment.art`, set `Status` `PLANNED`, Canonical Name `@art-lib/logger`, Registry and Access as in the reference. It does not restate the description.
+- `README.md` (created later) opens with the canonical name as its H1 and the package description as its tagline, so a reader on npm sees the same sentence the record declares.
+- `_guide.md` (this iteration) describes the package and its operating instructions for agents, references the `knowledge/` directory that `Iteration: Update Knowledge` creates, and must not contradict the README.
+- The canonical name must appear identically in `package.json` `name`, both records' Canonical Name, the README H1, and the `_guide.md` prose. The manifest is a rendering of the records — never an independent source.
+
+**5 — `LICENSE-MIT` and `CHANGELOG.md`.**
+
+- `LICENSE-MIT` — copy verbatim from `libs/fs-records/LICENSE-MIT`.
+- `CHANGELOG.md` — `# CHANGELOG`, `## 0.0.1`, `### Added`.
+
+**6 — Add this package to the keywords matrix.**
+
+`$WORKSPACE/checkouts/management/_ops/keywords/matrix.md` has no row for `@art-lib/logger`. Add one under `## Art Lib` listing the package's **own** keywords only — the matrix stores own keywords, and the composed set is derived from them.
+
+**7 — Out of scope for this iteration.**
+
+Do **NOT** create `README.md` or `knowledge/` — `Iteration: Update Knowledge` owns both.
 
 **Instructions:**
 
 ::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
 
-Execute the Changes listed above, mirroring `libs/fs-records` conventions.
+Execute the Changes listed above.
 
 Before starting:
 
 - Run `npm ci` from the `$WORKSPACE` root.
+- Read `$WORKSPACE/checkouts/management/_ops/packages/policy.md` and `$WORKSPACE/checkouts/management/_ops/keywords/matrix.md` in full — the manifest and keywords must conform to them, not to your prior assumptions.
+- Read `$PROJECT/knowledge/design/logger.md` and `$PROJECT/_guide.md` for what this package must provide.
 
 Validate that:
 
-- `package.json` carries the name `@art-lib/logger`, the root export `./src/index.ts`, and the standard scripts.
-- No `node_modules` directory is created inside `$PROJECT/libs/logger`.
+- **Manifest conforms to policy:** every field the policy requires is present, including `repository` (https endpoint, repo-relative `directory`) and `publishConfig` `{ "access": "public" }`, and the key order matches the policy's **Field Ordering** section.
+- **Records and manifest agree:** `description`, `author`, `engines`, and `files` are byte-identical to what `_records/package.art` declares; the canonical name is identical across `package.json`, both records, and `_guide.md`.
+- **Keywords follow the matrix model:** own keywords + `art, terminal-apps`, deduplicated; the matrix now carries this package's row.
+- `npm run build` passes (`build.config.mjs` present) and `npm run lint` passes on the built tree (`.prettierignore` present).
+- `npm pack --dry-run` from `$PROJECT/libs/logger` lists `LICENSE-MIT` and `CHANGELOG.md`.
+- No `node_modules` directory exists inside `$PROJECT/libs/logger`.
+- No `README.md` and no `knowledge/` were created.
 
 After executing:
 
