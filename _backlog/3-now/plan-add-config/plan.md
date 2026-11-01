@@ -65,9 +65,9 @@ Create `$PROJECT/libs/config` exposing `loadConfigModule`, the lower-level `comp
 
 ### Next
 
-- **Iterations `Scaffold Config Package`, `Implement Config Loading`, `Implement Config Cache`, and `Apply Noodlestan Conventions` are `DONE`** (`ef23a68`, `b5de21e`, `92619ad`, plus the staged conventions work). Implementation and conventions are complete: 16/16 tests, and the cache acceptance criteria (unchanged fixture skips the esbuild build; `cache: false` forces a rebuild) are met.
-- Next: **Iteration: Restructure Config Package** — restructure `src/` into `compile/`/`load/`/`module/`/`cache/`, delete two dead `cache.ts` re-exports, complete the package metadata (`LICENSE-MIT`, `CHANGELOG.md`, `.npmignore`, `npm-deployment.art`, `sideEffects`, `engines`), verify no local `node_modules`, and commit **both** its own work and the five files already staged by the conventions iteration. Its commit is `restructure-config` (`AUTONOMOUS`).
-- After that: `Update Knowledge` (README + `knowledge/`, now dependent on the restructure), then `Integrate in Consumer`, which stays **gated** on `@art-lib/config` being published and consumable from the Art Works checkout.
+- **Five of seven iterations are `DONE`** — `ef23a68`, `b5de21e`, `92619ad`, `8f2d84e` (the last carrying the conventions work too). The package is structurally and functionally complete: `src/` split into `compile/`/`load/`/`module/`/`cache/` with only three cross-domain helpers in `private/`, no dead re-exports, metadata on parity with `libs/fs-records`, all 8 public symbols resolving, 16/16 tests green.
+- Next: **Iteration: Update Knowledge** (`READY`) — create `libs/config/README.md` and `libs/config/knowledge/`, correct `_guide.md`'s knowledge references, and wire the package into `knowledge/index.md`, `knowledge/components.md`, `_records/project.art`, and `$PROJECT/_guide.md`. Both missing artefacts from the restructure (`README.md`, `knowledge/`) are deliberately its scope.
+- Last: **Iteration: Integrate in Consumer**, which stays **gated** on `@art-lib/config` being published and consumable from the Art Works checkout — it will self-report a BLOCKER until a publish step exists.
 
 ### Blockers
 
@@ -129,11 +129,11 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration: Implement Config Loading     | `DONE`  |
 | Iteration: Implement Config Cache       | `DONE`  |
 | Iteration: Apply Noodlestan Conventions | `DONE`  |
-| Iteration: Restructure Config Package   | `READY` |
+| Iteration: Restructure Config Package   | `DONE`  |
 | Iteration: Update Knowledge             | `READY` |
 | Iteration: Integrate in Consumer        | `READY` |
 
-> `Iteration: Apply Noodlestan Conventions` is `DONE` with its work staged; its `MANUAL` commit is folded into `Iteration: Restructure Config Package`'s `restructure-config` commit.
+> `Iteration: Apply Noodlestan Conventions` committed no standalone message: its staged changes rode into `Restructure Config Package`'s `8f2d84e`, which both rows now carry.
 
 ### Iteration: Scaffold Config Package
 
@@ -349,9 +349,9 @@ style(config): Apply Noodlestan conventions.
 
 #### Commits:
 
-| ID                         | Repository / Checkout / Branch | Policy   | Hash    | Status     |
-| -------------------------- | ------------------------------ | -------- | ------- | ---------- |
-| `apply-conventions-config` | Art Lib / `$PROJECT` / `main`  | `MANUAL` | `(TBD)` | `AUTHORED` |
+| ID                         | Repository / Checkout / Branch | Policy   | Hash      | Status      |
+| -------------------------- | ------------------------------ | -------- | --------- | ----------- |
+| `apply-conventions-config` | Art Lib / `$PROJECT` / `main`  | `MANUAL` | `8f2d84e` | `COMMITTED` |
 
 ##### Commit: `apply-conventions-config`
 
@@ -363,13 +363,13 @@ style(config): Apply Noodlestan conventions.
 - Adopt the conventions that apply to the package and resolve audit findings.
 ```
 
-**Folded into `restructure-config`.** This iteration's work is complete and staged, but no separate commit is made under this ID: the staged changes are committed together with `Iteration: Restructure Config Package`, whose `Changes` describe them and whose `Instructions` deliberately exclude them. When that iteration commits, this row resolves to `COMMITTED` carrying `restructure-config`'s hash.
+**Folded into `restructure-config` — resolved 2026-11-01.** No separate commit was made under this ID: the staged changes were committed together with `Iteration: Restructure Config Package`, whose `Changes` described them and whose `Instructions` deliberately excluded them. The row therefore carries `8f2d84e`, the `restructure-config` hash. The `style(config)` message was never used as a standalone commit; the squash landed under the `refactor(config)` message.
 
 ### Iteration: Restructure Config Package
 
 **Id:** `restructure-config-package`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Restructure `libs/config/src` into domain modules, complete the package metadata, and land the staged conventions and dependency changes.
 
@@ -478,9 +478,9 @@ refactor(config): Restructure src into domain modules and complete package metad
 
 #### Commits:
 
-| ID                   | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| -------------------- | ------------------------------ | ------------ | ------- | ---------- |
-| `restructure-config` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                   | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| -------------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `restructure-config` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `8f2d84e` | `COMMITTED` |
 
 ##### Commit: `restructure-config`
 
@@ -493,6 +493,10 @@ refactor(config): Restructure src into domain modules and complete package metad
 - Complete the package metadata that `libs/fs-records` already carries.
 - Include the staged conventions changes and the esbuild `0.28.2` pin.
 ```
+
+**Hash:** `8f2d84e` — pushed to `origin/main` (`92619ad..8f2d84e`). Carries both Part B and the five Part A files staged by `Iteration: Apply Noodlestan Conventions`.
+
+**Status:** `COMMITTED`
 
 ### Iteration: Update Knowledge
 
@@ -652,7 +656,9 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 - **Scaffold iteration completed (2026-10-31).** `libs/config/` created (8 files) mirroring `libs/fs-records`; package, repo, and workspace `npm run ci` all green, pre-commit hooks passed. Commit `ef23a68` pushed to `origin/main`. See `./plan-add-config/instructions/scaffold-config-package__report.md`.
 - The worker correctly refused to run `npm install` inside `$PROJECT`, per the plan's Setting Up instructions.
 - **Config loading iteration completed (2026-11-01).** 9 source files in `libs/config/src/` (`types`, `compileConfig`, `importConfigModule`, `loadConfigModule`, 4 `private/` helpers, tests); 6/6 tests green, coverage 97.95/88.88/100/100. Commit `b5de21e` pushed to `origin/main`. See `./plan-add-config/instructions/implement-config-loading__report.md`.
-- **Verified non-blocking:** `libs/config/.prettierignore` was never scaffolded (both repo root and `libs/fs-records` carry one), so a bare `npm run lint` fails on `dist/`. The full Verifying Completion sequence still passes 4/4 because `lint:fix` runs first and `dist/` is gitignored (`**/dist`). Recorded as a follow-up, not a blocker.
+- **Verified non-blocking:** `libs/config/.prettierignore` was never scaffolded (both repo root and `libs/fs-records` carry one), so a bare `npm run lint` fails on `dist/`. The full Verifying Completion sequence still passes 4/4 because `lint:fix` runs first and `dist/` is gitignored (`**/dist`). Resolved by `Iteration: Apply Noodlestan Conventions`. Recorded as a follow-up, not a blocker.
+- **Restructure iteration completed (2026-11-01).** `src/` split into `compile/` (5), `cache/` (7), `load/` (2), `module/` (1) with only the three cross-domain helpers — `constants`, `resolveConfigBaseDir`, `hashConfigInputPaths` — left in `private/`. All moves via `git mv`. `cache.ts` renamed to `cache/findReusableBundle.ts` with both dead re-exports deleted. Metadata completed: `LICENSE-MIT`, `CHANGELOG.md`, `.npmignore`, `_records/npm-deployment.art` (`PLANNED`), `sideEffects: false`, `engines: node >=22`. Commit `8f2d84e` pushed to `origin/main`, carrying Part A's five staged files as well.
+- **Public API verified unchanged:** all 8 symbols (`loadConfigModule`, `compileConfig`, `importConfigModule`, `findReusableBundle`, and the four types) resolve from `src/index.ts` and in the built `dist/index.d.ts`; 16/16 tests pass; no re-export chain remains outside `index.ts`; no file declares more than one exported function. `npm pack --dry-run` now lists `LICENSE-MIT` (`README.md` correctly still absent — owned by `Update Knowledge`).
 - **Config cache iteration completed (2026-11-01).** `cache.ts` (`findReusableBundle`) plus 9 private helpers, cache reuse/bypass/degradation wired into `loadConfigModule`; 16/16 tests green, coverage 97/92.85/100/100. Commit `92619ad` pushed to `origin/main`. See `./plan-add-config/instructions/implement-config-cache__report.md`.
 - **Acceptance criteria met:** `@art-lib/config` builds, lints, and tests green from `$PROJECT/libs/config`; a second `loadConfigModule()` call with an unchanged fixture and a valid `cacheDir` skips the esbuild build; `cache: false` forces a rebuild. Both behaviours are covered by tests, so the bullet previously listed as pending is now delivered.
 
@@ -676,9 +682,10 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 ### Follow Ups
 
 - `@art-works/workspace-cli` adoption is planned here (Iteration: Integrate in Consumer); `plan-art-work-cli-global-install` remains tracked in `$ART_WORKS`.
-- **Refresh `package-lock.json` once `libs/config` has real dependencies.** The scaffold added `libs/config` to `workspaces: ["libs/**"]`, but the lockfile's `packages` map still lists only `libs/fs-records`, so turbo warns `Workspace 'libs/config' not found in lockfile`. Not a blocker today: no instruction runs `npm ci` inside `$PROJECT` (they run it from `$WORKSPACE` root), and the pre-commit hook runs the `npm run ci` _script_, which passes green. It does become a blocker for anyone running `npm ci` inside `$PROJECT` — refresh requires `npm install` in `$PROJECT`, which the plan's Setting Up forbids to `agent-worker`, so the delegator or plan owner must do it. _Surfaced by the scaffold worker; diagnosed 2026-10-31._
-- **Add `libs/config/.prettierignore`** mirroring the repo root and `libs/fs-records` (`.coverage/`, `coverage/`, `env.d.ts`, `dist/`). Without it a bare `npm run lint` from `$PACKAGE` fails on `dist/` build output; the standard Verifying Completion sequence survives only because `lint:fix` runs first and `dist/` is gitignored (`**/dist`). Belongs with `Iteration: Apply Noodlestan Conventions`, which owns lint/test wiring and convention-mandated files. _Surfaced by the config-loading worker; confirmed 2026-11-01._
-- **`libs/config/_guide.md` still describes `src/` as a placeholder `index.ts`** — now stale after the loading iteration. `Iteration: Update Knowledge` owns package knowledge and docs; correct the guide's Package Layout section alongside it. _Surfaced by the config-loading worker._
+- ~~Refresh `package-lock.json` once `libs/config` has real dependencies.~~ — **resolved 2026-11-01.** The esbuild `0.28.2` pin refreshed the lockfile; `libs/config` now appears in its `packages` map alongside `libs/fs-records`, `npm ls` resolves both workspaces, and the turbo warning is gone. The original concern — that `npm ci` inside `$PROJECT` would fail its sync check — no longer applies.
+- ~~Add `libs/config/.prettierignore`~~ — **resolved by `Iteration: Apply Noodlestan Conventions`** (`8f2d84e`): `.coverage/`, `coverage/`, `env.d.ts`, `dist/`, mirroring the repo root and `libs/fs-records`. A bare `npm run lint` from `$PACKAGE` now passes on a built tree.
+- **`libs/config/_guide.md` still describes `src/` as a placeholder `index.ts`** — the flat tree was corrected by `Apply Noodlestan Conventions`, but the post-restructure domain layout (`compile/`, `load/`, `module/`, `cache/`) now supersedes it again. `Iteration: Update Knowledge` must write the guide's Package Layout section against the **current** domain layout, not the flat one. _Surfaced by the config-loading worker; superseded by the restructure._
+- **The pre-commit hook recreates `libs/config/node_modules/.vite`** (vitest's ~8 KB cache directory) on every `turbo ci` run. It holds no dependencies — the esbuild-shadowing root cause is gone with the `0.28.2` pin — so this is cosmetic, but it means the iteration's "`node_modules` is absent" check only holds immediately after someone removes it. `node_modules/` is gitignored, so it never dirties the tree. Accepted for now; revisit if a real dependency ever nests there again. _Surfaced by the restructure worker, 2026-11-01._
 
 ### Feedback
 
