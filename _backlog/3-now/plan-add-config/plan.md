@@ -65,9 +65,9 @@ Create `$PROJECT/libs/config` exposing `loadConfigModule`, the lower-level `comp
 
 ### Next
 
-- **Iterations `Scaffold Config Package`, `Implement Config Loading`, and `Implement Config Cache` are `DONE`** (`ef23a68`, `b5de21e`, `92619ad`, all pushed to `origin/main`) — the implementation is complete: 16/16 tests green, coverage 97/92.85/100/100, and the plan's acceptance criteria (unchanged fixture skips the esbuild build; `cache: false` forces a rebuild) are covered by tests.
-- Next: **Iteration: Apply Noodlestan Conventions** — this one carries a `MANUAL` commit (`apply-conventions-config`): stage the changes, report the proposed message, do NOT commit. It also owns the two open follow-ups that fit its lint/test-wiring remit: adding `libs/config/.prettierignore` and declaring any installed conventions in `$PROJECT/_guide.md`.
-- Then `Update Knowledge` (includes correcting the stale `_guide.md` src tree) and `Integrate in Consumer`, which stays **gated** on `@art-lib/config` being published and consumable from the Art Works checkout.
+- **Iterations `Scaffold Config Package`, `Implement Config Loading`, `Implement Config Cache`, and `Apply Noodlestan Conventions` are `DONE`** (`ef23a68`, `b5de21e`, `92619ad`, plus the staged conventions work). Implementation and conventions are complete: 16/16 tests, and the cache acceptance criteria (unchanged fixture skips the esbuild build; `cache: false` forces a rebuild) are met.
+- Next: **Iteration: Restructure Config Package** — restructure `src/` into `compile/`/`load/`/`module/`/`cache/`, delete two dead `cache.ts` re-exports, complete the package metadata (`LICENSE-MIT`, `CHANGELOG.md`, `.npmignore`, `npm-deployment.art`, `sideEffects`, `engines`), verify no local `node_modules`, and commit **both** its own work and the five files already staged by the conventions iteration. Its commit is `restructure-config` (`AUTONOMOUS`).
+- After that: `Update Knowledge` (README + `knowledge/`, now dependent on the restructure), then `Integrate in Consumer`, which stays **gated** on `@art-lib/config` being published and consumable from the Art Works checkout.
 
 ### Blockers
 
@@ -128,9 +128,12 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration: Scaffold Config Package      | `DONE`  |
 | Iteration: Implement Config Loading     | `DONE`  |
 | Iteration: Implement Config Cache       | `DONE`  |
-| Iteration: Apply Noodlestan Conventions | `READY` |
+| Iteration: Apply Noodlestan Conventions | `DONE`  |
+| Iteration: Restructure Config Package   | `READY` |
 | Iteration: Update Knowledge             | `READY` |
 | Iteration: Integrate in Consumer        | `READY` |
+
+> `Iteration: Apply Noodlestan Conventions` is `DONE` with its work staged; its `MANUAL` commit is folded into `Iteration: Restructure Config Package`'s `restructure-config` commit.
 
 ### Iteration: Scaffold Config Package
 
@@ -295,7 +298,7 @@ build(config): Add content-hash config cache with bypass.
 
 **Id:** `apply-noodlestan-conventions`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Align `libs/config` with the Noodlestan conventions adopted in this workspace.
 
@@ -360,6 +363,137 @@ style(config): Apply Noodlestan conventions.
 - Adopt the conventions that apply to the package and resolve audit findings.
 ```
 
+**Folded into `restructure-config`.** This iteration's work is complete and staged, but no separate commit is made under this ID: the staged changes are committed together with `Iteration: Restructure Config Package`, whose `Changes` describe them and whose `Instructions` deliberately exclude them. When that iteration commits, this row resolves to `COMMITTED` carrying `restructure-config`'s hash.
+
+### Iteration: Restructure Config Package
+
+**Id:** `restructure-config-package`
+
+**Status:** `READY`
+
+**Purpose:** Restructure `libs/config/src` into domain modules, complete the package metadata, and land the staged conventions and dependency changes.
+
+**Description:** Move the four public modules out of the flat `src/` root into `compile/`, `load/`, `module/`, and `cache/`, relocating each module's single-domain private helpers beside it while keeping only cross-domain helpers in `src/private/`. Drop the two dead re-exports in `cache.ts`. Complete the package metadata that `libs/fs-records` carries and that `package.json` and `_records/package.art` already imply: `LICENSE-MIT`, `CHANGELOG.md`, `.npmignore`, `_records/npm-deployment.art`, plus `sideEffects` and `engines`. Commit the changes already staged by `Iteration: Apply Noodlestan Conventions` alongside this work. No behaviour or public-API change.
+
+**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+
+**Changes:**
+
+**Part A — already staged; committed by this iteration, but NOT yours to execute:**
+
+- `$PROJECT/libs/config/.prettierignore` — added by `Iteration: Apply Noodlestan Conventions`.
+- `$PROJECT/libs/config/_guide.md` — corrected `src/` tree.
+- `$PROJECT/libs/config/src/types.ts` — 4× `interface` → `type` (No Interface rule).
+- `$PROJECT/libs/config/package.json` — `esbuild` pinned to `0.28.2`, the canonical version in `$WORKSPACE/checkouts/management/_ops/packages/dependencies.md`. The previous `^0.24.0` range let npm resolve a second esbuild into `libs/config/node_modules/`, shadowing the monorepo root; the pin removes that cause.
+- `$PROJECT/package-lock.json` — refreshed for the pin.
+
+**Part B — execute this:**
+
+1. Restructure `$PROJECT/libs/config/src/` to the target layout below. Move files, update every import specifier, and keep the public surface identical.
+
+   ```text
+   src/
+   ├── index.ts                          # public entry — same 4 functions + 4 types
+   ├── types.ts                          # shared by several domains, stays at root
+   ├── compile/
+   │   ├── compileConfig.ts
+   │   └── getConfigExternals.ts, hashConfigInputs.ts,
+   │       writeConfigBundle.ts, createConfigCacheMeta.ts
+   ├── load/
+   │   ├── loadConfigModule.ts
+   │   └── loadConfigModule.test.ts
+   ├── module/
+   │   └── importConfigModule.ts
+   ├── cache/
+   │   ├── findReusableBundle.ts          # renamed from cache.ts
+   │   └── hasUnchangedConfigInputs.ts, isFilePresent.ts, readConfigCacheMeta.ts,
+   │       tryHashConfigCacheInputs.ts, isConfigCacheMeta.ts, isConfigCacheInput.ts
+   └── private/                           # cross-domain helpers ONLY
+       ├── constants.ts                   # cache + read + write
+       ├── resolveConfigBaseDir.ts        # compile + load
+       └── hashConfigInputPaths.ts        # compile + cache
+   ```
+
+   Placement rule applied: a helper goes beside the module that calls it, unless more than one module calls it, in which case it stays in `src/private/`.
+
+2. Rename `cache.ts` → `cache/findReusableBundle.ts` and **delete both dead re-exports**:
+
+   ```ts
+   export { readConfigCacheMeta } from './private/readConfigCacheMeta.js';
+   export { isConfigCacheMeta } from './private/isConfigCacheMeta.js';
+   ```
+
+   Neither is in `index.ts`, neither has a consumer, neither appears in a test, and `libs/fs-records` has no re-export chain outside its `index.ts`.
+
+3. Complete the package metadata, mirroring `$PROJECT/libs/fs-records`:
+
+   - `LICENSE-MIT` (new) — copy verbatim from `$PROJECT/libs/fs-records/LICENSE-MIT`.
+   - `CHANGELOG.md` (new) — `# CHANGELOG`, `## 0.0.1`, `### Added`, summarising the exported surface (`loadConfigModule`, `compileConfig`, `importConfigModule`, `findReusableBundle`, and the four option/cache types).
+   - `.npmignore` (new) — `*.test.ts` and `*.test.tsx`, mirroring `libs/fs-records`.
+   - `_records/npm-deployment.art` (new) — mirror the shape of `$PROJECT/libs/fs-records/_records/npm-deployment.art`, setting `Status` to `PLANNED` and `Canonical Name` to `@art-lib/config`. `PLANNED` is correct: the deployment status vocabulary is `PLANNED`, `PROVISIONED`, `DEPLOYED`, `FAILED`, and this package is not yet published.
+   - `package.json` — add `"sideEffects": false` and `"engines": { "node": ">=22" }`, matching `libs/fs-records` and the `**Engines:**` already declared in `_records/package.art`.
+   - Do **NOT** create `README.md` or `knowledge/` — `Iteration: Update Knowledge` owns both.
+
+4. Verify `$PROJECT/libs/config/node_modules` does **not** exist — check the filesystem, not `git status`, because `node_modules/` is gitignored and will never show as dirty. Remove it if present. With `esbuild` pinned to `0.28.2` (Part A), `npm ci` from the `$WORKSPACE` root no longer nests a second copy.
+
+5. Do not change runtime behaviour, the exported symbol names, or the public API.
+
+**Instructions:**
+
+::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
+
+Execute **Part B only**. Part A is already staged by the previous iteration: leave those five files exactly as they are and do not re-derive them — your commit will include them.
+
+Before starting:
+
+- Run `npm ci` from the `$WORKSPACE` root.
+- Read `$PROJECT/knowledge/design/config.md`; keep the package behaviour aligned with its contracts.
+
+Validate that:
+
+- Every exported symbol still resolves from `src/index.ts`: `loadConfigModule`, `compileConfig`, `importConfigModule`, `findReusableBundle`, `LoadConfigOptions`, `CompiledConfig`, `ConfigCacheInput`, `ConfigCacheMeta`.
+- No file outside `src/index.ts` contains an `export { … } from` or `export type { … } from` re-export chain.
+- No file declares more than one **exported** function. Unexported local helpers may be co-located — `libs/fs-records/src/private/filterByKinds.ts` is the precedent, and `writeConfigBundle.ts` / `hashConfigInputPaths.ts` already follow it. This constraint exists so the move does not create new multi-export modules, not to split existing helpers.
+- `npm run ci` passes from the `$WORKSPACE` root.
+- From `$PROJECT/libs/config/`: `npm run lint:fix`, `npm run lint`, `npm run build`, `npm run test` all pass (16/16).
+- `npm pack --dry-run` from `$PROJECT/libs/config` lists `LICENSE-MIT`. `README.md` will still be absent at this point — that is expected, because `Iteration: Update Knowledge` creates it.
+- `$PROJECT/libs/config/node_modules` is absent.
+
+After executing:
+
+- Execute the **Verifying Completion** instructions from the Operating Instructions section, from `$PROJECT/libs/config/`.
+- Stage **everything** — Part B's changes plus the five Part A files already staged — and commit with the blueprint message below. This commit carries policy `AUTONOMOUS`.
+
+```text
+refactor(config): Restructure src into domain modules and complete package metadata.
+
+- Move the four public modules into domain dirs and drop dead cache re-exports.
+- Complete the package metadata that `libs/fs-records` already carries.
+- Include the staged conventions changes and the esbuild `0.28.2` pin.
+```
+
+**Dependencies:**
+
+- Iteration: Apply Noodlestan Conventions — its changes are staged and are committed together with this iteration.
+
+#### Commits:
+
+| ID                   | Repository / Checkout / Branch | Policy       | Hash    | Status     |
+| -------------------- | ------------------------------ | ------------ | ------- | ---------- |
+| `restructure-config` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+
+##### Commit: `restructure-config`
+
+**Message:**
+
+```text
+refactor(config): Restructure src into domain modules and complete package metadata.
+
+- Move the four public modules into domain dirs and drop dead cache re-exports.
+- Complete the package metadata that `libs/fs-records` already carries.
+- Include the staged conventions changes and the esbuild `0.28.2` pin.
+```
+
 ### Iteration: Update Knowledge
 
 **Id:** `update-knowledge`
@@ -413,7 +547,7 @@ docs(config): Add package knowledge base and README usage.
 
 **Dependencies:**
 
-- Iteration: Apply Noodlestan Conventions.
+- Iteration: Restructure Config Package — README and `knowledge/` document the final source layout and package metadata, so the restructure must land first.
 
 #### Commits:
 
@@ -527,6 +661,8 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 - Art Works already implements esbuild bundle-at-runtime loading and is mid-flight adding a content-hash cache (`plan-add-config-cache` in `$ART_WORKS`) — its design and decisions (cache under `node_modules/`, content hash over mtime, graceful degradation, bypass refreshes the cache) are the proven basis for this package.
 
 ### Decisions
+
+- **`writeConfigBundle` and `createConfigCacheMeta` sit in `compile/`, not `cache/`.** The placement rule is mechanical — a helper goes beside the single module that calls it — and `compileConfig` is their only caller, so the import graph says `compile/`. Semantically they are the cache _write_ half and pair with `cache/`'s read half; the shared `src/private/constants.ts` is the cache-format contract between the two sides. Recorded because the semantic reading was considered and the mechanical one chosen. _2026-11-01._
 
 - **No conventions in the package** — config entry path, cache directory, and config shape are caller parameters; the workspace CLI keeps `.art-workspace.mts`, `node_modules/.art-workspace/`, and `defineConfig` on its side.
 - **Content hash (sha256 of every esbuild `metafile.inputs` entry), not mtime** — mtimes are unreliable across checkouts and container binds; input paths are recorded relative to `baseDir`.
