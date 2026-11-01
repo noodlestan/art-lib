@@ -20,3 +20,9 @@
 | Record                                 | Purpose                                                      |
 | -------------------------------------- | ------------------------------------------------------------ |
 | [adr/frameworks.md](adr/frameworks.md) | Adopted CLI frameworks: Commander, `@clack/prompts`, OpenTUI |
+
+## Package Knowledge References
+
+| Package | Knowledge Index                                                     |
+| ------- | ------------------------------------------------------------------- |
+| Config  | [libs/config/knowledge/index.md](../libs/config/knowledge/index.md) |

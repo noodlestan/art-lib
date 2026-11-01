@@ -22,6 +22,7 @@ _backlog/           — plans, instructions, reports
 _records/           — project, repository, namespace, and license records
 knowledge/          — repository-level knowledge
 libs/               — library packages
+libs/config/        — @art-lib/config: typed config loading (bundle-at-runtime, content-hash cache)
 ```
 
 ## Records Management
@@ -38,6 +39,7 @@ Records are co-located with the resources they describe in `_records/` directori
 This repository maintains knowledge references at:
 
 - `knowledge/index.md` — Repository-level knowledge.
+- `libs/config/knowledge/index.md` — Config package knowledge.
 
 ## Conventions
 

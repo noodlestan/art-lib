@@ -35,9 +35,11 @@ One logging interface for messages: a `Message` model with severity levels (`cre
 
 **Path:** `libs/config`
 
-**Status:** PLANNED
+**Status:** IMPLEMENTED
 
 Infrastructure for CLI implementors to load, compile, and cache typed config modules — esbuild bundle-at-runtime with a content-hash cache. Config entry path, cache directory, and config shape are caller-supplied; the authoring surface (`defineConfig`, config types) always stays in each consumer package.
+
+Delivered by `_backlog/3-now/plan-add-config/plan.md`; see the package knowledge at [libs/config/knowledge/index.md](../libs/config/knowledge/index.md).
 
 ### FS Records (`@art-lib/fs-records`)
 
