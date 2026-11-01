@@ -65,9 +65,10 @@ Create `$PROJECT/libs/config` exposing `loadConfigModule`, the lower-level `comp
 
 ### Next
 
-- **Six of seven iterations are `DONE`** — `ef23a68`, `b5de21e`, `92619ad`, `8f2d84e`, `3f3a975`, `21da36b`. The package is complete and fully wired: source, conventions, domain layout, metadata, README, package knowledge base, and every repository reference.
-- Last remaining: **Iteration: Integrate in Consumer** — refactor `$ART_WORKS/cli/workspace` to consume `@art-lib/config`. Its `GATE` will trip: it requires the package to be **published and installable** from the Art Works checkout, and no publish step exists in this plan. Expect `REPORT A BLOCKER` with "config package not published/consumable yet" until one is added.
-- To lift the gate: publish `@art-lib/config` (it is at `0.0.1`, `_records/npm-deployment.art` is `PLANNED`, and `files` now carries all four entries), or add a local-link install step for `$ART_WORKS`.
+- **Six of eight iterations are `DONE`** — `ef23a68`, `b5de21e`, `92619ad`, `8f2d84e`, `3f3a975`, `21da36b`. The package is complete, policy-compliant, documented, and wired into every repository artefact. It is **not published and not installed anywhere**.
+- Next: **Iteration: Publish Config Package** (`READY`, added 2026-11-01) — publish `@art-lib/config@0.0.1`, flip both records to the deployed state, and commit `publish-config`. This iteration exists because the plan originally gated `Integrate in Consumer` on publishing while providing no way to publish; it is the missing step.
+- Then **Iteration: Integrate in Consumer** — its GATE now reads against `Publish Config Package` being `DONE`, so it becomes executable once the registry serves `0.0.1`.
+- Publishing is irreversible: a bad `0.0.1` requires a bump, and unpublishing is restricted. The iteration hard-stops on any precondition failure and on a two-factor one-time-password challenge rather than retrying.
 
 ### Blockers
 
@@ -131,11 +132,12 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration: Apply Noodlestan Conventions | `DONE`  |
 | Iteration: Restructure Config Package   | `DONE`  |
 | Iteration: Update Knowledge             | `DONE`  |
+| Iteration: Publish Config Package       | `READY` |
 | Iteration: Integrate in Consumer        | `READY` |
 
 > `Iteration: Apply Noodlestan Conventions` committed no standalone message: its staged changes rode into `Restructure Config Package`'s `8f2d84e`, which both rows now carry.
 >
-> **Six of seven iterations are `DONE`.** The only remaining item, `Integrate in Consumer`, is **gated** on `@art-lib/config` being published and installable from the Art Works checkout — it self-reports a BLOCKER until a publish step exists.
+> **Six of eight iterations are `DONE`.** `Publish Config Package` was added 2026-11-01 to lift the gate that had left `Integrate in Consumer` unreachable — the plan originally contained a gated iteration with no publish step to satisfy it. Publishing `0.0.1` is what unblocks the final iteration.
 
 ### Iteration: Scaffold Config Package
 
@@ -577,6 +579,84 @@ docs(config): Add package knowledge base and repository references.
 
 **Status:** `COMMITTED`
 
+### Iteration: Publish Config Package
+
+**Id:** `publish-config-package`
+
+**Status:** `READY`
+
+**Purpose:** Publish `@art-lib/config@0.0.1` to the public registry and record the deployment, lifting `Integrate in Consumer`'s gate.
+
+**Description:** Publish the first version and flip both records to their deployed state. No version bump and no CHANGELOG edit are needed — this is the first publish, `version` is already `0.0.1`, and `CHANGELOG.md` already documents `## 0.0.1`. The release commit therefore carries only the record updates, the same shape as `release(fs-records): 0.0.3`, which carried the state change rather than code.
+
+**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+
+**Changes:**
+
+1. Verify every publish precondition **before** touching the registry. Any failure is a `REPORT A BLOCKER`, not something to work around:
+   - `npm whoami` returns an account permitted to publish `@art-lib/*` (currently `noodlestan`).
+   - `npm view @art-lib/config version` fails with `ENOTFOUND` — `0.0.1` must not already exist. A published version is immutable, so a mistake requires a bump and a new publish.
+   - `$PACKAGE/package.json` carries `version` `0.0.1`, `private` `false`, `publishConfig` `{ "access": "public" }`, and `files` listing `dist`, `README.md`, `LICENSE-MIT`, `CHANGELOG.md`.
+   - All four `files` entries exist on disk, and the manifest conforms to `$WORKSPACE/checkouts/management/_ops/packages/policy.md`.
+2. `npm pack --dry-run` from `$PACKAGE`, and confirm the tarball contains `package.json`, `dist/index.mjs`, `dist/index.d.ts`, `README.md`, `LICENSE-MIT`, and `CHANGELOG.md`.
+3. `npm publish --access public` from `$PACKAGE`. If the registry demands a one-time password for two-factor authentication, **do not retry and do not unpublish** — `REPORT A BLOCKER` that publishing requires an OTP and stop.
+4. Confirm the publish landed: `npm view @art-lib/config version` returns `0.0.1`, `npm view @art-lib/config dependencies` shows `esbuild` pinned `0.28.2`, and the description and keywords match the record.
+5. Update both records to the deployed state:
+   - `$PROJECT/libs/config/_records/package.art` — `**Published:**` from `false` to `true`.
+   - `$PROJECT/libs/config/_records/npm-deployment.art` — `**Status:**` from `PLANNED` to `DEPLOYED`.
+6. Do not change `version` or `CHANGELOG.md`.
+
+**Instructions:**
+
+::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
+
+Execute the Changes listed above.
+
+**This iteration publishes a public and immutable artefact.** Treat the step-1 preconditions as hard stops: if any fails, `REPORT A BLOCKER` and do not attempt a workaround. Never unpublish.
+
+Before starting:
+
+- Run `npm ci` from the `$WORKSPACE` root.
+- Read `$WORKSPACE/checkouts/management/_ops/packages/policy.md` — the manifest must already conform before it ships.
+
+Validate that:
+
+- The registry serves `@art-lib/config@0.0.1` with the expected `description`, `keywords`, `engines`, and `dependencies`.
+- Both records reflect the deployed state: `_records/package.art` `Published` `true`, `_records/npm-deployment.art` `Status` `DEPLOYED`.
+- `version` and `CHANGELOG.md` are untouched.
+- `npm run ci` still passes from the `$WORKSPACE` root.
+
+After executing:
+
+- Execute the **Verifying Completion** instructions from the Operating Instructions section, from `$PROJECT/libs/config/`.
+- Commit `publish-config` with the blueprint message below.
+
+```text
+release(config): Publish 0.0.1 to npm.
+
+- Record the first publish: `Published` true, deployment `DEPLOYED`.
+```
+
+**Dependencies:**
+
+- Iteration: Update Knowledge — the published package must ship the README its registry listing and consumers reference.
+
+#### Commits:
+
+| ID               | Repository / Checkout / Branch | Policy       | Hash    | Status     |
+| ---------------- | ------------------------------ | ------------ | ------- | ---------- |
+| `publish-config` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+
+##### Commit: `publish-config`
+
+**Message:**
+
+```text
+release(config): Publish 0.0.1 to npm.
+
+- Record the first publish: `Published` true, deployment `DEPLOYED`.
+```
+
 ### Iteration: Integrate in Consumer
 
 **Id:** `integrate-in-consumer`
@@ -603,7 +683,7 @@ In `$ART_WORKS` (Art Works repository checkout)
 
 ::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
 
-**GATE — do not start until the package is consumable:** Iterations `Scaffold Config Package`, `Implement Config Loading`, `Implement Config Cache`, `Apply Noodlestan Conventions` (including its MANUAL commit), and `Update Knowledge` must be complete. The resulting `@art-lib/config` package version must be published to npm (or the agreed package registry) and installable from the Art Works checkout; verify it exposes the documented API before proceeding. This consumer-integration iteration is deliberately excluded from the gate. If the package is not yet available or the API is missing, REPORT A BLOCKER with "config package not published/consumable yet" and STOP.
+**GATE — do not start until the package is consumable:** `Iteration: Publish Config Package` must be `DONE` and `@art-lib/config@0.0.1` must be installable from the Art Works checkout; verify it exposes the documented API before proceeding. The preceding iterations are a prerequisite only insofar as they produced what was published. This consumer-integration iteration is deliberately excluded from the gate. If the package is not yet available or the API is missing, REPORT A BLOCKER with "config package not published/consumable yet" and STOP.
 
 Execute the Changes listed above, keeping the CLI behaviour identical.
 
@@ -630,7 +710,7 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 
 **Dependencies:**
 
-- Iteration: Update Knowledge.
+- Iteration: Publish Config Package — the Art Works checkout installs the published version, so publishing is the direct prerequisite.
 
 #### Commits:
 
