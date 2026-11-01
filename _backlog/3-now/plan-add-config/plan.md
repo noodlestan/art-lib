@@ -65,10 +65,9 @@ Create `$PROJECT/libs/config` exposing `loadConfigModule`, the lower-level `comp
 
 ### Next
 
-- **Six of eight iterations are `DONE`** — `ef23a68`, `b5de21e`, `92619ad`, `8f2d84e`, `3f3a975`, `21da36b`. The package is complete, policy-compliant, documented, and wired into every repository artefact. It is **not published and not installed anywhere**.
-- Next: **Iteration: Publish Config Package** (`READY`, added 2026-11-01) — publish `@art-lib/config@0.0.1`, flip both records to the deployed state, and commit `publish-config`. This iteration exists because the plan originally gated `Integrate in Consumer` on publishing while providing no way to publish; it is the missing step.
-- Then **Iteration: Integrate in Consumer** — its GATE now reads against `Publish Config Package` being `DONE`, so it becomes executable once the registry serves `0.0.1`.
-- Publishing is irreversible: a bad `0.0.1` requires a bump, and unpublishing is restricted. The iteration hard-stops on any precondition failure and on a two-factor one-time-password challenge rather than retrying.
+- **Seven of eight iterations are `DONE`.** `@art-lib/config@0.0.1` is **published and live on npm** — verified against the registry: description, keywords (`library, config, esbuild, cli, tooling` + `art, terminal-apps`), `engines`, `sideEffects`, `publishConfig`, `esbuild 0.28.2`, and the root export all match the record. `_records/package.art` reads `Published: true` and `_records/npm-deployment.art` reads `DEPLOYED`; `version` and `CHANGELOG.md` were correctly left untouched.
+- Next: **Iteration: Integrate in Consumer** — its gate has genuinely lifted, so it is now executable for the first time. It refactors `$ART_WORKS/cli/workspace` to consume `@art-lib/config`, deleting the CLI's duplicated compile/cache/import modules, and commits in the Art Works repository as `refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.`
+- That is the last iteration. Completing it closes `Plan: Add Config Package` and moves it to `_backlog/1-done/`.
 
 ### Blockers
 
@@ -132,12 +131,12 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration: Apply Noodlestan Conventions | `DONE`  |
 | Iteration: Restructure Config Package   | `DONE`  |
 | Iteration: Update Knowledge             | `DONE`  |
-| Iteration: Publish Config Package       | `READY` |
+| Iteration: Publish Config Package       | `DONE`  |
 | Iteration: Integrate in Consumer        | `READY` |
 
 > `Iteration: Apply Noodlestan Conventions` committed no standalone message: its staged changes rode into `Restructure Config Package`'s `8f2d84e`, which both rows now carry.
 >
-> **Six of eight iterations are `DONE`.** `Publish Config Package` was added 2026-11-01 to lift the gate that had left `Integrate in Consumer` unreachable — the plan originally contained a gated iteration with no publish step to satisfy it. Publishing `0.0.1` is what unblocks the final iteration.
+> **Seven of eight iterations are `DONE`.** `Publish Config Package` was added 2026-11-01 to lift the gate that had left `Integrate in Consumer` unreachable — the plan originally contained a gated iteration with no publish step to satisfy it. `@art-lib/config@0.0.1` is now live on npm, so the final iteration's gate has genuinely lifted.
 
 ### Iteration: Scaffold Config Package
 
@@ -583,7 +582,7 @@ docs(config): Add package knowledge base and repository references.
 
 **Id:** `publish-config-package`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Publish `@art-lib/config@0.0.1` to the public registry and record the deployment, lifting `Integrate in Consumer`'s gate.
 
@@ -643,9 +642,9 @@ release(config): Publish 0.0.1 to npm.
 
 #### Commits:
 
-| ID               | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| ---------------- | ------------------------------ | ------------ | ------- | ---------- |
-| `publish-config` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID               | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| ---------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `publish-config` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `d13ce6c` | `COMMITTED` |
 
 ##### Commit: `publish-config`
 
@@ -656,6 +655,10 @@ release(config): Publish 0.0.1 to npm.
 
 - Record the first publish: `Published` true, deployment `DEPLOYED`.
 ```
+
+**Hash:** `d13ce6c` — pushed to `origin/main`. Carries only the two record updates: the registry action itself has no file to record beyond them.
+
+**Status:** `COMMITTED`
 
 ### Iteration: Integrate in Consumer
 
@@ -748,6 +751,7 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 - **Public API verified unchanged:** all 8 symbols (`loadConfigModule`, `compileConfig`, `importConfigModule`, `findReusableBundle`, and the four types) resolve from `src/index.ts` and in the built `dist/index.d.ts`; 16/16 tests pass; no re-export chain remains outside `index.ts`; no file declares more than one exported function. `npm pack --dry-run` now lists `LICENSE-MIT` (`README.md` correctly still absent — owned by `Update Knowledge`).
 - **README delivered separately (2026-11-01).** `libs/config/README.md` — written against the package's own API and type-checked against the built `dist` surface, not copied from `libs/fs-records`. Ships in the tarball (`3f3a975`); `CHANGELOG.md` was added to `files` and `_records/package.art` in `ac46bdb` after it transpired the restructure spec had omitted that. Both were pre-empting `Update Knowledge`, which therefore executed only its remaining changes.
 - **Update Knowledge iteration completed (2026-11-01).** `libs/config/knowledge/{index,overview,design/config,adr/config}.md` created (5 decisions recorded); `_guide.md`'s stale flat `src/` tree corrected to the domain layout with no flat entries remaining; repo wiring complete — new `Package Knowledge References` section in `knowledge/index.md`, Config moved to `IMPLEMENTED` in `knowledge/components.md`, `Package: Art Lib Config` added to `_records/project.art`, and both the layout and knowledge references added to `$PROJECT/_guide.md`. `README.md` validated and left untouched. Commit `21da36b` pushed to `origin/main`.
+- **Published (2026-11-01).** `@art-lib/config@0.0.1` is live on `https://registry.npmjs.org` — confirmed by `npm view` after the fact: description, composed keywords, `engines`, `sideEffects`, `publishConfig.access`, `esbuild 0.28.2`, the root export, and `license` all match the record. Records flipped to `Published: true` and `DEPLOYED` in commit `d13ce6c`, which carries only those two edits — `version` stayed `0.0.1` and `CHANGELOG.md` was not touched, since both were already correct for a first publish. npm normalized `repository.url` to the `git+https://` form in the published manifest; the local file is unchanged.
 - **Config cache iteration completed (2026-11-01).** `cache.ts` (`findReusableBundle`) plus 9 private helpers, cache reuse/bypass/degradation wired into `loadConfigModule`; 16/16 tests green, coverage 97/92.85/100/100. Commit `92619ad` pushed to `origin/main`. See `./plan-add-config/instructions/implement-config-cache__report.md`.
 - **Acceptance criteria met:** `@art-lib/config` builds, lints, and tests green from `$PROJECT/libs/config`; a second `loadConfigModule()` call with an unchanged fixture and a valid `cacheDir` skips the esbuild build; `cache: false` forces a rebuild. Both behaviours are covered by tests, so the bullet previously listed as pending is now delivered.
 
