@@ -122,12 +122,12 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 ### Next
 
 - **Plan: Add FS Records Knowledge** is `DONE` (2026-10-31) — all three iterations committed and pushed (`1b41ef3`, `2931de2`, `6d16766`). `@art-lib/fs-records` now ships a README documenting the adapter surface, a `_guide.md` matching the real `src/` layout, and a `knowledge/` directory grounded in its two real consumers (`@art-works/workspace-cli`, `@art-js/test-records`), both pinned to `@art-lib/fs-records@0.0.3` on `main`. One follow-up recorded: wire the package knowledge into the repo-level `knowledge/index.md` alongside the other packages.
-- **Plan: Add Config Package** is `WORKING` — six of seven iterations `DONE` (`ef23a68`, `b5de21e`, `92619ad`, `8f2d84e`, `3f3a975`, `21da36b`). The package is complete and fully wired: source in a domain layout, conventions applied, metadata on parity with `libs/fs-records`, README, package knowledge base, and every repository reference. Its final iteration, `Integrate in Consumer`, is **gated** on `@art-lib/config` being published and installable from the Art Works checkout — no publish step exists yet, so it will self-report a BLOCKER.
+- **Plan: Add Config Package** is `WORKING` — seven of eight iterations `DONE`, and **`@art-lib/config@0.0.1` is published and live on npm** (`d13ce6c`, records now `Published: true` / `DEPLOYED`). The package is complete, policy-compliant, documented, and wired into every repository artefact. Only **Iteration: Integrate in Consumer** remains: refactor `$ART_WORKS/cli/workspace` onto the package and retire its duplicated compile/cache/import modules. Its gate has lifted, so it is executable for the first time. Note a publish iteration had to be added on 2026-11-01 — the plan originally gated this step on publishing while providing no way to publish.
 - **Plans: Add Logger Package and Add Operations Package** are `READY` with complete iterations and instructions — delegate their scaffolds next. Logger must land its `Message` interface before Operations' `Implement Operations Log`, and Operations' scaffold is gated on Logger's scaffold. These two are unaffected by the config publish gate.
 
 ### Blockers
 
-- None. The FS Records Adapter plan is complete and `@art-lib/fs-records@0.0.3` carries the agreed names, so the residual naming risk is closed. Config consumer integration remains gated on the package implementation being complete and a consumable version being published.
+- None. The FS Records Adapter plan is complete and `@art-lib/fs-records@0.0.3` carries the agreed names, so the residual naming risk is closed. `@art-lib/config@0.0.1` was published on 2026-11-01 (`d13ce6c`), which lifted the gate that had made its `Integrate in Consumer` iteration unreachable — that iteration is now executable and is the sole remaining item in the plan.
 
 ---
 
