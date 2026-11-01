@@ -1,0 +1,51 @@
+{
+  "name": "@art-lib/logger",
+  "version": "0.0.1",
+  "description": "Create and log messages with a buffering logger: quiet and verbose output modes, an injected formatter, and an injectable log writer.",
+  "keywords": [
+    "library",
+    "logging",
+    "messages",
+    "art",
+    "terminal-apps"
+  ],
+  "author": "Noodlestan Collective",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/noodlestan/art-lib.git",
+    "directory": "libs/logger"
+  },
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE-MIT",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "dev": "esbuild-cli-watch",
+    "lint": "prettier . -c && eslint . && tsc --noEmit",
+    "lint:fix": "prettier . -c --write && eslint . --fix",
+    "build": "esbuild-cli",
+    "build:clean": "rm -rf dist",
+    "test": "vitest run",
+    "test:ci": "vitest run --coverage",
+    "test:watch": "vitest",
+    "ci": "npm run lint && npm run build && npm run test:ci"
+  }
+}

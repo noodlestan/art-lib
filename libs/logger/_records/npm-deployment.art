@@ -1,0 +1,17 @@
+# Module
+
+## NPM Package Deployment: Art Lib Logger
+
+**Owner:** Package: Art Lib Logger
+
+**Status:** `PLANNED`
+
+**Build:** Deployment Build: NPM Command
+
+**Deploy:** Deployment Command: NPM Package CLI
+
+**Canonical Name:** `@art-lib/logger`
+
+**Registry:** `https://registry.npmjs.org`
+
+**Access:** `public`

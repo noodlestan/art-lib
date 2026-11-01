@@ -1,0 +1,48 @@
+# Module
+
+## Package: Art Lib Logger
+
+**Purpose:** Buffering logger and message model for CLIs.
+
+**Description:** Create and log messages with a buffering logger: quiet and verbose output modes, an injected formatter, and an injectable log writer.
+
+**Owner:** Project: Art Lib
+
+**Namespace:** Namespace: Art Lib
+
+**Author:** Noodlestan Collective
+
+**Path:** `libs/logger/`
+
+**Canonical Name:** `@art-lib/logger`
+
+**Published:** `false`
+
+**Private:** `false`
+
+**Keywords:**
+
+- library
+- logging
+- messages
+- art
+- terminal-apps
+
+**Language:** TypeScript
+
+**Engines:**
+
+- Node: `>= 22`
+
+**PackageManager:** `npm@10.2.3`
+
+**PackageFile:** `package.json`
+
+**License:** License: Noodlestan 2026 MIT
+
+**Files:**
+
+- `dist`
+- `README.md`
+- `LICENSE-MIT`
+- `CHANGELOG.md`
