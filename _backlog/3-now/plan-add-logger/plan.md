@@ -66,7 +66,8 @@ Create `$PROJECT/libs/logger` exposing the message model (`Message`, creators) a
 
 - **Three iterations are `DONE`, all pushed to `origin/main`:** Scaffold (`ac059a8`), Implement Buffering Logger (`b9c7dbb`), Apply Noodlestan Conventions (`4408461`). `libs/logger/` exposes the `Message` model with creators and the buffering `createLogger()` with `quiet`/`verbose` modes, injected formatter, and injectable writer, now refactored to the TypeScript and unit-test conventions (one exported function per file, `type` over `interface`, named option types, `src/private/` helpers); 23 tests green. The message model has landed, so `Plan: Add Operations Package` is unblocked. Still no `README.md` or `knowledge/` — both belong to `Iteration: Update Knowledge`.
 - Next: **Iteration: Update Knowledge** (`READY`, instructions inlined in the plan) — consumer-facing `README.md`, the package `knowledge/`, and the repository references (`knowledge/components.md`, `knowledge/index.md`, `_records/project.art`, both `_guide.md` files).
-- Then `Integrate in Consumer`, which is **gated** on `@art-lib/logger` being published and consumable from the Art Works checkout — no iteration in this plan publishes the package (tracked under `### Follow Ups`).
+- Then **Iteration: Publish Logger Package** (`READY`, `publish-logger-package`, added 2026-11-02) — publishes `@art-lib/logger@0.0.1` and flips both records to `Published: true` / `DEPLOYED`, which is what lifts `Integrate in Consumer`'s gate.
+- Finally `Integrate in Consumer` — its gate now reads on the publish iteration (config-style), not on the whole plan being `DONE`.
 
 ### Blockers
 
@@ -128,6 +129,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration: Implement Buffering Logger   | `DONE`  |
 | Iteration: Apply Noodlestan Conventions | `DONE`  |
 | Iteration: Update Knowledge             | `READY` |
+| Iteration: Publish Logger Package       | `READY` |
 | Iteration: Integrate in Consumer        | `READY` |
 
 ### Iteration: Scaffold Logger Package
@@ -421,6 +423,78 @@ docs(logger): Add package knowledge base and README usage.
 - Link the package knowledge from the repository knowledge index.
 ```
 
+### Iteration: Publish Logger Package
+
+**Id:** `publish-logger-package`
+
+**Status:** `READY`
+
+**Purpose:** Publish `@art-lib/logger@0.0.1` to the public registry and record the deployment, lifting `Integrate in Consumer`'s gate.
+
+**Description:** Publish the first version and flip both records to their deployed state. No version bump and no CHANGELOG edit are needed — this is the first publish, `version` is already `0.0.1`, and `CHANGELOG.md` already documents `## 0.0.1`. The release commit therefore carries only the record updates, the same shape as `release(fs-records): 0.0.3`, which carried the state change rather than code. Added after `Iteration: Update Knowledge`, mirroring `Plan: Add Config Package`'s `publish-config-package`, so `Integrate in Consumer` has a gate it can actually lift.
+
+**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+
+**Changes:**
+
+1. Verify every publish precondition **before** touching the registry. Any failure is a `REPORT A BLOCKER`, not something to work around:
+   - `npm whoami` returns an account permitted to publish `@art-lib/*` (currently `noodlestan`).
+   - `npm view @art-lib/logger version` fails with `ENOTFOUND` — `0.0.1` must not already exist. A published version is immutable, so a mistake requires a bump and a new publish.
+   - `$PROJECT/libs/logger/package.json` carries `version` `0.0.1`, `private` `false`, `publishConfig` `{ "access": "public" }`, and `files` listing `dist`, `README.md`, `LICENSE-MIT`, `CHANGELOG.md`.
+   - All four `files` entries exist on disk, and the manifest conforms to `$WORKSPACE/checkouts/management/_ops/packages/policy.md`.
+2. `npm pack --dry-run` from `$PROJECT/libs/logger`, and confirm the tarball contains `package.json`, `dist/index.mjs`, `dist/index.d.ts`, `README.md`, `LICENSE-MIT`, and `CHANGELOG.md`.
+3. `npm publish --access public` from `$PROJECT/libs/logger`. If the registry demands a one-time password for two-factor authentication, **do not retry and do not unpublish** — `REPORT A BLOCKER` that publishing requires an OTP and stop.
+4. Confirm the publish landed: `npm view @art-lib/logger version` returns `0.0.1`, and the description, keywords, and `engines` match `_records/package.art`.
+5. Update both records to the deployed state:
+   - `$PROJECT/libs/logger/_records/package.art` — `**Published:**` from `false` to `true`.
+   - `$PROJECT/libs/logger/_records/npm-deployment.art` — `**Status:**` from `PLANNED` to `DEPLOYED`.
+6. Do not change `version` or `CHANGELOG.md`.
+
+**Instructions:**
+
+::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
+
+Execute the Changes listed above.
+
+**This iteration publishes a public and immutable artefact.** Treat the step-1 preconditions as hard stops: if any fails, `REPORT A BLOCKER` and do not attempt a workaround. Never unpublish.
+
+Before starting:
+
+- Run `npm ci` from the `$WORKSPACE` root.
+- Read `$WORKSPACE/checkouts/management/_ops/packages/policy.md` — the manifest must already conform before it ships.
+
+Validate that:
+
+- The registry serves `@art-lib/logger@0.0.1` with the expected `description`, `keywords`, and `engines`.
+- Both records reflect the deployed state: `_records/package.art` `Published` `true`, `_records/npm-deployment.art` `Status` `DEPLOYED`.
+- `version` and `CHANGELOG.md` are untouched.
+- `npm run ci` still passes from the `$WORKSPACE` root.
+
+After executing:
+
+- Execute the **Verifying Completion** instructions from the Operating Instructions section, from `$PROJECT/libs/logger/`.
+- Commit `publish-logger` with the blueprint message below.
+
+**Dependencies:**
+
+- Iteration: Update Knowledge — the published package must ship the README its registry listing and consumers reference.
+
+#### Commits:
+
+| ID               | Repository / Checkout / Branch | Policy       | Hash    | Status     |
+| ---------------- | ------------------------------ | ------------ | ------- | ---------- |
+| `publish-logger` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+
+##### Commit: `publish-logger`
+
+**Message:**
+
+```text
+release(logger): Publish 0.0.1 to npm.
+
+- Record the first publish: `Published` true, deployment `DEPLOYED`.
+```
+
 ### Iteration: Integrate in Consumer
 
 **Id:** `integrate-in-consumer`
@@ -446,7 +520,7 @@ In `$WORKSPACE/checkouts/art-works` (Art Works repository)
 
 ::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
 
-**GATE — do not start if the gate has not lifted:** this iteration requires the whole `@art-lib/logger` plan to be `DONE`, including the `MANUAL` conventions commit. If `$PROJECT/libs/logger` does not expose the landed API, REPORT A BLOCKER with "logger package not landed yet" and STOP.
+**GATE — do not start until the package is consumable:** `Iteration: Publish Logger Package` must be `DONE` and `@art-lib/logger@0.0.1` must be installable from the Art Works checkout; verify it exposes the documented API before proceeding. The preceding iterations are a prerequisite only insofar as they produced what was published. This consumer-integration iteration is deliberately excluded from the gate. If the package is not yet available or the API is missing, REPORT A BLOCKER with "logger package not published/consumable yet" and STOP.
 
 Execute the Changes listed above, keeping the CLI behaviour identical.
 
@@ -465,7 +539,7 @@ After executing:
 
 **Dependencies:**
 
-- Iteration: Update Knowledge.
+- Iteration: Publish Logger Package.
 
 #### Commits:
 
@@ -518,7 +592,7 @@ refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.
 
 ### Follow Ups
 
-- **No iteration in this plan publishes `@art-lib/logger`.** `Iteration: Integrate in Consumer` is gated on the package being published and consumable from the Art Works checkout — and its gate also demands the whole plan be `DONE`, which cannot happen from inside the plan. `Plan: Add Config Package` hit the same trap and fixed it by adding a `publish-config-package` iteration; decide before delegating `Integrate in Consumer` whether this plan gets a publish iteration or the gate is reworded.
+- ~~**No iteration in this plan publishes `@art-lib/logger`.**~~ — **resolved 2026-11-02.** `Iteration: Publish Logger Package` (`publish-logger-package`) was added between `Update Knowledge` and `Integrate in Consumer`, mirroring `Plan: Add Config Package`'s `publish-config-package`, and `Integrate in Consumer`'s gate now reads on it instead of on the whole plan being `DONE`.
 - `$PROJECT/knowledge/design/logger.md` still calls `Message` an **interface** after `Iteration: Apply Noodlestan Conventions` converted it to a `type`. The record stays repository-level (per `Iteration: Update Knowledge`), but its wording must follow the code.
 - `@art-works/workspace-cli` adoption is planned here (Iteration: Integrate in Consumer); `@art-md/bin` migrates in its own project.
 - **The keywords matrix row is staged in a different repository and is not committed.** `$WORKSPACE/checkouts/management` has `_ops/keywords/matrix.md` staged with the new `@art-lib/logger` row (own keywords only, per the matrix model). It lives in the management repo, not this one, and this plan prescribes a single commit — so the worker correctly left it staged. It needs its own commit in `checkouts/management` before the matrix is truthful again.
