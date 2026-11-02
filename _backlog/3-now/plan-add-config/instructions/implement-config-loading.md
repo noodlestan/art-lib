@@ -48,7 +48,7 @@ Implement typed config authoring and esbuild bundle-at-runtime loading. `loadCon
 - `$PROJECT/_guide.md` — repository layout, records management, conventions, and operating instructions.
 - `$PROJECT/libs/fs-records/_guide.md` — package layout and conventions to mirror.
 - `$PROJECT/knowledge/components.md` — package components and planned packages.
-- `$PROJECT/knowledge/design/config.md` — API and behavioral contracts for config loading.
+- `$PROJECT/libs/config/knowledge/design/api.md` — API and behavioral contracts for config loading.
 
 - RULE: You MUST follow any links under `## Mandatory Reading` sections found in the listed files.
 - RULE: If you are unable to read a file linked under `## Mandatory Reading` you must stop and REPORT A BLOCKER.

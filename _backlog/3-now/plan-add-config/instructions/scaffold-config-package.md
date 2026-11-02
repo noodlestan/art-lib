@@ -48,7 +48,7 @@ Create the `@art-lib/config` package skeleton mirroring `libs/fs-records` conven
 - `$PROJECT/_guide.md` — repository layout, records management, conventions, and operating instructions.
 - `$PROJECT/libs/fs-records/_guide.md` — package layout and conventions to mirror.
 - `$PROJECT/knowledge/components.md` — package components and planned packages.
-- `$PROJECT/knowledge/design/config.md` — package API and behavioral contracts to preserve.
+- `$PROJECT/libs/config/knowledge/design/api.md` — package API and behavioral contracts to preserve.
 
 - RULE: You MUST follow any links under `## Mandatory Reading` sections found in the listed files.
 - RULE: If you are unable to read a file linked under `## Mandatory Reading` you must stop and REPORT A BLOCKER.

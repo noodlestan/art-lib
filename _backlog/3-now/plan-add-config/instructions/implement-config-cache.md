@@ -48,7 +48,7 @@ Add a content-hash cache inside the caller-supplied `cacheDir` (`config.bundle.m
 - `$PROJECT/_guide.md` — repository layout, records management, conventions, and operating instructions.
 - `$PROJECT/libs/fs-records/_guide.md` — package layout and conventions to mirror.
 - `$PROJECT/knowledge/components.md` — package components and planned packages.
-- `$PROJECT/knowledge/design/config.md` — cache filenames, metadata, invalidation, bypass, and fallback contracts.
+- `$PROJECT/libs/config/knowledge/design/api.md` — cache filenames, metadata, invalidation, bypass, and fallback contracts.
 
 - RULE: You MUST follow any links under `## Mandatory Reading` sections found in the listed files.
 - RULE: If you are unable to read a file linked under `## Mandatory Reading` you must stop and REPORT A BLOCKER.

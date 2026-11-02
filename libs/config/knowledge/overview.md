@@ -20,15 +20,22 @@ CLIs want typed config modules (for example, `art-workspace.mts`) without asking
 
 ## Consumers
 
-`@art-works/workspace-cli` and `@art-js/test-records` consume published `@art-lib/*` packages pinned at `0.0.3` today (`@art-lib/fs-records`). The Art Workspace Cli is the first committed consumer of `@art-lib/config`: its planned adoption (Iteration: Integrate in Consumer in `_backlog/3-now/plan-add-config/plan.md`) replaces its private compile/cache/import pipeline with this package while keeping its config conventions — `defineConfig`, `.art-workspace.mts`, `node_modules/.art-workspace/` — on its side.
+`@art-works/workspace-cli` is now a **real consumer**: it adopts the published `@art-lib/config@0.0.1`, replacing its private compile/cache/import pipeline with this package's decomposed API (`findReusableBundle`, `compileConfig`, `importConfigModule`). It keeps its own conventions on its side — `defineConfig`, the `.art-workspace.mts` manifest at the workspace root, the cache under `node_modules/.art-workspace/`, and the `--no-config-cache` bypass. Adoption landed in `checkouts/art-works` as `9cabc4f`, released as `@art-works/workspace-cli@0.3.1`.
+
+`@art-js/test-records` consumes `@art-lib/fs-records@0.0.3`; `@art-works/workspace-cli` consumes that package too. Both are pinned to published versions.
 
 ## Use Cases
 
-- Load a config module with caching: `loadConfigModule(entryPath, { cacheDir })`
-- Compile without caching: `loadConfigModule(entryPath)` — a temp-dir bundle
-- Force a fresh compile that warms the cache: `loadConfigModule(entryPath, { cacheDir, cache: false })`
-- Add consumer-specific externals: `loadConfigModule(entryPath, { cacheDir, externals: ['simple-git'] })`
-- Custom wiring: `findReusableBundle` → `compileConfig` → `importConfigModule`
+| #   | Use case        | Behaviour                                                                                                                                                      |
+| --- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Load**        | `loadConfigModule(entryPath, { cacheDir })` resolves the entry, reuses or compiles it, imports the bundle, and returns the default export typed as `T`.        |
+| 2   | **Compile**     | esbuild bundle-at-runtime: `bundle`, `write: false`, `format: 'esm'`, `platform: 'node'`, `metafile: true`; the bundle and metadata are written to `cacheDir`. |
+| 3   | **Cache reuse** | Read `config.cache.json` (version-guarded, shape-guarded), verify the bundle exists, re-hash every recorded input (sha256), reuse only while all match.        |
+| 4   | **Bypass**      | `cache: false` skips the reuse check, rebuilds, and refreshes the cache so the next run is warm.                                                               |
+| 5   | **Degrade**     | Unwritable cache → warn and fall back to a temp-dir bundle; caching never fails the run.                                                                       |
+| 6   | **Import**      | `import(pathToFileURL(bundlePath))`; take `.default`; the consumer narrows to its own config type.                                                             |
+
+A missing entry, schema defaults, normalisation, and any user-facing message are **consumer policies**, not package concerns. The surface behind these cases is documented in [`design/api.md`](design/api.md).
 
 ## How It Works
 

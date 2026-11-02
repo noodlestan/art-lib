@@ -8,9 +8,9 @@
 
 ## Design Documents
 
-| Document                             | Purpose                                                                |
-| ------------------------------------ | ---------------------------------------------------------------------- |
-| [design/config.md](design/config.md) | Loading pipeline, cache contract, degradation paths, and domain layout |
+| Document                       | Purpose                                              |
+| ------------------------------ | ---------------------------------------------------- |
+| [design/api.md](design/api.md) | Published surface, cache contract, and usage samples |
 
 ## Decision Records
 

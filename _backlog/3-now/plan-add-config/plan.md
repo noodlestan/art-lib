@@ -53,7 +53,7 @@ Create `@art-lib/config` with `loadConfigModule<T>(entryPath, options?)`: esbuil
 
 ### Knowledge
 
-::READ `$PROJECT/knowledge/design/config.md` (Design) — Consumer requirements from the Art Workspace Cli and its config-cache plan. Relevant for Planning Work Item.
+::READ `$PROJECT/libs/config/knowledge/design/api.md` (Design) — Consumer requirements from the Art Workspace Cli and its config-cache plan. Relevant for Planning Work Item.
 
 ::READ `$PROJECT/knowledge/index.md` (Model) — Package layout and publishing conventions. Relevant for Planning Work Item.
 
@@ -325,7 +325,7 @@ Execute the Changes listed above, keeping the package behaviour identical.
 Before starting:
 
 - Run `npm ci` from the `$WORKSPACE` root.
-- Read `$PROJECT/knowledge/design/config.md`; keep the package behavior aligned with its contracts while applying conventions.
+- Read `$PROJECT/libs/config/knowledge/design/api.md`; keep the package behavior aligned with its contracts while applying conventions.
 
 Validate that:
 
@@ -449,7 +449,7 @@ Execute **Part B only**. Part A is already staged by the previous iteration: lea
 Before starting:
 
 - Run `npm ci` from the `$WORKSPACE` root.
-- Read `$PROJECT/knowledge/design/config.md`; keep the package behaviour aligned with its contracts.
+- Read `$PROJECT/libs/config/knowledge/design/api.md`; keep the package behaviour aligned with its contracts.
 
 Validate that:
 
@@ -521,7 +521,7 @@ refactor(config): Restructure src into domain modules and complete package metad
 - `$PROJECT/knowledge/index.md` — add a Package Knowledge References row linking `libs/config/knowledge/index.md` (see `$WORKSPACE/checkouts/art-md/knowledge/index.md`). This repository's index has no such section yet — create it alongside the existing Documents, Design Documents, and Decision Records sections.
 - `$PROJECT/_records/project.art` — add `- Package: Art Lib Config` to Resources.
 - `$PROJECT/_guide.md` — list the package under the repository layout and its knowledge base under Knowledge References.
-- Keep `$PROJECT/knowledge/design/config.md` as the repository-level design record.
+- ~~Keep `$PROJECT/knowledge/design/config.md` as the repository-level design record.~~ — **superseded 2026-11-01.** That repository-level record was retired; the consumer requirements it carried were folded into the package, which now owns `$PROJECT/libs/config/knowledge/design/api.md` (surface, cache contract, and usage samples), with the use-cases table in `knowledge/overview.md`.
 
 **Instructions:**
 
@@ -532,7 +532,7 @@ Execute the Changes listed above.
 Before starting:
 
 - Run `npm ci` from the `$WORKSPACE` root.
-- Read `$PROJECT/knowledge/design/config.md` and preserve its package boundaries and loading/cache contracts.
+- Read `$PROJECT/libs/config/knowledge/design/api.md` and preserve its package boundaries and loading/cache contracts.
 
 Validate that:
 
@@ -694,7 +694,7 @@ Execute the Changes listed above, keeping the CLI behaviour identical.
 Before starting:
 
 - Run `npm ci` from `$ART_WORKS`.
-- Read `$PROJECT/knowledge/design/config.md` and preserve its consumer/package boundary and API contracts.
+- Read `$PROJECT/libs/config/knowledge/design/api.md` and preserve its consumer/package boundary and API contracts.
 
 Validate that:
 
@@ -768,7 +768,6 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 ### Decisions
 
 - **`writeConfigBundle` and `createConfigCacheMeta` sit in `compile/`, not `cache/`.** The placement rule is mechanical — a helper goes beside the single module that calls it — and `compileConfig` is their only caller, so the import graph says `compile/`. Semantically they are the cache _write_ half and pair with `cache/`'s read half; the shared `src/private/constants.ts` is the cache-format contract between the two sides. Recorded because the semantic reading was considered and the mechanical one chosen. _2026-11-01._
-
 - **No conventions in the package** — config entry path, cache directory, and config shape are caller parameters; the workspace CLI keeps `.art-workspace.mts`, `node_modules/.art-workspace/`, and `defineConfig` on its side.
 - **Content hash (sha256 of every esbuild `metafile.inputs` entry), not mtime** — mtimes are unreliable across checkouts and container binds; input paths are recorded relative to `baseDir`.
 - **Degrade gracefully** — an unwritable cache falls back to a temp-dir bundle with a warning; caching never fails the run.
@@ -780,14 +779,7 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 
 ### Follow Ups
 
-- ~~`@art-works/workspace-cli` adoption is planned here (Iteration: Integrate in Consumer)~~ — **resolved 2026-11-02**: adopted in `9cabc4f`; `plan-art-work-cli-global-install` remains tracked in `$ART_WORKS`.
-- A `runSanity`/`runSync` 5s-timeout flake under machine load reproduces on the Art Works clean tree (pre-existing, unrelated to this plan) — consider triaging in `$ART_WORKS`.
-- ~~Refresh `package-lock.json` once `libs/config` has real dependencies.~~ — **resolved 2026-11-01.** The esbuild `0.28.2` pin refreshed the lockfile; `libs/config` now appears in its `packages` map alongside `libs/fs-records`, `npm ls` resolves both workspaces, and the turbo warning is gone. The original concern — that `npm ci` inside `$PROJECT` would fail its sync check — no longer applies.
-- ~~Add `libs/config/.prettierignore`~~ — **resolved by `Iteration: Apply Noodlestan Conventions`** (`8f2d84e`): `.coverage/`, `coverage/`, `env.d.ts`, `dist/`, mirroring the repo root and `libs/fs-records`. A bare `npm run lint` from `$PACKAGE` now passes on a built tree.
-- ~~`libs/config/_guide.md` still describes `src/` as a placeholder `index.ts`~~ — **resolved across two iterations**: the flat tree was corrected by `Apply Noodlestan Conventions`, then `Update Knowledge` re-corrected it to the post-restructure **domain** layout (`compile/`, `load/`, `module/`, `cache/`, `private/`) after the restructure superseded it again. Verified 2026-11-01: no flat entries remain.
-- ~~Manifest does not conform to `$WORKSPACE/checkouts/management/_ops/packages/policy.md`.~~ — **resolved 2026-11-01.** `repository` (https endpoint, repo-relative `directory`) and `publishConfig` `{ "access": "public" }` added in policy order. All three packages now report no missing fields and correct key order.
-- ~~`keywords` are not ratified in the matrix.~~ — **resolved 2026-11-01 — and the original reading was wrong.** The matrix model is: a row carries the package's **own** keywords only, while the record and manifest carry the **composed** set (own first, then the project's `art, terminal-apps`, deduplicated). Config's record and manifest were already byte-identical composed sets, so `cli, tooling` were config's _own_ keywords — legitimate for a CLI-serving library, exactly as `fs-records` carries them — not copied project keywords. Nothing was wrong with the values; the only gap was the missing row, now added to `_ops/keywords/matrix.md`.
-- **The pre-commit hook recreates `libs/config/node_modules/.vite`** (vitest's ~8 KB cache directory) on every `turbo ci` run. It holds no dependencies — the esbuild-shadowing root cause is gone with the `0.28.2` pin — so this is cosmetic, but it means the iteration's "`node_modules` is absent" check only holds immediately after someone removes it. `node_modules/` is gitignored, so it never dirties the tree. Accepted for now; revisit if a real dependency ever nests there again. _Surfaced by the restructure worker, 2026-11-01._
+- None
 
 ### Feedback
 
