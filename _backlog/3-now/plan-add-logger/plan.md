@@ -64,9 +64,9 @@ Create `$PROJECT/libs/logger` exposing the message model (`Message`, creators) a
 
 ### Next
 
-- **Iteration: Scaffold Logger Package** is `DONE` (`ac059a8`, pushed to `origin/main`) — `libs/logger/` exists as a policy-compliant package with both records, all build and ignore files, `LICENSE-MIT`, and `CHANGELOG.md`. No `README.md` or `knowledge/` yet; both belong to `Iteration: Update Knowledge`.
-- Next: **Iteration: Implement Buffering Logger** (`READY`, self-contained instruction file at `./plan-add-logger/instructions/implement-buffering-logger.md`) — the `Message` model with creators, `LoggerAPI`, `LogFormatter`, injectable `LogWriter`, and buffer-until-mode-set semantics. **This must land before `Plan: Add Operations Package`** implements its Operations Log, and before its scaffold, which declares a dependency on `@art-lib/logger`.
-- Then `Apply Noodlestan Conventions` (note: its commit is `MANUAL`, so it stages and reports rather than committing), `Update Knowledge`, and `Integrate in Consumer`, which will be **gated** on `@art-lib/logger` being published and consumable from the Art Works checkout.
+- **Iteration: Scaffold Logger Package** is `DONE` (`ac059a8`) and **Iteration: Implement Buffering Logger** is `DONE` (`b9c7dbb`, pushed to `origin/main`) — `libs/logger/` now exposes the `Message` model with creators and the buffering `createLogger()` with `quiet`/`verbose` modes, injected formatter, and injectable writer; 23 tests green. The message model has landed, so `Plan: Add Operations Package` is unblocked. No `README.md` or `knowledge/` yet; both belong to `Iteration: Update Knowledge`.
+- Next: **Iteration: Apply Noodlestan Conventions** (`READY`, instructions inlined in the plan) — note its commit is `MANUAL`, so the worker stages and reports rather than committing.
+- Then `Update Knowledge`, and `Integrate in Consumer`, which will be **gated** on `@art-lib/logger` being published and consumable from the Art Works checkout.
 
 ### Blockers
 
@@ -125,7 +125,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration / Instructions                | Status  |
 | --------------------------------------- | ------- |
 | Iteration: Scaffold Logger Package      | `DONE`  |
-| Iteration: Implement Buffering Logger   | `READY` |
+| Iteration: Implement Buffering Logger   | `DONE`  |
 | Iteration: Apply Noodlestan Conventions | `READY` |
 | Iteration: Update Knowledge             | `READY` |
 | Iteration: Integrate in Consumer        | `READY` |
@@ -243,7 +243,7 @@ scaffold(logger): Scaffold package skeleton.
 
 **Id:** `implement-buffering-logger`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Implement the message model and the buffering logger with output modes, injected formatter, and injectable writer.
 
@@ -252,6 +252,10 @@ scaffold(logger): Scaffold package skeleton.
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
 **Instructions:** `./plan-add-logger/instructions/implement-buffering-logger.md`
+
+**Report:** `./plan-add-logger/instructions/implement-buffering-logger__report.md`
+
+**Delegation:** `COMPLETED` — worker session `ses_e665a175bffeDPtatbSqXuup5o`.
 
 **Changes:**
 
@@ -270,9 +274,9 @@ In `$PROJECT/libs/logger/src/`
 
 #### Commits:
 
-| ID                     | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| ---------------------- | ------------------------------ | ------------ | ------- | ---------- |
-| `add-buffering-logger` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                     | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| ---------------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `add-buffering-logger` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `b9c7dbb` | `COMMITTED` |
 
 ##### Commit: `add-buffering-logger`
 
@@ -284,6 +288,10 @@ build(logger): Add message model and buffering logger.
 - Add `Message` creators, `LoggerAPI`, injected formatter, and injectable writer.
 - Buffer messages until the output mode is set; cover `quiet`/`verbose` with tests.
 ```
+
+**Hash:** `b9c7dbb` — pushed to `origin/main`.
+
+**Status:** `COMMITTED`
 
 ### Iteration: Apply Noodlestan Conventions
 
@@ -484,12 +492,14 @@ refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.
 ### Evidence
 
 - **Scaffold iteration completed (2026-11-01).** `libs/logger/` created as a fully policy-compliant package: `_records/package.art` written first, with the manifest rendered from it. `package.json` carries `repository` (https endpoint, repo-relative `directory`), `publishConfig` `{ "access": "public" }`, policy key order, and `files` with all three required artefacts; keywords are composed per the matrix — own `library, logging, messages` plus Art Lib's `art, terminal-apps` — with no set copied from another package. Build files present (`build.config.mjs`, `tsconfig.build.json`, `.prettierignore`, `.npmignore`), plus `LICENSE-MIT`, `CHANGELOG.md`, and both records (`npm-deployment.art` is `PLANNED`). The description is byte-identical between record and manifest; `npm run build` and a bare `npm run lint` both pass on a built tree; `npm pack --dry-run` lists LICENSE and CHANGELOG. Commit `ac059a8`.
-- **Pending — acceptance criteria for `Iteration: Implement Buffering Logger`** (the bullet below assumes the implementation is delivered, which it is not yet).
+- **Buffering logger iteration completed (2026-11-02).** `libs/logger/src/` gained `message/types.ts`, `message/createMessage.ts`, `types.ts`, `createLogger.ts`, and two test files; `src/index.ts` exports the full surface (five creators, `createLogger`, `Message`, `MessageLevel`, `LoggerAPI`, `LogFormatter`, `LogWriter`, `OutputMode`). Buffer-until-mode-set semantics hold: nothing emitted before `setOutputMode`, `quiet` discards then filters to `warning`/`error`, `verbose` flushes the buffer in order. 23/23 tests green, coverage 100/96.96/100/100, no `it.todo()`; `npm run ci` green from `$PROJECT` (pre-commit `0-clean`/`1-extract`/`2-ci` too). No `@art-lib/operations` import anywhere in the package — messages only. Commit `b9c7dbb` pushed to `origin/main`. See `./plan-add-logger/instructions/implement-buffering-logger__report.md`.
+- **Acceptance criteria for `Iteration: Implement Buffering Logger` met:** the package builds, lints, and tests green from `$PROJECT/libs/logger`, the exported API matches the design record, and buffer semantics are asserted in `createLogger.test.ts`.
 
 ### Findings
 
 - Art Works and Art MD both implement the same buffering logger (quiet/verbose, buffer until mode set); the only variation is the log-line formatter and the writer target.
 - `libs/logger/package.json` omits the `dependencies` and `devDependencies` keys entirely, whereas `libs/fs-records` and `libs/config` both declare `"devDependencies": {}`. Policy does not require the key when a package has none, so this is not a compliance failure — only a sibling inconsistency. Harmless; align it if a later iteration touches the manifest.
+- **`libs/logger` was missing from `package-lock.json`'s `packages` map** — the same gap `libs/config` had — so `npm ci` from `$PROJECT` failed with `Missing: @art-lib/logger@0.0.1 from lock file`. Repaired during setup with `npm install --package-lock-only` (12-line additive diff) and committed on its own as `21f3d56` (`fix(art-lib): Sync package-lock with package.json so npm ci works.`), mirroring `20ac101`. `npm ci` and `npm run ci` are green from `$PROJECT` again.
 
 ### Decisions
 
@@ -509,4 +519,6 @@ refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.
 
 ### Feedback
 
-- None.
+- The plan does not render the `Attachments`, `Resource Types in Scope`, `Workflows` / `Workflow Operations`, and `Execution Context` sections the template expects — cosmetic only (the worker's entry point is a self-contained instruction file); apply the next time this plan is edited.
+- `instructions/implement-buffering-logger.md` cites `$WORKSPACE/_guide.md` for `npm run ci`, but that guide puts `npm run ci` under Verifying Step and the workspace root `ci` only runs Prettier — the build-green check is `$PROJECT`'s `npm run ci` (pre-commit `2-ci`) plus the package-level Verifying Completion. The delegator resolves this in the delegation prompt; the next instruction file should cite `$PROJECT/_guide.md`.
+- **From the buffering-logger worker (2026-11-02):** the instruction was executed verbatim and was self-sufficient — goals, steps, commit blueprint, and verification commands needed no clarification. Two deliberate non-commits: `package-lock.json` (the setup repair, now `21f3d56`) and this plan's `Feedback` edit, both outside the instruction's single-commit scope; the report file itself is written next to the instruction and is not committed.
