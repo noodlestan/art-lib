@@ -63,7 +63,7 @@ Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (ope
 
 ### Next
 
-- Planning complete: all six iterations are `READY` with instructions. Delegate Iteration: Scaffold Operations Package (after Logger's package exists), Iteration: Implement Operations Model, Iteration: Implement Operations Log (after Logger's `Message` lands), Iteration: Apply Noodlestan Conventions (`MANUAL` commit), Iteration: Update Knowledge, then Iteration: Integrate in Consumer. Config and Logger may proceed independently.
+- Planning complete: all seven iterations are `READY` with instructions. Delegate Iteration: Scaffold Operations Package (Logger's package exists — `ac059a8`), Iteration: Implement Operations Model, Iteration: Implement Operations Log (Logger's `Message` landed — `b9c7dbb`), Iteration: Apply Noodlestan Conventions (`MANUAL` commit), Iteration: Update Knowledge, Iteration: Publish Operations Package (added 2026-11-02, publishes `@art-lib/operations@0.0.1` and lifts the consumer gate), then Iteration: Integrate in Consumer. Config and Logger may proceed independently.
 
 ### Blockers
 
@@ -126,6 +126,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration: Implement Operations Log     | `READY` |
 | Iteration: Apply Noodlestan Conventions | `READY` |
 | Iteration: Update Knowledge             | `READY` |
+| Iteration: Publish Operations Package   | `READY` |
 | Iteration: Integrate in Consumer        | `READY` |
 
 ### Iteration: Scaffold Operations Package
@@ -409,6 +410,80 @@ docs(operations): Add package knowledge base and README usage.
 - Link the package knowledge from the repository knowledge index.
 ```
 
+### Iteration: Publish Operations Package
+
+**Id:** `publish-operations-package`
+
+**Status:** `READY`
+
+**Purpose:** Publish `@art-lib/operations@0.0.1` to the public registry and record the deployment, lifting `Integrate in Consumer`'s gate.
+
+**Description:** Publish the first version and flip both records to their deployed state. No version bump and no CHANGELOG edit are needed — this is the first publish, `version` will be `0.0.1`, and `CHANGELOG.md` documents `## 0.0.1`. The release commit therefore carries only the record updates, the same shape as `release(fs-records): 0.0.3`, which carried the state change rather than code. Added after `Iteration: Update Knowledge`, mirroring `Plan: Add Config Package`'s `publish-config-package`, so `Integrate in Consumer` has a gate it can actually lift.
+
+**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+
+**Changes:**
+
+1. Verify every publish precondition **before** touching the registry. Any failure is a `REPORT A BLOCKER`, not something to work around:
+   - `npm whoami` returns an account permitted to publish `@art-lib/*` (currently `noodlestan`).
+   - `npm view @art-lib/operations version` fails with `ENOTFOUND` — `0.0.1` must not already exist. A published version is immutable, so a mistake requires a bump and a new publish.
+   - `npm view @art-lib/logger version` returns `0.0.1` — this package depends on `@art-lib/logger` and must not ship before its dependency is on the registry.
+   - `$PROJECT/libs/operations/package.json` carries `version` `0.0.1`, `private` `false`, `publishConfig` `{ "access": "public" }`, and `files` listing `dist`, `README.md`, `LICENSE-MIT`, `CHANGELOG.md`.
+   - All four `files` entries exist on disk, and the manifest conforms to `$WORKSPACE/checkouts/management/_ops/packages/policy.md`.
+2. `npm pack --dry-run` from `$PROJECT/libs/operations`, and confirm the tarball contains `package.json`, `dist/index.mjs`, `dist/index.d.ts`, `README.md`, `LICENSE-MIT`, and `CHANGELOG.md`.
+3. `npm publish --access public` from `$PROJECT/libs/operations`. If the registry demands a one-time password for two-factor authentication, **do not retry and do not unpublish** — `REPORT A BLOCKER` that publishing requires an OTP and stop.
+4. Confirm the publish landed: `npm view @art-lib/operations version` returns `0.0.1`, `npm view @art-lib/operations dependencies` shows `@art-lib/logger`, and the description, keywords, and `engines` match `_records/package.art`.
+5. Update both records to the deployed state:
+   - `$PROJECT/libs/operations/_records/package.art` — `**Published:**` from `false` to `true`.
+   - `$PROJECT/libs/operations/_records/npm-deployment.art` — `**Status:**` from `PLANNED` to `DEPLOYED`.
+6. Do not change `version` or `CHANGELOG.md`.
+
+**Instructions:**
+
+::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
+
+Execute the Changes listed above.
+
+**This iteration publishes a public and immutable artefact.** Treat the step-1 preconditions as hard stops: if any fails, `REPORT A BLOCKER` and do not attempt a workaround. Never unpublish.
+
+Before starting:
+
+- Run `npm ci` from the `$WORKSPACE` root.
+- Read `$WORKSPACE/checkouts/management/_ops/packages/policy.md` — the manifest must already conform before it ships.
+
+Validate that:
+
+- The registry serves `@art-lib/operations@0.0.1` with the expected `description`, `keywords`, `engines`, and `dependencies`.
+- Both records reflect the deployed state: `_records/package.art` `Published` `true`, `_records/npm-deployment.art` `Status` `DEPLOYED`.
+- `version` and `CHANGELOG.md` are untouched.
+- `npm run ci` still passes from the `$WORKSPACE` root.
+
+After executing:
+
+- Execute the **Verifying Completion** instructions from the Operating Instructions section, from `$PROJECT/libs/operations/`.
+- Commit `publish-operations` with the blueprint message below.
+
+**Dependencies:**
+
+- Iteration: Update Knowledge — the published package must ship the README its registry listing and consumers reference.
+- Plan: Add Logger Package, Iteration: Publish Logger Package — `@art-lib/logger` must be on the registry first.
+
+#### Commits:
+
+| ID                   | Repository / Checkout / Branch | Policy       | Hash    | Status     |
+| -------------------- | ------------------------------ | ------------ | ------- | ---------- |
+| `publish-operations` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+
+##### Commit: `publish-operations`
+
+**Message:**
+
+```text
+release(operations): Publish 0.0.1 to npm.
+
+- Record the first publish: `Published` true, deployment `DEPLOYED`.
+```
+
 ### Iteration: Integrate in Consumer
 
 **Id:** `integrate-in-consumer`
@@ -434,7 +509,7 @@ In `$WORKSPACE/checkouts/art-works` (Art Works repository)
 
 ::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
 
-**GATE — do not start if the gate has not lifted:** this iteration requires the whole `@art-lib/operations` plan to be `DONE`, including the `MANUAL` conventions commit. If `$PROJECT/libs/operations` does not expose the landed API, REPORT A BLOCKER with "operations package not landed yet" and STOP.
+**GATE — do not start until the package is consumable:** `Iteration: Publish Operations Package` must be `DONE` and `@art-lib/operations@0.0.1` must be installable from the Art Works checkout; verify it exposes the documented API before proceeding. The preceding iterations are a prerequisite only insofar as they produced what was published. This consumer-integration iteration is deliberately excluded from the gate. If the package is not yet available or the API is missing, REPORT A BLOCKER with "operations package not published/consumable yet" and STOP.
 
 Execute the Changes listed above, keeping the CLI behaviour identical.
 
@@ -453,7 +528,7 @@ After executing:
 
 **Dependencies:**
 
-- Iteration: Update Knowledge.
+- Iteration: Publish Operations Package.
 
 #### Commits:
 
