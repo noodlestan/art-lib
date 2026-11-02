@@ -65,9 +65,8 @@ Create `$PROJECT/libs/config` exposing `loadConfigModule`, the lower-level `comp
 
 ### Next
 
-- **Seven of eight iterations are `DONE`.** `@art-lib/config@0.0.1` is **published and live on npm** — verified against the registry: description, keywords (`library, config, esbuild, cli, tooling` + `art, terminal-apps`), `engines`, `sideEffects`, `publishConfig`, `esbuild 0.28.2`, and the root export all match the record. `_records/package.art` reads `Published: true` and `_records/npm-deployment.art` reads `DEPLOYED`; `version` and `CHANGELOG.md` were correctly left untouched.
-- Next: **Iteration: Integrate in Consumer** — its gate has genuinely lifted, so it is now executable for the first time. It refactors `$ART_WORKS/cli/workspace` to consume `@art-lib/config`, deleting the CLI's duplicated compile/cache/import modules, and commits in the Art Works repository as `refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.`
-- That is the last iteration. Completing it closes `Plan: Add Config Package` and moves it to `_backlog/1-done/`.
+- **All eight iterations are `DONE`.** The final one, **Iteration: Integrate in Consumer**, landed `9cabc4f` in Art Works: `$ART_WORKS/cli/workspace` now consumes `@art-lib/config@0.0.1`, and the CLI's duplicated compile/cache/import modules are deleted. `@art-lib/config@0.0.1` remains **published and live on npm** — `_records/package.art` reads `Published: true` and `_records/npm-deployment.art` reads `DEPLOYED`.
+- **Plan complete.** Close `Plan: Add Config Package` and move it to `_backlog/1-done/`.
 
 ### Blockers
 
@@ -123,20 +122,20 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Items:
 
-| Iteration / Instructions                | Status  |
-| --------------------------------------- | ------- |
-| Iteration: Scaffold Config Package      | `DONE`  |
-| Iteration: Implement Config Loading     | `DONE`  |
-| Iteration: Implement Config Cache       | `DONE`  |
-| Iteration: Apply Noodlestan Conventions | `DONE`  |
-| Iteration: Restructure Config Package   | `DONE`  |
-| Iteration: Update Knowledge             | `DONE`  |
-| Iteration: Publish Config Package       | `DONE`  |
-| Iteration: Integrate in Consumer        | `READY` |
+| Iteration / Instructions                | Status |
+| --------------------------------------- | ------ |
+| Iteration: Scaffold Config Package      | `DONE` |
+| Iteration: Implement Config Loading     | `DONE` |
+| Iteration: Implement Config Cache       | `DONE` |
+| Iteration: Apply Noodlestan Conventions | `DONE` |
+| Iteration: Restructure Config Package   | `DONE` |
+| Iteration: Update Knowledge             | `DONE` |
+| Iteration: Publish Config Package       | `DONE` |
+| Iteration: Integrate in Consumer        | `DONE` |
 
 > `Iteration: Apply Noodlestan Conventions` committed no standalone message: its staged changes rode into `Restructure Config Package`'s `8f2d84e`, which both rows now carry.
 >
-> **Seven of eight iterations are `DONE`.** `Publish Config Package` was added 2026-11-01 to lift the gate that had left `Integrate in Consumer` unreachable — the plan originally contained a gated iteration with no publish step to satisfy it. `@art-lib/config@0.0.1` is now live on npm, so the final iteration's gate has genuinely lifted.
+> **All eight iterations are `DONE`.** `Publish Config Package` was added 2026-11-01 to lift the gate that had left `Integrate in Consumer` unreachable — the plan originally contained a gated iteration with no publish step to satisfy it. `@art-lib/config@0.0.1` went live on npm, and the final iteration closed the loop by adopting the package in the Art Works Workspace Cli (`9cabc4f`, 2026-11-02).
 
 ### Iteration: Scaffold Config Package
 
@@ -664,7 +663,9 @@ release(config): Publish 0.0.1 to npm.
 
 **Id:** `integrate-in-consumer`
 
-**Status:** `READY`
+**Status:** `DONE`
+
+**Delegation:** `COMPLETED` — worker session `ses_e6676e4ebffejE7JvmwA5I3e8v`.
 
 **Purpose:** Adopt `@art-lib/config` in the Art Workspace Cli and retire its duplicated implementation.
 
@@ -717,9 +718,9 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 
 #### Commits:
 
-| ID                             | Repository / Checkout / Branch    | Policy       | Hash    | Status     |
-| ------------------------------ | --------------------------------- | ------------ | ------- | ---------- |
-| `integrate-config-in-consumer` | Art Works / `$ART_WORKS` / `main` | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                             | Repository / Checkout / Branch    | Policy       | Hash      | Status      |
+| ------------------------------ | --------------------------------- | ------------ | --------- | ----------- |
+| `integrate-config-in-consumer` | Art Works / `$ART_WORKS` / `main` | `AUTONOMOUS` | `9cabc4f` | `COMMITTED` |
 
 ##### Commit: `integrate-config-in-consumer`
 
@@ -731,6 +732,10 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 - Replace the local config loading pipeline with @art-lib/config.
 - Keep CLI behaviour and its test suite green.
 ```
+
+**Hash:** `9cabc4f` — pushed to `origin/main` (`a43cd93..9cabc4f`).
+
+**Status:** `COMMITTED`
 
 ---
 
@@ -754,6 +759,7 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 - **Published (2026-11-01).** `@art-lib/config@0.0.1` is live on `https://registry.npmjs.org` — confirmed by `npm view` after the fact: description, composed keywords, `engines`, `sideEffects`, `publishConfig.access`, `esbuild 0.28.2`, the root export, and `license` all match the record. Records flipped to `Published: true` and `DEPLOYED` in commit `d13ce6c`, which carries only those two edits — `version` stayed `0.0.1` and `CHANGELOG.md` was not touched, since both were already correct for a first publish. npm normalized `repository.url` to the `git+https://` form in the published manifest; the local file is unchanged.
 - **Config cache iteration completed (2026-11-01).** `cache.ts` (`findReusableBundle`) plus 9 private helpers, cache reuse/bypass/degradation wired into `loadConfigModule`; 16/16 tests green, coverage 97/92.85/100/100. Commit `92619ad` pushed to `origin/main`. See `./plan-add-config/instructions/implement-config-cache__report.md`.
 - **Acceptance criteria met:** `@art-lib/config` builds, lints, and tests green from `$PROJECT/libs/config`; a second `loadConfigModule()` call with an unchanged fixture and a valid `cacheDir` skips the esbuild build; `cache: false` forces a rebuild. Both behaviours are covered by tests, so the bullet previously listed as pending is now delivered.
+- **Consumer integration completed (2026-11-02).** `@art-lib/config@0.0.1` adopted in `$ART_WORKS/cli/workspace`: the package is declared alongside `@art-lib/fs-records`, `loadWorkspaceConfig.ts` drives the package's piecewise API (`findReusableBundle` → `compileConfig` → `importConfigModule`), and the superseded `src/config/private/` compile/cache/import modules and their tests were deleted (21 files, −348/+81). The GATE was verified before starting (`npm view @art-lib/config version` → `0.0.1`, `esbuild 0.28.2`); `npm ci` + `npm run ci` green in `$ART_WORKS/cli/workspace` (lint/build, 355 unit, 26 integration; the pre-commit hook's full-repo CI also green). Commit `9cabc4f` pushed to `origin/main` (`a43cd93..9cabc4f`); working tree clean, no uncommitted files.
 
 ### Findings
 
@@ -774,7 +780,8 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 
 ### Follow Ups
 
-- `@art-works/workspace-cli` adoption is planned here (Iteration: Integrate in Consumer); `plan-art-work-cli-global-install` remains tracked in `$ART_WORKS`.
+- ~~`@art-works/workspace-cli` adoption is planned here (Iteration: Integrate in Consumer)~~ — **resolved 2026-11-02**: adopted in `9cabc4f`; `plan-art-work-cli-global-install` remains tracked in `$ART_WORKS`.
+- A `runSanity`/`runSync` 5s-timeout flake under machine load reproduces on the Art Works clean tree (pre-existing, unrelated to this plan) — consider triaging in `$ART_WORKS`.
 - ~~Refresh `package-lock.json` once `libs/config` has real dependencies.~~ — **resolved 2026-11-01.** The esbuild `0.28.2` pin refreshed the lockfile; `libs/config` now appears in its `packages` map alongside `libs/fs-records`, `npm ls` resolves both workspaces, and the turbo warning is gone. The original concern — that `npm ci` inside `$PROJECT` would fail its sync check — no longer applies.
 - ~~Add `libs/config/.prettierignore`~~ — **resolved by `Iteration: Apply Noodlestan Conventions`** (`8f2d84e`): `.coverage/`, `coverage/`, `env.d.ts`, `dist/`, mirroring the repo root and `libs/fs-records`. A bare `npm run lint` from `$PACKAGE` now passes on a built tree.
 - ~~`libs/config/_guide.md` still describes `src/` as a placeholder `index.ts`~~ — **resolved across two iterations**: the flat tree was corrected by `Apply Noodlestan Conventions`, then `Update Knowledge` re-corrected it to the post-restructure **domain** layout (`compile/`, `load/`, `module/`, `cache/`, `private/`) after the restructure superseded it again. Verified 2026-11-01: no flat entries remain.
@@ -784,4 +791,4 @@ refactor(workspace-cli): Adopt @art-lib/config in the Workspace Cli.
 
 ### Feedback
 
-- None.
+- **From the consumer-integration worker (2026-11-02):** the CLI wires the package's documented piecewise API (`findReusableBundle` → `compileConfig` → `importConfigModule`) rather than a single `loadConfigModule` call, because the CLI must emit its `reused cached bundle`/`rebuilt bundle` log lines at that seam and `loadConfigModule` exposes no such signal. Relatedly, `loadWorkspaceConfig.test.ts` now spies on the package's `compileConfig` instead of esbuild's `build` — externalized package code cannot see the old esbuild mock. Both keep CLI behaviour identical.
