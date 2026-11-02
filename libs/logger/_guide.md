@@ -1,6 +1,6 @@
 # Guide: Art Lib Logger
 
-The Art Lib Logger package (`@art-lib/logger`) provides the message model — a `Message` interface with severity levels and message creators — and a buffering logger with quiet and verbose output modes, an injected formatter, and an injectable log writer.
+The Art Lib Logger package (`@art-lib/logger`) provides the message model — a `Message` type with severity levels and message creators — and a buffering logger with quiet and verbose output modes, an injected formatter, and an injectable log writer.
 
 ## Recommended Reading
 
@@ -22,10 +22,14 @@ Its `src/` layout:
 
 ```
 src/
-├── index.ts        # public exports: message model and logger
-├── message/        # Message model: types and message creators
-├── types.ts        # LoggerAPI, LogFormatter, and LogWriter contracts
-└── createLogger.ts # buffering logger: quiet/verbose modes, formatter, writer
+├── index.ts          # public exports: message model and logger
+├── types.ts          # LoggerAPI, LogFormatter, and LogWriter contracts
+├── createLogger.ts   # buffering logger: quiet/verbose modes, formatter, writer
+├── private/          # default formatter, default writer, and their helpers
+└── message/          # Message model: types and message creators
+    ├── types.ts      # Message, MessageLevel, and MaybeError contracts
+    ├── create*Message.ts # one message creator per file
+    └── private/      # helpers shared by the message creators
 ```
 
 ## Records Management

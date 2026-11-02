@@ -1,12 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { createLogger } from './createLogger.js';
-import {
-	createDebugMessage,
-	createErrorMessage,
-	createInfoMessage,
-	createWarningMessage,
-} from './message/createMessage.js';
+import { createDebugMessage } from './message/createDebugMessage.js';
+import { createErrorMessage } from './message/createErrorMessage.js';
+import { createInfoMessage } from './message/createInfoMessage.js';
+import { createWarningMessage } from './message/createWarningMessage.js';
 import type { LogFormatter, LogWriter } from './types.js';
 
 describe('createLogger', () => {

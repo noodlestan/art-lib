@@ -1,62 +1,21 @@
-import type { Message, MessageLevel } from './message/types.js';
+import type { Message } from './message/types.js';
+import { formatDefaultMessage } from './private/formatDefaultMessage.js';
+import { writeDefaultLines } from './private/writeDefaultLines.js';
 import type { LogFormatter, LogWriter, LoggerAPI, OutputMode } from './types.js';
 
-const LEVEL_GLYPHS: Record<MessageLevel, string> = {
-	debug: '⏳',
-	info: 'ℹ️',
-	warning: '⚠️',
-	error: '🔴',
+type CreateLoggerOptions = {
+	formatter?: LogFormatter;
+	writer?: LogWriter;
 };
-
-const LINE_SEPARATOR = ' | ';
-
-type FormattableMessage = Message & {
-	operation?: string;
-	timing?: () => number;
-};
-
-function formatTiming(message: FormattableMessage): string {
-	if (typeof message.timing !== 'function') {
-		return '';
-	}
-
-	const elapsed = message.timing();
-
-	if (!Number.isFinite(elapsed)) {
-		return '';
-	}
-
-	return `(${elapsed}ms)`;
-}
-
-function formatDefaultMessage(message: FormattableMessage): string[] {
-	const glyph = LEVEL_GLYPHS[message.level];
-	const name = message.operation ?? '';
-	const text = message.text();
-	const timing = formatTiming(message);
-	const cells = [glyph, name, text, timing];
-	const line = cells.join(LINE_SEPARATOR);
-
-	return [line];
-}
-
-function writeDefaultLines(lines: string[]): void {
-	const output = lines.join('\n');
-
-	console.error(output);
-}
 
 const defaultFormatter: LogFormatter = { format: formatDefaultMessage };
 
 const defaultWriter: LogWriter = { write: writeDefaultLines };
 
-export function createLogger(options?: {
-	formatter?: LogFormatter;
-	writer?: LogWriter;
-}): LoggerAPI {
+export function createLogger(options?: CreateLoggerOptions): LoggerAPI {
 	const formatter = options?.formatter ?? defaultFormatter;
 	const writer = options?.writer ?? defaultWriter;
-	const buffer: Message[] = [];
+	const bufferedMessages: Message[] = [];
 	let mode: OutputMode | undefined;
 
 	function emit(message: Message): void {
@@ -76,7 +35,7 @@ export function createLogger(options?: {
 	return {
 		log(message: Message): void {
 			if (mode === undefined) {
-				buffer.push(message);
+				bufferedMessages.push(message);
 
 				return;
 			}
@@ -89,12 +48,12 @@ export function createLogger(options?: {
 			mode = newMode;
 
 			if (newMode === 'verbose') {
-				for (const buffered of buffer) {
-					emit(buffered);
+				for (const bufferedMessage of bufferedMessages) {
+					emit(bufferedMessage);
 				}
 			}
 
-			buffer.length = 0;
+			bufferedMessages.length = 0;
 		},
 	};
 }

@@ -1,12 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-	createDebugMessage,
-	createErrorMessage,
-	createInfoMessage,
-	createMessage,
-	createWarningMessage,
-} from './createMessage.js';
+import { createDebugMessage } from './createDebugMessage.js';
+import { createErrorMessage } from './createErrorMessage.js';
+import { createInfoMessage } from './createInfoMessage.js';
+import { createMessage } from './createMessage.js';
+import { createWarningMessage } from './createWarningMessage.js';
 
 describe('createMessage', () => {
 	it('WHEN a level and a text are given — creates a message carrying both', () => {
