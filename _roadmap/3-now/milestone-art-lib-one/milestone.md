@@ -111,9 +111,9 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 | 1     | Plan: Extract Read/Write Records to Art Lib `_backlog/1-done/plan-extract-read-write-records-art-lib/plan.md` | `DONE`    |
 | 1     | Plan: Add FS Records Adapter `_backlog/1-done/plan-add-fs-records-adapter/plan.md`                            | `DONE`    |
 | 1     | Plan: Add FS Records Knowledge `_backlog/1-done/plan-add-fs-records-knowledge/plan.md`                        | `DONE`    |
-| 1     | Plan: Add Config Package `_backlog/3-now/plan-add-config/plan.md`                                             | `WORKING` |
+| 1     | Plan: Add Config Package `_backlog/1-done/plan-add-config/plan.md`                                            | `DONE`    |
 | 1     | Plan: Add Operations Package `_backlog/3-now/plan-add-operations/plan.md`                                     | `READY`   |
-| 1     | Plan: Add Logger Package `_backlog/3-now/plan-add-logger/plan.md`                                             | `READY`   |
+| 1     | Plan: Add Logger Package `_backlog/3-now/plan-add-logger/plan.md`                                             | `WORKING` |
 
 ---
 
@@ -122,12 +122,14 @@ Provide composable units for Cli as use cases surfaced in CLIs under development
 ### Next
 
 - **Plan: Add FS Records Knowledge** is `DONE` (2026-10-31) — all three iterations committed and pushed (`1b41ef3`, `2931de2`, `6d16766`). `@art-lib/fs-records` now ships a README documenting the adapter surface, a `_guide.md` matching the real `src/` layout, and a `knowledge/` directory grounded in its two real consumers (`@art-works/workspace-cli`, `@art-js/test-records`), both pinned to `@art-lib/fs-records@0.0.3` on `main`. One follow-up recorded: wire the package knowledge into the repo-level `knowledge/index.md` alongside the other packages.
-- **Plan: Add Config Package** is `WORKING` — seven of eight iterations `DONE`, and **`@art-lib/config@0.0.1` is published and live on npm** (`d13ce6c`, records now `Published: true` / `DEPLOYED`). The package is complete, policy-compliant, documented, and wired into every repository artefact. Only **Iteration: Integrate in Consumer** remains: refactor `$ART_WORKS/cli/workspace` onto the package and retire its duplicated compile/cache/import modules. Its gate has lifted, so it is executable for the first time. Note a publish iteration had to be added on 2026-11-01 — the plan originally gated this step on publishing while providing no way to publish.
+- **Plan: Add Config Package is `DONE` and closed** — moved to `_backlog/1-done/`, all eight iterations complete. `Integrate in Consumer` landed `9cabc4f` in Art Works: `$ART_WORKS/cli/workspace` now consumes `@art-lib/config@0.0.1` through the documented piecewise API (`findReusableBundle` → `compileConfig` → `importConfigModule`) and its duplicated compile/cache/import modules are deleted. The package is published (`Published: true`, deployment `DEPLOYED`) and shipped in the CLI's `0.3.1` release.
+- **Plan: Add Logger Package** is `WORKING` under a separate session — buffering logger and conventions are done, and the plan is being extended so the package is published and adopted in Art Works before it closes, mirroring the shape Config just proved out.
+- **Plan: Add Operations Package** is `READY` but blocked: its scaffold is gated on `libs/logger` existing, so it waits on Logger.
 - **Plans: Add Logger Package and Add Operations Package** are `READY` with complete iterations and instructions — delegate their scaffolds next. Logger must land its `Message` interface before Operations' `Implement Operations Log`, and Operations' scaffold is gated on Logger's scaffold. These two are unaffected by the config publish gate.
 
 ### Blockers
 
-- None. The FS Records Adapter plan is complete and `@art-lib/fs-records@0.0.3` carries the agreed names, so the residual naming risk is closed. `@art-lib/config@0.0.1` was published on 2026-11-01 (`d13ce6c`), which lifted the gate that had made its `Integrate in Consumer` iteration unreachable — that iteration is now executable and is the sole remaining item in the plan.
+- None. The FS Records Adapter plan is complete and `@art-lib/fs-records@0.0.3` carries the agreed names, so the residual naming risk is closed. `@art-lib/config@0.0.1` is published and adopted by `@art-works/workspace-cli@0.3.1`, so its consumer-integration gate was satisfied and that plan is now closed. Logger is in flight under a separate session; Operations is blocked only on `libs/logger` being scaffolded.
 
 ---
 

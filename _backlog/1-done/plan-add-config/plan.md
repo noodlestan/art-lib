@@ -2,7 +2,7 @@
 
 **ID:** `add-config`
 
-**Status:** `WORKING`
+**Status:** `DONE`
 
 **Template:** `.agents/domains/plans/templates/plan.tart`
 
