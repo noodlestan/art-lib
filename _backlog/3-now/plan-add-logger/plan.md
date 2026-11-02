@@ -64,10 +64,9 @@ Create `$PROJECT/libs/logger` exposing the message model (`Message`, creators) a
 
 ### Next
 
-- **Three iterations are `DONE`, all pushed to `origin/main`:** Scaffold (`ac059a8`), Implement Buffering Logger (`b9c7dbb`), Apply Noodlestan Conventions (`4408461`). `libs/logger/` exposes the `Message` model with creators and the buffering `createLogger()` with `quiet`/`verbose` modes, injected formatter, and injectable writer, now refactored to the TypeScript and unit-test conventions (one exported function per file, `type` over `interface`, named option types, `src/private/` helpers); 23 tests green. The message model has landed, so `Plan: Add Operations Package` is unblocked. Still no `README.md` or `knowledge/` — both belong to `Iteration: Update Knowledge`.
-- Next: **Iteration: Update Knowledge** (`READY`, instructions inlined in the plan) — consumer-facing `README.md`, the package `knowledge/`, and the repository references (`knowledge/components.md`, `knowledge/index.md`, `_records/project.art`, both `_guide.md` files).
-- Then **Iteration: Publish Logger Package** (`READY`, `publish-logger-package`, added 2026-11-02) — publishes `@art-lib/logger@0.0.1` and flips both records to `Published: true` / `DEPLOYED`, which is what lifts `Integrate in Consumer`'s gate.
-- Finally `Integrate in Consumer` — its gate now reads on the publish iteration (config-style), not on the whole plan being `DONE`.
+- **Four iterations are `DONE`, all pushed to `origin/main`:** Scaffold (`ac059a8`), Implement Buffering Logger (`b9c7dbb`), Apply Noodlestan Conventions (`4408461`), Update Knowledge (`7767871`). `libs/logger/` now ships a consumer-facing `README.md` and a package knowledge base (`knowledge/{index,overview}.md`, `knowledge/design/logger.md`, `knowledge/adr/logger.md`), wired into every repository reference (`knowledge/components.md` → `IMPLEMENTED`, `knowledge/index.md`, `_records/project.art`, `_guide.md`); 23 tests green. Only `@art-lib/operations` (a dependent plan) still waits on this package.
+- Next: **Iteration: Publish Logger Package** (`READY`, `publish-logger-package`) — publishes `@art-lib/logger@0.0.1` and flips both records to `Published: true` / `DEPLOYED`, which is what lifts `Integrate in Consumer`'s gate.
+- Then `Integrate in Consumer` — its gate reads on the publish iteration (config-style), not on the whole plan being `DONE`.
 
 ### Blockers
 
@@ -128,7 +127,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration: Scaffold Logger Package      | `DONE`  |
 | Iteration: Implement Buffering Logger   | `DONE`  |
 | Iteration: Apply Noodlestan Conventions | `DONE`  |
-| Iteration: Update Knowledge             | `READY` |
+| Iteration: Update Knowledge             | `DONE`  |
 | Iteration: Publish Logger Package       | `READY` |
 | Iteration: Integrate in Consumer        | `READY` |
 
@@ -363,7 +362,9 @@ refactor(logger): Apply Noodlestan conventions.
 
 **Id:** `update-knowledge`
 
-**Status:** `READY`
+**Status:** `DONE`
+
+**Delegation:** `COMPLETED` — worker session `ses_e629b7a5bffeBqbeu3P4EWRgF0`.
 
 **Purpose:** Publish the package knowledge base and wire `@art-lib/logger` into the repository artefacts.
 
@@ -408,9 +409,9 @@ After executing:
 
 #### Commits:
 
-| ID                        | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| ------------------------- | ------------------------------ | ------------ | ------- | ---------- |
-| `update-knowledge-logger` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                        | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| ------------------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `update-knowledge-logger` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `7767871` | `COMMITTED` |
 
 ##### Commit: `update-knowledge-logger`
 
@@ -422,6 +423,10 @@ docs(logger): Add package knowledge base and README usage.
 - Add the package knowledge base, a consumer-facing README, and repository references.
 - Link the package knowledge from the repository knowledge index.
 ```
+
+**Hash:** `7767871` — pushed to `origin/main`.
+
+**Status:** `COMMITTED`
 
 ### Iteration: Publish Logger Package
 
@@ -573,6 +578,7 @@ refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.
 - **Buffering logger iteration completed (2026-11-02).** `libs/logger/src/` gained `message/types.ts`, `message/createMessage.ts`, `types.ts`, `createLogger.ts`, and two test files; `src/index.ts` exports the full surface (five creators, `createLogger`, `Message`, `MessageLevel`, `LoggerAPI`, `LogFormatter`, `LogWriter`, `OutputMode`). Buffer-until-mode-set semantics hold: nothing emitted before `setOutputMode`, `quiet` discards then filters to `warning`/`error`, `verbose` flushes the buffer in order. 23/23 tests green, coverage 100/96.96/100/100, no `it.todo()`; `npm run ci` green from `$PROJECT` (pre-commit `0-clean`/`1-extract`/`2-ci` too). No `@art-lib/operations` import anywhere in the package — messages only. Commit `b9c7dbb` pushed to `origin/main`. See `./plan-add-logger/instructions/implement-buffering-logger__report.md`.
 - **Acceptance criteria for `Iteration: Implement Buffering Logger` met:** the package builds, lints, and tests green from `$PROJECT/libs/logger`, the exported API matches the design record, and buffer semantics are asserted in `createLogger.test.ts`.
 - **Conventions iteration completed (2026-11-02).** No new conventions were installed — `@noodlestan/conventions-typescript@0.1.0` and `@noodlestan/conventions-unit-tests@0.1.0` are already at manifest version and declared in `$PROJECT/_guide.md ## Conventions`, so that file needed no edit (jsx/scss/solidjs don't apply; `commits` is workspace-level, outside package scope). Findings resolved with behaviour identical: 4 `interface` → `type` (plus `_guide.md` prose), named `CreateLoggerOptions`/`CreateMessageOptions`, one exported function per file (the four creators split out of `createMessage.ts`), `extractErrorMessage` → `message/private/`, `formatTiming`/`formatDefaultMessage`/`writeDefaultLines` + `FormattableMessage` → `src/private/`, `buffer` → `bufferedMessages`. Setup findings (scripts, tsconfig, eslint/vitest wiring, ignores, `build.config.mjs`) already byte-matched `libs/fs-records`. Verification green: package `lint`/`build`/`test` (23/23, no `it.todo()`, coverage 100/96.96/100/100) plus `npm run ci` from `$PROJECT` and from `$WORKSPACE`. Commit `4408461` pushed to `origin/main`.
+- **Update Knowledge iteration completed (2026-11-02).** `libs/logger/README.md` (consumer-facing `## Usage`) plus the package knowledge base — `knowledge/{index,overview}.md`, `knowledge/design/logger.md`, `knowledge/adr/logger.md` — created, with every relative link script-checked. Repository wiring complete: Logger → `IMPLEMENTED` in `knowledge/components.md`, a Package Knowledge References row in `knowledge/index.md`, `Package: Art Lib Logger` in `_records/project.art`, and the layout plus Knowledge References in `_guide.md`. Delegator addition applied as well: the stale "Message interface" wording in `knowledge/design/logger.md` and `knowledge/components.md` now matches the `type` the conventions iteration shipped. Verification green from `libs/logger/` (lint/build/test 23/23, no `it.todo()`), `npm run ci` from `$PROJECT`, and Prettier from `$WORKSPACE`. Commit `7767871` pushed to `origin/main` (it also carried the other session's already-local `23e123d`, `backlog(art-lib): Close \`add-config\` and move it to \`done\``).
 
 ### Findings
 
@@ -593,7 +599,7 @@ refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.
 ### Follow Ups
 
 - ~~**No iteration in this plan publishes `@art-lib/logger`.**~~ — **resolved 2026-11-02.** `Iteration: Publish Logger Package` (`publish-logger-package`) was added between `Update Knowledge` and `Integrate in Consumer`, mirroring `Plan: Add Config Package`'s `publish-config-package`, and `Integrate in Consumer`'s gate now reads on it instead of on the whole plan being `DONE`.
-- `$PROJECT/knowledge/design/logger.md` still calls `Message` an **interface** after `Iteration: Apply Noodlestan Conventions` converted it to a `type`. The record stays repository-level (per `Iteration: Update Knowledge`), but its wording must follow the code.
+- ~~`$PROJECT/knowledge/design/logger.md` still calls `Message` an **interface**~~ — **resolved 2026-11-02** by `Iteration: Update Knowledge` (`7767871`): the wording in `knowledge/design/logger.md` and `knowledge/components.md` now matches the `type` shipped by the conventions iteration; no `interface` wording remains in either. The record stays repository-level.
 - `@art-works/workspace-cli` adoption is planned here (Iteration: Integrate in Consumer); `@art-md/bin` migrates in its own project.
 - **The keywords matrix row is staged in a different repository and is not committed.** `$WORKSPACE/checkouts/management` has `_ops/keywords/matrix.md` staged with the new `@art-lib/logger` row (own keywords only, per the matrix model). It lives in the management repo, not this one, and this plan prescribes a single commit — so the worker correctly left it staged. It needs its own commit in `checkouts/management` before the matrix is truthful again.
 - **`@art-lib/config` still has no row in that matrix**, and its manifest is missing `repository` and `publishConfig`. Both are tracked on `Plan: Add Config Package`'s Follow Ups and remain open.
