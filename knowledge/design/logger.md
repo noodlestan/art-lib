@@ -1,16 +1,16 @@
 # Design: Logger
 
-**Purpose:** Describe what a CLI needs from `@art-lib/logger` — one logging interface for messages, buffering, output modes, log lines, and the writer — as evidenced by the Art Workspace Cli and Art MD bin consumers.
+**Purpose:** Describe what a CLI needs from `@art-lib/logger` — one message model for logging, buffering, output modes, log lines, and the writer — as evidenced by the Art Workspace Cli and Art MD bin consumers.
 
 **Planned package:** `@art-lib/logger` — `_backlog/3-now/plan-add-logger/plan.md`
 
 ## Principle: Messages Only
 
-The logger knows **messages** — nothing else. It has no concept of operations. Anything that conforms to the `Message` interface can be logged; operations (in `@art-lib/operations`) conform to it.
+The logger knows **messages** — nothing else. It has no concept of operations. Anything that conforms to the `Message` type can be logged; operations (in `@art-lib/operations`) conform to it.
 
 ## Message
 
-One interface shared by every loggable thing:
+One type shared by every loggable thing:
 
 | member   | semantics                                           |
 | -------- | --------------------------------------------------- |
@@ -26,7 +26,7 @@ One interface shared by every loggable thing:
 - `createWarningMessage(text)` — level `warning`.
 - `createErrorMessage(error: MaybeError, message?)` — level `error`; accepts any error-shaped value, falls back to `message` for the text.
 
-Operations satisfy this interface structurally (see `design/operations.md`), so the logger stays operation-agnostic.
+Operations satisfy this type structurally (see `design/operations.md`), so the logger stays operation-agnostic.
 
 ## LoggerAPI
 

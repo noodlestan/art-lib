@@ -25,3 +25,4 @@
 | Package | Knowledge Index                                                     |
 | ------- | ------------------------------------------------------------------- |
 | Config  | [libs/config/knowledge/index.md](../libs/config/knowledge/index.md) |
+| Logger  | [libs/logger/knowledge/index.md](../libs/logger/knowledge/index.md) |

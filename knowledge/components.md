@@ -20,16 +20,18 @@ Frameworks adopted (see [Decision: Frameworks](./adr/frameworks.md)): Commander,
 
 The shared CLI operation plumbing, extracted from `@art-works/workspace-cli` and `@art-md/bin` as one package with two subpath modules:
 
-- `/model` — operation outcome types and factories (`OperationPending`/`Success`/`Failure`); operations conform to the `Message` interface of `@art-lib/logger`.
+- `/model` — operation outcome types and factories (`OperationPending`/`Success`/`Failure`); operations conform to the `Message` type of `@art-lib/logger`.
 - `/log` — append-only operations log with `all`/`since`/`latest` queries; created with the logger and forwarding every operation to it.
 
 ### Logger (`@art-lib/logger`)
 
 **Path:** `libs/logger`
 
-**Status:** PLANNED
+**Status:** IMPLEMENTED
 
-One logging interface for messages: a `Message` model with severity levels (`createMessage`, `createInfoMessage`, `createWarningMessage`, `createErrorMessage`, `createDebugMessage`) and a buffering logger — so messages are logged consistently before and after the environment is fully resolved — wrapping the actual log writer. The logger knows only messages; operations conform to `Message` structurally and it has no dependency on `@art-lib/operations`.
+One message model for logging: a `Message` type with severity levels (`createMessage`, `createInfoMessage`, `createWarningMessage`, `createErrorMessage`, `createDebugMessage`) and a buffering logger — so messages are logged consistently before and after the environment is fully resolved — wrapping the actual log writer. The logger knows only messages; operations conform to `Message` structurally and it has no dependency on `@art-lib/operations`.
+
+Implemented by `_backlog/3-now/plan-add-logger/plan.md`; see the package knowledge at [libs/logger/knowledge/index.md](../libs/logger/knowledge/index.md).
 
 ### Config (`@art-lib/config`)
 

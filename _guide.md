@@ -23,6 +23,7 @@ _records/           — project, repository, namespace, and license records
 knowledge/          — repository-level knowledge
 libs/               — library packages
 libs/config/        — @art-lib/config: typed config loading (bundle-at-runtime, content-hash cache)
+libs/logger/        — @art-lib/logger: message model and buffering logger for CLIs
 ```
 
 ## Records Management
@@ -40,6 +41,7 @@ This repository maintains knowledge references at:
 
 - `knowledge/index.md` — Repository-level knowledge.
 - `libs/config/knowledge/index.md` — Config package knowledge.
+- `libs/logger/knowledge/index.md` — Logger package knowledge.
 
 ## Conventions
 

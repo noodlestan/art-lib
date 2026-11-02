@@ -7,7 +7,7 @@ The Art Lib Logger package (`@art-lib/logger`) provides the message model — a 
 Agents SHOULD scan these files for relevant clarifications when faced with ambiguity or omissions that may result from missing definitions.
 
 - `_guide.md` — this file: package overview, layout, and operating instructions.
-- `knowledge/index.md` — package purpose, layout, components, and design decisions.
+- `knowledge/index.md` — package knowledge: overview, design, and decision records.
 
 ## Package Layout
 
