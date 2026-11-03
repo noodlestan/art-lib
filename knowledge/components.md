@@ -31,7 +31,7 @@ The shared CLI operation plumbing, extracted from `@art-works/workspace-cli` and
 
 One message model for logging: a `Message` type with severity levels (`createMessage`, `createInfoMessage`, `createWarningMessage`, `createErrorMessage`, `createDebugMessage`) and a buffering logger — so messages are logged consistently before and after the environment is fully resolved — wrapping the actual log writer. The logger knows only messages; operations conform to `Message` structurally and it has no dependency on `@art-lib/operations`.
 
-Implemented by `_backlog/3-now/plan-add-logger/plan.md`; see the package knowledge at [libs/logger/knowledge/index.md](../libs/logger/knowledge/index.md).
+Implemented by `_backlog/1-done/plan-add-logger/plan.md`; published as `@art-lib/logger@0.0.1` and adopted by the Art Works Workspace Cli. See the package knowledge at [libs/logger/knowledge/index.md](../libs/logger/knowledge/index.md).
 
 ### Config (`@art-lib/config`)
 

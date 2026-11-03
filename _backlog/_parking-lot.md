@@ -6,7 +6,7 @@ WIP tracker, structured like the session parking lot: **ACTIONABLE** (in progres
 
 - **Milestone: Art Lib One** — `$PROJECT/_roadmap/3-now/milestone-art-lib-one/milestone.md`; phase 1 `WORKING`.
 - **Participate in the Art Records Whiteboard (owned by `ART_JS`)** — board at `$ART_JS/_backlog/whiteboard-art-records/whiteboard.md`; adapter plan `DONE`, knowledge plan `DONE`.
-- **Package plans** — `Plan: Add Config` is **closed and moved to `_backlog/1-done/`**: all eight iterations `DONE`, `@art-lib/config@0.0.1` published, and adopted by `@art-works/workspace-cli@0.3.1`. `Plan: Add Logger` is `WORKING` under a different session (buffering logger and conventions done; being extended so the package is published and adopted before that plan closes). `Plan: Add Operations` remains `READY` — its scaffold is gated on `libs/logger` existing, so it waits on Logger.
+- **Package plans** — `Plan: Add Config` and `Plan: Add Logger` are **closed and moved to `_backlog/1-done/`**: Config's eight iterations and Logger's six are all `DONE`, with `@art-lib/config@0.0.1` and `@art-lib/logger@0.0.1` published — Config adopted by `@art-works/workspace-cli@0.3.1`, Logger by the Art Works Workspace Cli (`bf2fc78`). `Plan: Add Operations` remains `READY` and is now fully unblocked: its scaffold, log, and publish gates are all satisfied.
 
 ---
 
