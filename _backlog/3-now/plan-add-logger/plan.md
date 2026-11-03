@@ -2,7 +2,7 @@
 
 **ID:** `add-logger`
 
-**Status:** `DONE`
+**Status:** `WORKING`
 
 **Template:** `.agents/domains/plans/templates/plan.tart`
 
@@ -64,8 +64,9 @@ Create `$PROJECT/libs/logger` exposing the message model (`Message`, creators) a
 
 ### Next
 
-- **All six iterations are `DONE`.** The final one, **Iteration: Integrate in Consumer**, landed `bf2fc78` in Art Works: `$WORKSPACE/checkouts/art-works/cli/workspace` now consumes `@art-lib/logger@0.0.1`, and the CLI's duplicated buffering logger is replaced by the package. `@art-lib/logger@0.0.1` remains **published and live on npm** — `_records/package.art` reads `Published: true` and `_records/npm-deployment.art` reads `DEPLOYED`.
-- **Plan complete.** Close `Plan: Add Logger Package` and move it to `_backlog/1-done/`.
+- **Reopened 2026-11-03.** The package shipped `0.0.1` with a two-mode `OutputMode` (`quiet` | `verbose`) and the CLI adopted it, but the mode model needs a middle tier: `normal` emits `info`/`warning`/`error`, `verbose` adds `debug`, `quiet` keeps only `warning`/`error`. That makes `normal` the CLI's default and lets `@art-lib/operations`' level mapping (`pending → debug`, `success → info`, `failure → error`) work as designed — `normal` shows finished successes, `quiet` shows only problems.
+- **Next: Iteration: Add Normal Output Mode** (`READY`) — extend `OutputMode`, make `shouldEmit` three-tier, and cover each mode's buffer behaviour in tests. Then **Publish Logger 0.0.2**, because the mode is not in the published `0.0.1`. Then **Update Cli Output Flag**, where the Art Workspace Cli re-installs `0.0.2`, collapses its eleven per-command `-o` flags into one global flag defaulting to `normal`, and extracts `createCommandContext` out of `index.ts`.
+- **Out of scope here:** the `Operation → Message` adapter (`createMessageFromOperation`, and where `levelOf` lives) belongs to `@art-lib/operations` and is tracked on `Plan: Add Operations Package`. This plan must not move that glue.
 
 ### Blockers
 
@@ -121,14 +122,19 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Items:
 
-| Iteration / Instructions                | Status |
-| --------------------------------------- | ------ |
-| Iteration: Scaffold Logger Package      | `DONE` |
-| Iteration: Implement Buffering Logger   | `DONE` |
-| Iteration: Apply Noodlestan Conventions | `DONE` |
-| Iteration: Update Knowledge             | `DONE` |
-| Iteration: Publish Logger Package       | `DONE` |
-| Iteration: Integrate in Consumer        | `DONE` |
+| Iteration / Instructions                | Status  |
+| --------------------------------------- | ------- |
+| Iteration: Scaffold Logger Package      | `DONE`  |
+| Iteration: Implement Buffering Logger   | `DONE`  |
+| Iteration: Apply Noodlestan Conventions | `DONE`  |
+| Iteration: Update Knowledge             | `DONE`  |
+| Iteration: Publish Logger Package       | `DONE`  |
+| Iteration: Integrate in Consumer        | `DONE`  |
+| Iteration: Add Normal Output Mode       | `READY` |
+| Iteration: Publish Logger 0.0.2         | `READY` |
+| Iteration: Update Cli Output Flag       | `READY` |
+
+> The first six iterations delivered and shipped `@art-lib/logger@0.0.1`, and the plan was closed — then reopened 2026-11-03 for a third output mode. The three `READY` rows are the reopening scope.
 
 ### Iteration: Scaffold Logger Package
 
@@ -247,7 +253,7 @@ scaffold(logger): Scaffold package skeleton.
 
 **Purpose:** Implement the message model and the buffering logger with output modes, injected formatter, and injectable writer.
 
-**Description:** Implement `src/` with the message model — `Message { level, text(), ts }`, `createMessage(options)`, `createDebugMessage`, `createInfoMessage`, `createWarningMessage`, `createErrorMessage(error: MaybeError, message?)` — and the logger — `LoggerAPI { log(message), setOutputMode(mode) }`, `LogFormatter { format(message): string[] }`, `LogWriter { write(lines): void }`, `createLogger(options?: { formatter?, writer? })`. Buffer messages until the mode is set: `quiet` discards the buffer and then logs only `warning`/`error`; `verbose` flushes and logs everything. Default writer wraps `console.error`; formatting delegates to the injected formatter. The logger never imports operations — they conform to `Message` structurally. Unit tests.
+**Description:** Implement `src/` with the message model — `Message { level, text(), ts }`, `createMessage(options)`, `createDebugMessage`, `createInfoMessage`, `createWarningMessage`, `createErrorMessage(error: MaybeError, message?)` — and the logger — `LoggerAPI { log(message), setOutputMode(mode) }`, `LogFormatter { format(message): string[] }`, `LogWriter { write(lines): void }`, `createLogger(options?: { formatter?, writer? })`. Buffer messages until the mode is set: `quiet` discards the buffer and then logs only `warning`/`error`; `verbose` flushes and logs everything. **Superseded for `quiet`** — that is what shipped in `0.0.1`, and `Iteration: Add Normal Output Mode` corrects it to flush-and-filter, because discarding hid the pre-mode warnings `quiet` exists to surface. Default writer wraps `console.error`; formatting delegates to the injected formatter. The logger never imports operations — they conform to `Message` structurally. Unit tests.
 
 **Instructions Mode:** `INSTRUCTIONS_SELF_CONTAINED_FILE`
 
@@ -574,6 +580,243 @@ refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.
 
 **Status:** `COMMITTED`
 
+### Iteration: Add Normal Output Mode
+
+**Id:** `add-normal-output-mode`
+
+**Status:** `READY`
+
+**Purpose:** Add a third output mode, `normal`, so severity filtering has a middle tier between "problems only" and "everything".
+
+**Description:** Extend `OutputMode` to `'quiet' | 'normal' | 'verbose'` and give each mode its own emission rule: `verbose` emits everything, `normal` emits `info`/`warning`/`error` (dropping `debug`), `quiet` emits `warning`/`error` only. Buffer-until-mode-set semantics are unchanged. This is not in the published `0.0.1`, so it ships as `0.0.2` in the next iteration.
+
+**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+
+**Changes:**
+
+In `$PROJECT/libs/logger`
+
+- `src/types.ts` — `OutputMode` becomes `'quiet' | 'normal' | 'verbose'`.
+- `src/createLogger.ts` — replace the two-way `shouldEmit` with three tiers:
+  - `verbose` → every message;
+  - `normal` → `message.level !== 'debug'` (so `info`, `warning`, `error`);
+  - `quiet` → `message.level === 'warning' || message.level === 'error'`.
+- `setOutputMode` buffer resolution:
+  - `quiet` — flush the buffer in order, emitting only `warning`/`error` and dropping `info`/`debug`. **Every mode flushes; none discards.**
+  - `normal` — **flush the buffer in order, dropping `debug`**, then emit `info`/`warning`/`error`.
+  - `verbose` — flush the buffer in order, then emit everything.
+- `src/createLogger.test.ts` — assert per mode: which buffered messages survive the flush, and which levels pass once the mode is set. `normal` must keep a buffered `info` and drop a buffered `debug`; `quiet` must keep a buffered `warning` and drop a buffered `info` — that second assertion is the regression this change exists to fix, and it fails against the code as it stands today.
+- Update every place the mode spec appears so all six describe three modes: `README.md` (tagline, examples, mode table), `_guide.md` (overview line and the `src/` tree), `knowledge/design/logger.md`, `knowledge/overview.md`, `knowledge/adr/logger.md`, and the repository-level `knowledge/design/logger.md`. Each currently reads `quiet` | `verbose`.
+- Do **not** edit `instructions/implement-buffering-logger.md`. That instruction was executed for `0.0.1` and is the record of what shipped; this iteration is the record of what changes.
+- Update `libs/logger/knowledge/adr/logger.md`: amend the _Buffer Until the Output Mode Is Set_ decision for the three rules, and add a _Three Output Modes_ decision recording why `normal` exists and that level derivation stays with `@art-lib/operations`.
+
+**Level mapping is not this package's concern.** `@art-lib/operations` owns it — `pending → debug`, `success → info`, `failure → error`. Do not derive levels here; this iteration only decides which levels each mode admits.
+
+**Instructions:**
+
+::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
+
+Execute the Changes listed above.
+
+Before starting:
+
+- Run `npm ci` from the `$WORKSPACE` root.
+- Read `$PROJECT/knowledge/design/logger.md` and `$PROJECT/libs/logger/knowledge/adr/logger.md` — the ADR's _Buffer Until the Output Mode Is Set_ decision must be updated alongside the code, not after it.
+
+Validate that:
+
+- `OutputMode` is exactly `'quiet' | 'normal' | 'verbose'` and nothing else in the package hard-codes a two-way mode check.
+- Buffer behaviour matches the three rules above: every mode flushes the buffer and filters it, nothing discards it. Assert a buffered `warning` survives `quiet`, and a buffered `debug` does not.
+- No `@art-lib/operations` import is introduced — the package stays messages-only.
+- `npm run ci` passes from the `$WORKSPACE` root, and from `$PROJECT/libs/logger`: `lint:fix`, `lint`, `build`, `test` all pass with no `it.todo()`.
+
+After executing:
+
+- Execute the **Verifying Completion** instructions from the Operating Instructions section, from `$PROJECT/libs/logger/`.
+- Commit `add-normal-output-mode` with the blueprint message below.
+
+```text
+build(logger): Add normal output mode.
+
+- Three-tier emission: verbose all, normal info and above, quiet warning and error.
+```
+
+**Dependencies:**
+
+- Iteration: Integrate in Consumer — the CLI already adopts `0.0.1`, so this is an increment to shipped behaviour rather than a first delivery.
+
+#### Commits:
+
+| ID                       | Repository / Checkout / Branch | Policy       | Hash    | Status     |
+| ------------------------ | ------------------------------ | ------------ | ------- | ---------- |
+| `add-normal-output-mode` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+
+##### Commit: `add-normal-output-mode`
+
+**Message:**
+
+```text
+build(logger): Add normal output mode.
+
+- Three-tier emission: verbose all, normal info and above, quiet warning and error.
+```
+
+### Iteration: Publish Logger 0.0.2
+
+**Id:** `publish-logger-0-0-2`
+
+**Status:** `READY`
+
+**Purpose:** Ship the third output mode as `@art-lib/logger@0.0.2`.
+
+**Description:** Bump the version, record the addition, publish, and verify. The mode is not in `0.0.1`, so the CLI cannot adopt `normal` until this lands. This is a subsequent release of an already-published package: `_records/package.art` already reads `Published: true` and `_records/npm-deployment.art` already reads `DEPLOYED`, and neither changes on a version bump.
+
+**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+
+**Changes:**
+
+1. Verify every precondition **before** touching the registry. Any failure is a `REPORT A BLOCKER`, not a workaround:
+   - `npm whoami` returns an account permitted to publish `@art-lib/*`.
+   - `npm view @art-lib/logger version` returns `0.0.1` — `0.0.2` must not already exist. Published versions are immutable.
+   - `$PACKAGE/package.json` has `private` `false`, `publishConfig` `{ "access": "public" }`, and `files` listing `dist`, `README.md`, `LICENSE-MIT`, `CHANGELOG.md`.
+2. Set `version` to `0.0.2` and add a `## 0.0.2` section to `$PACKAGE/CHANGELOG.md` under `### Added` describing the `normal` output mode and its emission rule. Refresh `$PROJECT/package-lock.json`.
+3. `npm pack --dry-run` from `$PACKAGE`; confirm the tarball lists `dist/index.mjs`, `dist/index.d.ts`, `README.md`, `LICENSE-MIT`, `CHANGELOG.md`.
+4. `npm publish --access public` from `$PACKAGE`. If the registry demands a one-time password, `REPORT A BLOCKER` that publishing requires an OTP and stop — never retry, never unpublish.
+5. Confirm `npm view @art-lib/logger version` returns `0.0.2`.
+6. Leave `_records/package.art` and `_records/npm-deployment.art` unchanged; confirm they still read `Published: true` and `DEPLOYED`.
+
+**Instructions:**
+
+::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
+
+Execute the Changes listed above.
+
+**This publishes a public and immutable artefact.** Treat step 1 as a hard stop; if any precondition fails, `REPORT A BLOCKER` and do not work around it.
+
+Before starting:
+
+- Run `npm ci` from the `$WORKSPACE` root.
+- Read `$WORKSPACE/checkouts/management/_ops/packages/policy.md` — the manifest must conform before it ships.
+
+Validate that:
+
+- The registry serves `@art-lib/logger@0.0.2`.
+- `CHANGELOG.md` documents `0.0.2` and `README.md` matches the new three-mode behaviour.
+- Both records still read the deployed state; `Published` and `Status` are unchanged.
+- `npm run ci` passes from the `$WORKSPACE` root.
+
+After executing:
+
+- Execute the **Verifying Completion** instructions from the Operating Instructions section, from `$PROJECT/libs/logger/`.
+- Commit `publish-logger-0-0-2` with the blueprint message below.
+
+```text
+release(logger): 0.0.2
+
+- Ship the `normal` output mode.
+```
+
+**Dependencies:**
+
+- Iteration: Add Normal Output Mode — there must be something to publish.
+
+#### Commits:
+
+| ID                     | Repository / Checkout / Branch | Policy       | Hash    | Status     |
+| ---------------------- | ------------------------------ | ------------ | ------- | ---------- |
+| `publish-logger-0-0-2` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+
+##### Commit: `publish-logger-0-0-2`
+
+**Message:**
+
+```text
+release(logger): 0.0.2
+
+- Ship the `normal` output mode.
+```
+
+### Iteration: Update Cli Output Flag
+
+**Id:** `update-cli-output-flag`
+
+**Status:** `READY`
+
+**Purpose:** Adopt the three output modes in the Art Workspace Cli with a single global `-o` flag that defaults to `normal`.
+
+**Description:** When the Art Workspace Cli re-installs `@art-lib/logger@0.0.2`, collapse its eleven per-command `-o, --output` declarations into one program-level option, default to `normal`, type the CLI's output as `OutputMode` instead of `string` wherever the type is reachable, and move `createCommandContext` out of `index.ts` into `private/context/`.
+
+**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+
+**Changes:**
+
+In `$WORKSPACE/checkouts/art-works/cli/workspace`
+
+1. **Re-install the dependency.** Bump `@art-lib/logger` to `0.0.2` in `package.json` and refresh the lockfile. `npm install` from the `$ART_WORKS` root — never inside `cli/workspace`.
+2. **`src/index.ts` — one flag, not eleven.**
+   - Remove every `.option('-o, --output <mode>', 'One of quiet|verbose')` from the eleven commands (`sanity`, `clone`, `branch`, `pull`, `push`, `sync`, `checkouts:run`, `repo`, `link`, `unlink`, `publish`).
+   - Add one program-level `program.option('-o, --output <mode>', 'One of quiet | normal(default) | verbose')` beside `--no-config-cache`.
+   - Drop `output?: string` from every `*Options` type (`SanityOptions`, `CloneOptions`, `BranchOptions`, `PullOptions`, `PushOptions`, `SyncOptions`, `CheckoutsRunOptions`, `RepoOptions`, `LinkOptions`, `UnlinkOptions`, `PublishOptions`).
+   - Read the flag once with `command.optsWithGlobals().output` instead of `options.output`.
+   - Delete the local `createCommandContext` function and import it from `private/context/createCommandContext.js`.
+3. **`src/private/context/createCommandContext.ts` (new)** — the extracted function. Its third parameter becomes `mode?: OutputMode` rather than `output?: string`, and the default is `logger.setOutputMode(mode ?? 'normal')`. Keep the existing `logger.log(createGenericOperation('boot'))` call and the `createConfig(..., { verbose: mode === 'verbose' })` wiring as they are.
+4. **`src/private/logger/createLogger.ts`** — type `LoggerAPI.setOutputMode` as `OutputMode`, not `string | undefined`. Keep exactly one `parseOutputMode(value?: string): OutputMode` at the commander boundary so the string from argv is converted once and the rest of the CLI never sees a raw string.
+5. Do **not** move `levelOf`, `toMessage`, or `OperationMessage` out of this file — the `Operation → Message` adapter belongs to `@art-lib/operations` and is tracked on `Plan: Add Operations Package`. This iteration only changes mode plumbing.
+
+**Instructions:**
+
+::switch `agent-worker` — switch to the agent-worker agent mode before changing files. There is no instruction file for this iteration — report in chat (happy face + up to 3 bullet points).
+
+Execute the Changes listed above.
+
+Before starting:
+
+- Run `npm ci` from the `$WORKSPACE` root, then from `$WORKSPACE/checkouts/art-works`.
+- Read `$ART_LIB/knowledge/design/logger.md` for the three mode semantics.
+- Confirm `npm view @art-lib/logger version` returns `0.0.2` before bumping the dependency; if it does not, `REPORT A BLOCKER` and stop.
+
+Validate that:
+
+- `-o` is declared exactly once in `index.ts`, at program level, and no command declares its own.
+- No `*Options` type still carries `output?: string`.
+- No call site reads `options.output`; all go through `command.optsWithGlobals()`.
+- `createCommandContext` lives in `src/private/context/` and defaults to `normal`.
+- With no `-o` flag, output is `normal` (successes visible, `debug` hidden); with `-o quiet`, only warnings and errors; with `-o verbose`, everything including `debug`.
+- `npm run ci` passes from `$WORKSPACE/checkouts/art-works/cli/workspace`, and CLI behaviour is otherwise unchanged.
+
+After executing:
+
+- Execute the **Verifying Completion** instructions from the Operating Instructions section, from `$ART_WORKS/cli/workspace`.
+- Commit `update-cli-output-flag` in the **Art Works** repository with the blueprint message below.
+
+```text
+refactor(workspace-cli): Adopt the three output modes with a single -o flag.
+
+- One program-level `-o`, defaulting to `normal`; drop the eleven per-command flags.
+- Extract `createCommandContext` to `private/context` and type the mode as `OutputMode`.
+```
+
+**Dependencies:**
+
+- Iteration: Publish Logger 0.0.2 — the CLI re-installs the version that carries `normal`.
+
+#### Commits:
+
+| ID                       | Repository / Checkout / Branch    | Policy       | Hash    | Status     |
+| ------------------------ | --------------------------------- | ------------ | ------- | ---------- |
+| `update-cli-output-flag` | Art Works / `$ART_WORKS` / `main` | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+
+##### Commit: `update-cli-output-flag`
+
+**Message:**
+
+```text
+refactor(workspace-cli): Adopt the three output modes with a single -o flag.
+
+- One program-level `-o`, defaulting to `normal`; drop the eleven per-command flags.
+- Extract `createCommandContext` to `private/context` and type the mode as `OutputMode`.
+```
+
 ---
 
 ## Coordination
@@ -586,7 +829,7 @@ refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.
 ### Evidence
 
 - **Scaffold iteration completed (2026-11-01).** `libs/logger/` created as a fully policy-compliant package: `_records/package.art` written first, with the manifest rendered from it. `package.json` carries `repository` (https endpoint, repo-relative `directory`), `publishConfig` `{ "access": "public" }`, policy key order, and `files` with all three required artefacts; keywords are composed per the matrix — own `library, logging, messages` plus Art Lib's `art, terminal-apps` — with no set copied from another package. Build files present (`build.config.mjs`, `tsconfig.build.json`, `.prettierignore`, `.npmignore`), plus `LICENSE-MIT`, `CHANGELOG.md`, and both records (`npm-deployment.art` is `PLANNED`). The description is byte-identical between record and manifest; `npm run build` and a bare `npm run lint` both pass on a built tree; `npm pack --dry-run` lists LICENSE and CHANGELOG. Commit `ac059a8`.
-- **Buffering logger iteration completed (2026-11-02).** `libs/logger/src/` gained `message/types.ts`, `message/createMessage.ts`, `types.ts`, `createLogger.ts`, and two test files; `src/index.ts` exports the full surface (five creators, `createLogger`, `Message`, `MessageLevel`, `LoggerAPI`, `LogFormatter`, `LogWriter`, `OutputMode`). Buffer-until-mode-set semantics hold: nothing emitted before `setOutputMode`, `quiet` discards then filters to `warning`/`error`, `verbose` flushes the buffer in order. 23/23 tests green, coverage 100/96.96/100/100, no `it.todo()`; `npm run ci` green from `$PROJECT` (pre-commit `0-clean`/`1-extract`/`2-ci` too). No `@art-lib/operations` import anywhere in the package — messages only. Commit `b9c7dbb` pushed to `origin/main`. See `./plan-add-logger/instructions/implement-buffering-logger__report.md`.
+- **Buffering logger iteration completed (2026-11-02).** `libs/logger/src/` gained `message/types.ts`, `message/createMessage.ts`, `types.ts`, `createLogger.ts`, and two test files; `src/index.ts` exports the full surface (five creators, `createLogger`, `Message`, `MessageLevel`, `LoggerAPI`, `LogFormatter`, `LogWriter`, `OutputMode`). Buffer-until-mode-set semantics hold: nothing emitted before `setOutputMode`, `quiet` discards then filters to `warning`/`error`, `verbose` flushes the buffer in order. (As verified at `b9c7dbb` for `0.0.1`; the `quiet` discard is superseded by `Iteration: Add Normal Output Mode`, which flushes and filters instead.) 23/23 tests green, coverage 100/96.96/100/100, no `it.todo()`; `npm run ci` green from `$PROJECT` (pre-commit `0-clean`/`1-extract`/`2-ci` too). No `@art-lib/operations` import anywhere in the package — messages only. Commit `b9c7dbb` pushed to `origin/main`. See `./plan-add-logger/instructions/implement-buffering-logger__report.md`.
 - **Acceptance criteria for `Iteration: Implement Buffering Logger` met:** the package builds, lints, and tests green from `$PROJECT/libs/logger`, the exported API matches the design record, and buffer semantics are asserted in `createLogger.test.ts`.
 - **Conventions iteration completed (2026-11-02).** No new conventions were installed — `@noodlestan/conventions-typescript@0.1.0` and `@noodlestan/conventions-unit-tests@0.1.0` are already at manifest version and declared in `$PROJECT/_guide.md ## Conventions`, so that file needed no edit (jsx/scss/solidjs don't apply; `commits` is workspace-level, outside package scope). Findings resolved with behaviour identical: 4 `interface` → `type` (plus `_guide.md` prose), named `CreateLoggerOptions`/`CreateMessageOptions`, one exported function per file (the four creators split out of `createMessage.ts`), `extractErrorMessage` → `message/private/`, `formatTiming`/`formatDefaultMessage`/`writeDefaultLines` + `FormattableMessage` → `src/private/`, `buffer` → `bufferedMessages`. Setup findings (scripts, tsconfig, eslint/vitest wiring, ignores, `build.config.mjs`) already byte-matched `libs/fs-records`. Verification green: package `lint`/`build`/`test` (23/23, no `it.todo()`, coverage 100/96.96/100/100) plus `npm run ci` from `$PROJECT` and from `$WORKSPACE`. Commit `4408461` pushed to `origin/main`.
 - **Update Knowledge iteration completed (2026-11-02).** `libs/logger/README.md` (consumer-facing `## Usage`) plus the package knowledge base — `knowledge/{index,overview}.md`, `knowledge/design/logger.md`, `knowledge/adr/logger.md` — created, with every relative link script-checked. Repository wiring complete: Logger → `IMPLEMENTED` in `knowledge/components.md`, a Package Knowledge References row in `knowledge/index.md`, `Package: Art Lib Logger` in `_records/project.art`, and the layout plus Knowledge References in `_guide.md`. Delegator addition applied as well: the stale "Message interface" wording in `knowledge/design/logger.md` and `knowledge/components.md` now matches the `type` the conventions iteration shipped. Verification green from `libs/logger/` (lint/build/test 23/23, no `it.todo()`), `npm run ci` from `$PROJECT`, and Prettier from `$WORKSPACE`. Commit `7767871` pushed to `origin/main` (it also carried the other session's already-local `23e123d`, `backlog(art-lib): Close \`add-config\` and move it to \`done\``).
@@ -605,6 +848,9 @@ refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.
 - Split from `@art-lib/operations` per the milestone decision — logger is effectful (wraps the log writer); operations stay in `@art-lib/operations`.
 - **The logger knows only messages** — one `Message` interface with severity levels; operations conform to it structurally, so the logger has no dependency on `@art-lib/operations` (and no cycle is possible).
 - The log writer is injectable (`LogWriter`) so tests and future sinks (file, reactive layer) do not touch `console.error` directly.
+- **Three output modes, not two (2026-11-03).** `OutputMode` is `'quiet' | 'normal' | 'verbose'` with `normal` as the middle tier and the CLI's default: `verbose` emits everything, `normal` emits `info`/`warning`/`error`, `quiet` emits `warning`/`error`. This exists so `@art-lib/operations`' level mapping (`pending → debug`, `success → info`, `failure → error`) works as designed — `normal` shows finished successes, `quiet` shows only problems, `verbose` adds pending work. Without `normal`, a two-mode logger forces the consumer to map `success → warning` to keep successes visible under `quiet`, which is the hack the Art Workspace Cli carries today.
+- **Buffer handling: every mode flushes; none discards (resolved 2026-11-03).** `setOutputMode(mode)` applies that mode's rule to whatever is buffered — `verbose` writes everything, `normal` writes `info` and above, `quiet` writes only `warning`/`error` — and drops the rest. The buffer exists because the mode is unknown; once known, the mode's rule governs the buffered messages exactly as it governs later ones, so arrival time never decides survival. This **supersedes the `quiet`-discards behaviour** delivered by `Iteration: Implement Buffering Logger`: discarding made `quiet` swallow the pre-mode warnings it exists to surface, while buying nothing — `info` and `debug` are dropped by the filter anyway.
+- **Level mapping stays out of this package.** `pending → debug`, `success → info`, `failure → error` belong to `@art-lib/operations`, as does the `Operation → Message` adapter (`createMessageFromOperation`). The logger only decides which levels each mode admits.
 
 ### Knowledge to Update
 
