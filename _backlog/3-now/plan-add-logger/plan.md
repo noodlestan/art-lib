@@ -64,9 +64,9 @@ Create `$PROJECT/libs/logger` exposing the message model (`Message`, creators) a
 
 ### Next
 
-- **Four iterations are `DONE`, all pushed to `origin/main`:** Scaffold (`ac059a8`), Implement Buffering Logger (`b9c7dbb`), Apply Noodlestan Conventions (`4408461`), Update Knowledge (`7767871`). `libs/logger/` now ships a consumer-facing `README.md` and a package knowledge base (`knowledge/{index,overview}.md`, `knowledge/design/logger.md`, `knowledge/adr/logger.md`), wired into every repository reference (`knowledge/components.md` → `IMPLEMENTED`, `knowledge/index.md`, `_records/project.art`, `_guide.md`); 23 tests green. Only `@art-lib/operations` (a dependent plan) still waits on this package.
-- Next: **Iteration: Publish Logger Package** (`READY`, `publish-logger-package`) — publishes `@art-lib/logger@0.0.1` and flips both records to `Published: true` / `DEPLOYED`, which is what lifts `Integrate in Consumer`'s gate.
-- Then `Integrate in Consumer` — its gate reads on the publish iteration (config-style), not on the whole plan being `DONE`.
+- **Five iterations are `DONE`, all pushed to `origin/main`:** Scaffold (`ac059a8`), Implement Buffering Logger (`b9c7dbb`), Apply Noodlestan Conventions (`4408461`), Update Knowledge (`7767871`), Publish Logger Package (`1091288`). **`@art-lib/logger@0.0.1` is live on npm** — `_records/package.art` reads `Published: true`, `_records/npm-deployment.art` reads `DEPLOYED`, and the registry serves `description`, `keywords`, and `engines` byte-identical to the record. `Plan: Add Operations Package` is unblocked for its scaffold, log, and publish steps.
+- Next: **Iteration: Integrate in Consumer** (`READY`) — its gate has lifted: `Publish Logger Package` is `DONE` and `@art-lib/logger@0.0.1` is installable from the Art Works checkout. It refactors `$WORKSPACE/checkouts/art-works/cli/workspace` onto the package.
+- Then the plan is complete: close `Plan: Add Logger Package` and move it to `_backlog/1-done/`.
 
 ### Blockers
 
@@ -128,7 +128,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration: Implement Buffering Logger   | `DONE`  |
 | Iteration: Apply Noodlestan Conventions | `DONE`  |
 | Iteration: Update Knowledge             | `DONE`  |
-| Iteration: Publish Logger Package       | `READY` |
+| Iteration: Publish Logger Package       | `DONE`  |
 | Iteration: Integrate in Consumer        | `READY` |
 
 ### Iteration: Scaffold Logger Package
@@ -432,7 +432,9 @@ docs(logger): Add package knowledge base and README usage.
 
 **Id:** `publish-logger-package`
 
-**Status:** `READY`
+**Status:** `DONE`
+
+**Delegation:** `COMPLETED` — worker session `ses_e5dc4c9eeffezpns1mmvniJV6q`.
 
 **Purpose:** Publish `@art-lib/logger@0.0.1` to the public registry and record the deployment, lifting `Integrate in Consumer`'s gate.
 
@@ -486,9 +488,9 @@ After executing:
 
 #### Commits:
 
-| ID               | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| ---------------- | ------------------------------ | ------------ | ------- | ---------- |
-| `publish-logger` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID               | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| ---------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `publish-logger` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `1091288` | `COMMITTED` |
 
 ##### Commit: `publish-logger`
 
@@ -499,6 +501,10 @@ release(logger): Publish 0.0.1 to npm.
 
 - Record the first publish: `Published` true, deployment `DEPLOYED`.
 ```
+
+**Hash:** `1091288` — pushed to `origin/main`. Carries only the two record updates: the registry action itself has no file to record beyond them.
+
+**Status:** `COMMITTED`
 
 ### Iteration: Integrate in Consumer
 
@@ -579,12 +585,14 @@ refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.
 - **Acceptance criteria for `Iteration: Implement Buffering Logger` met:** the package builds, lints, and tests green from `$PROJECT/libs/logger`, the exported API matches the design record, and buffer semantics are asserted in `createLogger.test.ts`.
 - **Conventions iteration completed (2026-11-02).** No new conventions were installed — `@noodlestan/conventions-typescript@0.1.0` and `@noodlestan/conventions-unit-tests@0.1.0` are already at manifest version and declared in `$PROJECT/_guide.md ## Conventions`, so that file needed no edit (jsx/scss/solidjs don't apply; `commits` is workspace-level, outside package scope). Findings resolved with behaviour identical: 4 `interface` → `type` (plus `_guide.md` prose), named `CreateLoggerOptions`/`CreateMessageOptions`, one exported function per file (the four creators split out of `createMessage.ts`), `extractErrorMessage` → `message/private/`, `formatTiming`/`formatDefaultMessage`/`writeDefaultLines` + `FormattableMessage` → `src/private/`, `buffer` → `bufferedMessages`. Setup findings (scripts, tsconfig, eslint/vitest wiring, ignores, `build.config.mjs`) already byte-matched `libs/fs-records`. Verification green: package `lint`/`build`/`test` (23/23, no `it.todo()`, coverage 100/96.96/100/100) plus `npm run ci` from `$PROJECT` and from `$WORKSPACE`. Commit `4408461` pushed to `origin/main`.
 - **Update Knowledge iteration completed (2026-11-02).** `libs/logger/README.md` (consumer-facing `## Usage`) plus the package knowledge base — `knowledge/{index,overview}.md`, `knowledge/design/logger.md`, `knowledge/adr/logger.md` — created, with every relative link script-checked. Repository wiring complete: Logger → `IMPLEMENTED` in `knowledge/components.md`, a Package Knowledge References row in `knowledge/index.md`, `Package: Art Lib Logger` in `_records/project.art`, and the layout plus Knowledge References in `_guide.md`. Delegator addition applied as well: the stale "Message interface" wording in `knowledge/design/logger.md` and `knowledge/components.md` now matches the `type` the conventions iteration shipped. Verification green from `libs/logger/` (lint/build/test 23/23, no `it.todo()`), `npm run ci` from `$PROJECT`, and Prettier from `$WORKSPACE`. Commit `7767871` pushed to `origin/main` (it also carried the other session's already-local `23e123d`, `backlog(art-lib): Close \`add-config\` and move it to \`done\``).
+- **Published (2026-11-03).** `@art-lib/logger@0.0.1` is live on `https://registry.npmjs.org` — confirmed by `npm view`: `dist-tags.latest` → `0.0.1`, shasum `9b69f98d42a1e1a15d…` matching `npm pack --dry-run`, `deps: none`, `MIT`, and `description` / `keywords` (`library, logging, messages, art, terminal-apps`) / `engines` (`node >=22`) byte-identical to `_records/package.art`. All four preconditions passed before the registry was touched (whoami `noodlestan`, version absent, policy manifest fields, all four `files` entries on disk); no OTP was demanded. Records flipped to `Published: true` / `DEPLOYED` in `1091288`, which carries only those two edits — `version` and `CHANGELOG.md` untouched. Registry cache lag observed: `npm view` served a cached 404 for ~3 minutes after the publish while a direct `curl` returned 200 immediately.
 
 ### Findings
 
 - Art Works and Art MD both implement the same buffering logger (quiet/verbose, buffer until mode set); the only variation is the log-line formatter and the writer target.
 - `libs/logger/package.json` omits the `dependencies` and `devDependencies` keys entirely, whereas `libs/fs-records` and `libs/config` both declare `"devDependencies": {}`. Policy does not require the key when a package has none, so this is not a compliance failure — only a sibling inconsistency. Harmless; align it if a later iteration touches the manifest.
 - **`libs/logger` was missing from `package-lock.json`'s `packages` map** — the same gap `libs/config` had — so `npm ci` from `$PROJECT` failed with `Missing: @art-lib/logger@0.0.1 from lock file`. Repaired during setup with `npm install --package-lock-only` (12-line additive diff) and committed on its own as `21f3d56` (`fix(art-lib): Sync package-lock with package.json so npm ci works.`), mirroring `20ac101`. `npm ci` and `npm run ci` are green from `$PROJECT` again.
+- **The `@art-lib/logger` packument carries a `0.0.0-stage` placeholder** — "Temporary package placeholder for staged publishing", created 16:29:10Z, between the publish worker's precondition check and its publish, and not created by this plan's worker. It sorts below `0.0.1` and `dist-tags.latest` still points at `0.0.1`, so nothing of ours is shadowed; per policy it was not unpublished. Someone or something else is running staged publishing against this package — worth confirming whether that placeholder is expected before `@art-lib/operations` publishes.
 
 ### Decisions
 
