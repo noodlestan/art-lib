@@ -64,9 +64,8 @@ Create `$PROJECT/libs/logger` exposing the message model (`Message`, creators) a
 
 ### Next
 
-- **Five iterations are `DONE`, all pushed to `origin/main`:** Scaffold (`ac059a8`), Implement Buffering Logger (`b9c7dbb`), Apply Noodlestan Conventions (`4408461`), Update Knowledge (`7767871`), Publish Logger Package (`1091288`). **`@art-lib/logger@0.0.1` is live on npm** — `_records/package.art` reads `Published: true`, `_records/npm-deployment.art` reads `DEPLOYED`, and the registry serves `description`, `keywords`, and `engines` byte-identical to the record. `Plan: Add Operations Package` is unblocked for its scaffold, log, and publish steps.
-- Next: **Iteration: Integrate in Consumer** (`READY`) — its gate has lifted: `Publish Logger Package` is `DONE` and `@art-lib/logger@0.0.1` is installable from the Art Works checkout. It refactors `$WORKSPACE/checkouts/art-works/cli/workspace` onto the package.
-- Then the plan is complete: close `Plan: Add Logger Package` and move it to `_backlog/1-done/`.
+- **All six iterations are `DONE`.** The final one, **Iteration: Integrate in Consumer**, landed `bf2fc78` in Art Works: `$WORKSPACE/checkouts/art-works/cli/workspace` now consumes `@art-lib/logger@0.0.1`, and the CLI's duplicated buffering logger is replaced by the package. `@art-lib/logger@0.0.1` remains **published and live on npm** — `_records/package.art` reads `Published: true` and `_records/npm-deployment.art` reads `DEPLOYED`.
+- **Plan complete.** Close `Plan: Add Logger Package` and move it to `_backlog/1-done/`.
 
 ### Blockers
 
@@ -122,14 +121,14 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Items:
 
-| Iteration / Instructions                | Status  |
-| --------------------------------------- | ------- |
-| Iteration: Scaffold Logger Package      | `DONE`  |
-| Iteration: Implement Buffering Logger   | `DONE`  |
-| Iteration: Apply Noodlestan Conventions | `DONE`  |
-| Iteration: Update Knowledge             | `DONE`  |
-| Iteration: Publish Logger Package       | `DONE`  |
-| Iteration: Integrate in Consumer        | `READY` |
+| Iteration / Instructions                | Status |
+| --------------------------------------- | ------ |
+| Iteration: Scaffold Logger Package      | `DONE` |
+| Iteration: Implement Buffering Logger   | `DONE` |
+| Iteration: Apply Noodlestan Conventions | `DONE` |
+| Iteration: Update Knowledge             | `DONE` |
+| Iteration: Publish Logger Package       | `DONE` |
+| Iteration: Integrate in Consumer        | `DONE` |
 
 ### Iteration: Scaffold Logger Package
 
@@ -510,7 +509,9 @@ release(logger): Publish 0.0.1 to npm.
 
 **Id:** `integrate-in-consumer`
 
-**Status:** `READY`
+**Status:** `DONE`
+
+**Delegation:** `COMPLETED` — worker session `ses_e5db56041ffeFSoI7Egzf3q2WU`.
 
 **Purpose:** Adopt `@art-lib/logger` in the Art Workspace Cli and retire its duplicated implementation.
 
@@ -554,9 +555,9 @@ After executing:
 
 #### Commits:
 
-| ID                             | Repository / Checkout / Branch                        | Policy       | Hash    | Status     |
-| ------------------------------ | ----------------------------------------------------- | ------------ | ------- | ---------- |
-| `integrate-logger-in-consumer` | Art Works / `$WORKSPACE/checkouts/art-works` / `main` | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                             | Repository / Checkout / Branch                        | Policy       | Hash      | Status      |
+| ------------------------------ | ----------------------------------------------------- | ------------ | --------- | ----------- |
+| `integrate-logger-in-consumer` | Art Works / `$WORKSPACE/checkouts/art-works` / `main` | `AUTONOMOUS` | `bf2fc78` | `COMMITTED` |
 
 ##### Commit: `integrate-logger-in-consumer`
 
@@ -568,6 +569,10 @@ refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.
 - Replace the local local buffering logger with @art-lib/logger.
 - Keep CLI behaviour and its test suite green.
 ```
+
+**Hash:** `bf2fc78` — pushed to `origin/main` **in the Art Works repository** (`$WORKSPACE/checkouts/art-works`).
+
+**Status:** `COMMITTED`
 
 ---
 
@@ -586,6 +591,7 @@ refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.
 - **Conventions iteration completed (2026-11-02).** No new conventions were installed — `@noodlestan/conventions-typescript@0.1.0` and `@noodlestan/conventions-unit-tests@0.1.0` are already at manifest version and declared in `$PROJECT/_guide.md ## Conventions`, so that file needed no edit (jsx/scss/solidjs don't apply; `commits` is workspace-level, outside package scope). Findings resolved with behaviour identical: 4 `interface` → `type` (plus `_guide.md` prose), named `CreateLoggerOptions`/`CreateMessageOptions`, one exported function per file (the four creators split out of `createMessage.ts`), `extractErrorMessage` → `message/private/`, `formatTiming`/`formatDefaultMessage`/`writeDefaultLines` + `FormattableMessage` → `src/private/`, `buffer` → `bufferedMessages`. Setup findings (scripts, tsconfig, eslint/vitest wiring, ignores, `build.config.mjs`) already byte-matched `libs/fs-records`. Verification green: package `lint`/`build`/`test` (23/23, no `it.todo()`, coverage 100/96.96/100/100) plus `npm run ci` from `$PROJECT` and from `$WORKSPACE`. Commit `4408461` pushed to `origin/main`.
 - **Update Knowledge iteration completed (2026-11-02).** `libs/logger/README.md` (consumer-facing `## Usage`) plus the package knowledge base — `knowledge/{index,overview}.md`, `knowledge/design/logger.md`, `knowledge/adr/logger.md` — created, with every relative link script-checked. Repository wiring complete: Logger → `IMPLEMENTED` in `knowledge/components.md`, a Package Knowledge References row in `knowledge/index.md`, `Package: Art Lib Logger` in `_records/project.art`, and the layout plus Knowledge References in `_guide.md`. Delegator addition applied as well: the stale "Message interface" wording in `knowledge/design/logger.md` and `knowledge/components.md` now matches the `type` the conventions iteration shipped. Verification green from `libs/logger/` (lint/build/test 23/23, no `it.todo()`), `npm run ci` from `$PROJECT`, and Prettier from `$WORKSPACE`. Commit `7767871` pushed to `origin/main` (it also carried the other session's already-local `23e123d`, `backlog(art-lib): Close \`add-config\` and move it to \`done\``).
 - **Published (2026-11-03).** `@art-lib/logger@0.0.1` is live on `https://registry.npmjs.org` — confirmed by `npm view`: `dist-tags.latest` → `0.0.1`, shasum `9b69f98d42a1e1a15d…` matching `npm pack --dry-run`, `deps: none`, `MIT`, and `description` / `keywords` (`library, logging, messages, art, terminal-apps`) / `engines` (`node >=22`) byte-identical to `_records/package.art`. All four preconditions passed before the registry was touched (whoami `noodlestan`, version absent, policy manifest fields, all four `files` entries on disk); no OTP was demanded. Records flipped to `Published: true` / `DEPLOYED` in `1091288`, which carries only those two edits — `version` and `CHANGELOG.md` untouched. Registry cache lag observed: `npm view` served a cached 404 for ~3 minutes after the publish while a direct `curl` returned 200 immediately.
+- **Consumer integration completed (2026-11-03).** `@art-lib/logger@0.0.1` adopted in `$WORKSPACE/checkouts/art-works/cli/workspace`: declared alongside `@art-lib/fs-records` (plus its lock entry), and `src/private/logger/createLogger.ts` now delegates to the package logger with the CLI's own formatter (`makeOperationLogLine(op, {standalone:true}).join(' | ')`) and an `console.info` writer, mapping outcome → level (`pending→info`, `success→warning`, `failure→error`) so `quiet` still drops pending work; `makeOperationLogLine.ts` stays as the renderer and report row builder. No callers or test helpers needed edits — the local `LoggerAPI` shape is unchanged. Gate verified first (`npm view @art-lib/logger version` → `0.0.1`, documented API present in `dist/index.d.ts`). Verification green: `npm run ci` in `cli/workspace` (prettier/eslint/tsc, build, 347 unit + 26 integration tests) and at the Art Works root, hooks `0-clean`/`1-extract`/`2-ci` green. Behaviour unchanged — baseline vs new build diff over `sanity -o verbose|quiet` and `clone NoSuchRepo -o verbose|quiet` shows identical stdout/stderr; the only diffs were the report's `ms` cell and the repo's own `uncommitted files` state. Commit `bf2fc78` pushed to `origin/main` in the Art Works repository; `$PROJECT` left untouched.
 
 ### Findings
 
@@ -619,3 +625,4 @@ refactor(workspace-cli): Adopt @art-lib/logger in the Workspace Cli.
 - **From the buffering-logger worker (2026-11-02):** the instruction was executed verbatim and was self-sufficient — goals, steps, commit blueprint, and verification commands needed no clarification. Two deliberate non-commits: `package-lock.json` (the setup repair, now `21f3d56`) and this plan's `Feedback` edit, both outside the instruction's single-commit scope; the report file itself is written next to the instruction and is not committed.
 - **The conventions blueprint message is invalid (2026-11-02):** `style(logger): Apply Noodlestan conventions.` uses `style`, which is not in the allowed-types table of `$WORKSPACE/knowledge/conventions/writing-commit-message.art` and has never appeared in history. The worker flagged it instead of committing blind, and the user chose `refactor(logger)`. Correct blueprints against that table before delegating — `Plan: Add Config Package` carries the same `style(config)` defect in its conventions iteration (there it never bit, because the changes rode into `8f2d84e`).
 - **From the conventions worker (2026-11-02):** executed as instructed; the `MANUAL` hold plus the message flag were the right calls. Two notes worth carrying: `$PROJECT/knowledge/design/logger.md` still says "Message interface" (tracked under Follow Ups), and a concurrent session was editing `libs/config` knowledge files in the same working tree — its 12 staged files were kept out of `4408461` by committing the `libs/logger` pathspec only.
+- **The `integrate-logger-in-consumer` blueprint message carries a typo** — "Replace the local local buffering logger with `@art-lib/logger`" — and was committed verbatim as `bf2fc78` because the instruction says to use the blueprint. Correct the doubled "local" before this message is reused.
