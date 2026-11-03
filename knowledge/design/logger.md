@@ -30,17 +30,24 @@ Operations satisfy this type structurally (see `design/operations.md`), so the l
 
 ## LoggerAPI
 
-| member                | semantics                                            |
-| --------------------- | ---------------------------------------------------- |
-| `log(message)`        | record a message (buffered until the mode is set)    |
-| `setOutputMode(mode)` | resolve the output mode; flush or discard the buffer |
+| member                | semantics                                                       |
+| --------------------- | --------------------------------------------------------------- |
+| `log(message)`        | record a message (buffered until the mode is set)               |
+| `setOutputMode(mode)` | resolve the output mode, then flush the buffer against its rule |
 
 `createLogger()` holds an undefined output mode and a buffer until the mode is set — messages are logged consistently **before and after the environment is fully resolved**.
 
 ## Output Modes
 
-- **`quiet`** — discards the buffered messages, then logs only messages at `warning`/`error` (finished work).
+`OutputMode` is `'quiet' | 'normal' | 'verbose'`.
+
+- **`normal`** — the default. Flushes the buffer (dropping `debug`), then logs `info`, `warning`, and `error`.
+- **`quiet`** — flushes the buffer, logging only messages at `warning`/`error` and dropping `info`/`debug` (problems only).
 - **`verbose`** — flushes the buffer and logs every message, buffered and pending included.
+
+The modes differ only in **which levels pass**; they never decide what a level _is_. Level derivation belongs to the producer — `@art-lib/operations` maps `pending → debug`, `success → info`, `failure → error` — so `normal` shows finished successes, `quiet` shows only problems, and `verbose` adds pending work.
+
+`normal` exists because a two-mode logger forces consumers into a hack: to keep successes visible under `quiet`, a producer must map `success → warning`, which then makes genuine warnings indistinguishable from routine success.
 
 ## Log Line
 

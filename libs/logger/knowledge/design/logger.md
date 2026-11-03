@@ -22,7 +22,7 @@ MessageLevel = 'debug' | 'info' | 'warning' | 'error'
 MaybeError = Error | unknown
 
 LoggerAPI { log(message: Message): void; setOutputMode(mode: OutputMode): void }
-OutputMode = 'quiet' | 'verbose'
+OutputMode = 'quiet' | 'normal' | 'verbose'
 LogFormatter { format(message: Message): string[] }
 LogWriter { write(lines: string[]): void }
 CreateLoggerOptions { formatter?: LogFormatter; writer?: LogWriter }
@@ -38,12 +38,15 @@ CreateMessageOptions { level: MessageLevel; text?: string; error?: MaybeError }
 
 ## Buffering Contract
 
-| Moment                     | Behaviour                                                                        |
-| -------------------------- | -------------------------------------------------------------------------------- |
-| Before `setOutputMode`     | `log(message)` buffers; nothing is written.                                      |
-| `setOutputMode('quiet')`   | discards the buffer, then writes only `warning` and `error`.                     |
-| `setOutputMode('verbose')` | flushes the buffer in order, then writes every message.                          |
-| Mode set again             | the same rule applies to the (now empty) buffer; no re-emission of old messages. |
+| Moment                     | Behaviour                                                                                  |
+| -------------------------- | ------------------------------------------------------------------------------------------ |
+| Before `setOutputMode`     | `log(message)` buffers; nothing is written.                                                |
+| `setOutputMode('normal')`  | flushes the buffer in order, dropping `debug`, then writes `info`, `warning`, `error`.     |
+| `setOutputMode('quiet')`   | flushes the buffer in order, writing only `warning` and `error`; drops `info` and `debug`. |
+| `setOutputMode('verbose')` | flushes the buffer in order, then writes every message.                                    |
+| Mode set again             | the same rule applies to the (now empty) buffer; no re-emission of old messages.           |
+
+**Every mode flushes; none discards.** The buffer exists because the mode is not yet known — once it is, the rule that governs messages logged afterwards governs the buffered ones too, so arrival time never decides survival and only the level does. `quiet` therefore keeps a pre-mode `warning` or `error` and drops `info`/`debug`, exactly as it treats messages logged after the mode was set.
 
 The mode is optional at construction and required before emission, so a CLI can start logging before its environment is fully resolved.
 
@@ -83,9 +86,14 @@ const logger = createLogger({
 
 logger.log(createInfoMessage('starting up')); // buffered
 
-logger.setOutputMode('verbose'); // flushes the buffer, then writes everything
+logger.setOutputMode('normal'); // flushes the buffer (dropping debug), then writes info and above
 
-logger.log(createWarningMessage('cache directory missing'));
+logger.log(createInfoMessage('config loaded')); // written
+
+logger.setOutputMode('quiet'); // from here on: warnings and errors only
+
+logger.log(createWarningMessage('cache directory missing')); // written
+logger.log(createInfoMessage('still working')); // dropped
 ```
 
 Without options, the default formatter and the `console.error` writer are used. The message model, the buffering rules, and a consumer-ready walkthrough live in the [README](../../README.md); the consumer requirements behind this design are recorded at the repository level in [`../../../../knowledge/design/logger.md`](../../../../knowledge/design/logger.md).

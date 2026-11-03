@@ -1,6 +1,6 @@
 # @art-lib/logger
 
-> Create and log messages with a buffering logger: quiet and verbose output modes, an injected formatter, and an injectable log writer.
+> Create and log messages with a buffering logger: quiet, normal, and verbose output modes, an injected formatter, and an injectable log writer.
 
 This package is part of the [Art Lib toolkit](../../README.md).
 
@@ -28,7 +28,7 @@ import { createLogger } from '@art-lib/logger';
 const logger = createLogger();
 
 // Nothing is written before this line.
-logger.setOutputMode(process.env.VERBOSE ? 'verbose' : 'quiet');
+logger.setOutputMode(process.env.VERBOSE ? 'verbose' : 'normal');
 ```
 
 ### Example
@@ -46,10 +46,10 @@ const logger = createLogger();
 // Buffered until the output mode is set.
 logger.log(createInfoMessage('discovering record files'));
 
-logger.setOutputMode(process.argv.includes('--verbose') ? 'verbose' : 'quiet');
+logger.setOutputMode(process.argv.includes('--verbose') ? 'verbose' : 'normal');
 
-// `quiet` writes warnings and errors only from here on.
-// `verbose` flushes the buffered message above first, then writes everything.
+// `normal` (the default) flushes the buffered message above, dropping `debug`.
+// `quiet` keeps only warnings and errors from that buffer — and from here on.
 logger.log(createWarningMessage('cache directory missing'));
 
 try {
@@ -81,10 +81,11 @@ A message that carries an `operation` name or a `timing` function fills those ce
 
 ### Output Modes
 
-| Mode      | When the mode is set                   | Afterwards                        |
-| --------- | -------------------------------------- | --------------------------------- |
-| `quiet`   | discards the buffered messages         | writes only `warning` and `error` |
-| `verbose` | flushes the buffered messages in order | writes every message              |
+| Mode      | Buffer and messages afterwards                             |
+| --------- | ---------------------------------------------------------- |
+| `normal`  | flushes the buffer, then writes `info`, `warning`, `error` |
+| `quiet`   | flushes the buffer, then writes `warning` and `error`      |
+| `verbose` | flushes the buffer, then writes every message              |
 
 ### Message Creators
 
