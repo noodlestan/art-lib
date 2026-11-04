@@ -13,6 +13,7 @@ WIP tracker, structured like the session parking lot: **ACTIONABLE** (in progres
 ## ACTIONABLE
 
 - **`createRunner` entry point (Art Lib candidate)** — `createRunner(logger, options).run(handler => …)`: graceful interruption/crash handling plus `handler.shutdown()`/`handler.onShutdown()` hooks; watcher lifecycle stays with each CLI. Surfaced via `ART_LIB` on the Art Boards board. No plan drafted yet — needs `write-plan` or an explicit deferral.
+- **`compileConfig` does not silence esbuild output** — `src/compile/compileConfig.ts` calls esbuild `build()` without `logLevel`, so esbuild writes the formatted `✘ [ERROR] …` diagnostic straight to stdout/stderr (service child uses `stdio: 'inherit'`; no console/stderr spy can intercept it) before `compileConfig` throws. Fix: pass `logLevel: 'silent'` in `buildOptions` — esbuild still throws with full details in `error.message`, so callers' wrapped errors are unaffected. Add a test asserting the console/stderr shows **no output in either case**: esbuild fails _and_ esbuild succeeds. Snippet that makes the config compile fail: `export default {{{` — write it to a temp `.art-workspace.mts` and expect `compileConfig` to reject. Surfaced from `Plan: Fix Pull Checkout Test` (`$ART_WORKS/_backlog/4-next/plan-fix-pull-checkout-test/plan.md`), whose suite run emits exactly this noise. No plan drafted yet — needs `write-plan`.
 
 ## PENDING
 
