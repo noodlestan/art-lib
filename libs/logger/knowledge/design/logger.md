@@ -17,16 +17,37 @@ createInfoMessage(text: string): Message;
 createWarningMessage(text: string): Message;
 createErrorMessage(error: MaybeError, message?: string): Message;
 
-Message { level: MessageLevel; text(): string; ts: number }
-MessageLevel = 'debug' | 'info' | 'warning' | 'error'
-MaybeError = Error | unknown
+type Message = {
+  level: MessageLevel;
+  text(): string;
+  ts: number
+}
 
-LoggerAPI { log(message: Message): void; setOutputMode(mode: OutputMode): void }
-OutputMode = 'quiet' | 'normal' | 'verbose'
-LogFormatter { format(message: Message): string[] }
-LogWriter { write(lines: string[]): void }
-CreateLoggerOptions { formatter?: LogFormatter; writer?: LogWriter }
-CreateMessageOptions { level: MessageLevel; text?: string; error?: MaybeError }
+type MessageLevel = 'debug' | 'info' | 'warning' | 'error'
+
+type MaybeError = Error | unknown
+
+type LoggerAPI = {
+  log(message: Message): void;
+  setOutputMode(mode: OutputMode): void
+}
+
+type OutputMode = 'quiet' | 'normal' | 'verbose'
+
+type LogFormatter =  { format(message: Message): string[] }
+
+type LogWriter = { write(lines: string[]): void }
+
+type CreateLoggerOptions = {
+  formatter?: LogFormatter;
+  writer?: LogWriter
+}
+
+type CreateMessageOptions = {
+  level: MessageLevel;
+  text?: string;
+  error?: MaybeError
+}
 ```
 
 - `createLogger` — the buffering logger: buffer, resolve the mode, then format and write.
