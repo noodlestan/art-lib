@@ -386,7 +386,7 @@ style(config): Apply Noodlestan conventions.
 - `$PROJECT/libs/config/.prettierignore` — added by `Iteration: Apply Noodlestan Conventions`.
 - `$PROJECT/libs/config/_guide.md` — corrected `src/` tree.
 - `$PROJECT/libs/config/src/types.ts` — 4× `interface` → `type` (No Interface rule).
-- `$PROJECT/libs/config/package.json` — `esbuild` pinned to `0.28.2`, the canonical version in `$WORKSPACE/checkouts/management/_ops/packages/dependencies.md`. The previous `^0.24.0` range let npm resolve a second esbuild into `libs/config/node_modules/`, shadowing the monorepo root; the pin removes that cause.
+- `$PROJECT/libs/config/package.json` — `esbuild` pinned to `0.28.2`, the canonical version in `$WORKSPACE/checkouts/ops/knowledge/design/dependencies.md`. The previous `^0.24.0` range let npm resolve a second esbuild into `libs/config/node_modules/`, shadowing the monorepo root; the pin removes that cause.
 - `$PROJECT/package-lock.json` — refreshed for the pin.
 
 **Part B — execute this:**
@@ -595,7 +595,7 @@ docs(config): Add package knowledge base and repository references.
    - `npm whoami` returns an account permitted to publish `@art-lib/*` (currently `noodlestan`).
    - `npm view @art-lib/config version` fails with `ENOTFOUND` — `0.0.1` must not already exist. A published version is immutable, so a mistake requires a bump and a new publish.
    - `$PACKAGE/package.json` carries `version` `0.0.1`, `private` `false`, `publishConfig` `{ "access": "public" }`, and `files` listing `dist`, `README.md`, `LICENSE-MIT`, `CHANGELOG.md`.
-   - All four `files` entries exist on disk, and the manifest conforms to `$WORKSPACE/checkouts/management/_ops/packages/policy.md`.
+   - All four `files` entries exist on disk, and the manifest conforms to `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md`.
 2. `npm pack --dry-run` from `$PACKAGE`, and confirm the tarball contains `package.json`, `dist/index.mjs`, `dist/index.d.ts`, `README.md`, `LICENSE-MIT`, and `CHANGELOG.md`.
 3. `npm publish --access public` from `$PACKAGE`. If the registry demands a one-time password for two-factor authentication, **do not retry and do not unpublish** — `REPORT A BLOCKER` that publishing requires an OTP and stop.
 4. Confirm the publish landed: `npm view @art-lib/config version` returns `0.0.1`, `npm view @art-lib/config dependencies` shows `esbuild` pinned `0.28.2`, and the description and keywords match the record.
@@ -615,7 +615,7 @@ Execute the Changes listed above.
 Before starting:
 
 - Run `npm ci` from the `$WORKSPACE` root.
-- Read `$WORKSPACE/checkouts/management/_ops/packages/policy.md` — the manifest must already conform before it ships.
+- Read `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md` — the manifest must already conform before it ships.
 
 Validate that:
 

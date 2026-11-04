@@ -138,7 +138,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 **Purpose:** Create the `logger` package skeleton before adding the module.
 
-**Description:** Scaffold `$PROJECT/libs/logger` as a fully-formed, policy-compliant package: build files, a manifest derived from the package record under `$WORKSPACE/checkouts/management/_ops/packages/policy.md`, the metadata files, and both records. The logger knows only messages, so it declares no internal dependencies.
+**Description:** Scaffold `$PROJECT/libs/logger` as a fully-formed, policy-compliant package: build files, a manifest derived from the package record under `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md`, the metadata files, and both records. The logger knows only messages, so it declares no internal dependencies.
 
 **Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
 
@@ -160,7 +160,7 @@ Mirror the shape of `libs/fs-records/_records/package.art`: Purpose, Description
 
 **3 — `package.json`: derive every field, never assemble one from parts.**
 
-Read `$WORKSPACE/checkouts/management/_ops/packages/policy.md` first. It is authoritative for which fields are required, what value each takes, and the exact key order.
+Read `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md` first. It is authoritative for which fields are required, what value each takes, and the exact key order.
 
 - `name` `@art-lib/logger`; `version` `0.0.1`; `private` `false`; `type` `module`; `sideEffects` `false`; `exports` root only (`./src/index.ts`); no internal dependencies.
 - `description` — copied from the `**Description:**` field of `_records/package.art`, verbatim. `author`, `engines`, and `files` likewise derive from the record.
@@ -200,7 +200,7 @@ Execute the Changes listed above.
 Before starting:
 
 - Run `npm ci` from the `$WORKSPACE` root.
-- Read `$WORKSPACE/checkouts/management/_ops/packages/policy.md` and `$WORKSPACE/checkouts/management/_ops/keywords/matrix.md` in full — the manifest and keywords must conform to them, not to your prior assumptions.
+- Read `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md` and `$WORKSPACE/checkouts/management/_ops/keywords/matrix.md` in full — the manifest and keywords must conform to them, not to your prior assumptions.
 - Read `$PROJECT/knowledge/design/logger.md` and `$PROJECT/_guide.md` for what this package must provide.
 
 Validate that:
