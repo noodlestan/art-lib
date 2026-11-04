@@ -37,7 +37,7 @@ The logger also stays out of the operation business: it knows only messages, so 
 
 1. **Create** — resolve `formatter` and `writer` (package defaults when omitted), and start with an empty buffer and no output mode.
 2. **Buffer** — `log(message)` while the mode is undefined pushes the message onto the buffer and returns.
-3. **Resolve** — `setOutputMode('quiet')` clears the buffer; `setOutputMode('normal')` and `setOutputMode('verbose')` emit each buffered message in order (`normal` dropping `debug`), then clear it.
+3. **Resolve** — `setOutputMode(mode)` applies the mode's rule to the buffer in order — `quiet` writing only `warning`/`error`, `normal` dropping `debug`, `verbose` writing everything — then clears it.
 4. **Emit** — once the mode is set, `log(message)` formats through the formatter and writes through the writer when the mode allows it: `quiet` lets `warning` and `error` through, `normal` lets `info` and above through, `verbose` lets everything through.
 
 The public surface behind these cases is documented in [`design/logger.md`](design/logger.md).

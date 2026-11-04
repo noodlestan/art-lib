@@ -29,6 +29,10 @@ export function createLogger(options?: CreateLoggerOptions): LoggerAPI {
 			return true;
 		}
 
+		if (mode === 'normal') {
+			return message.level !== 'debug';
+		}
+
 		return message.level === 'warning' || message.level === 'error';
 	}
 
@@ -47,8 +51,8 @@ export function createLogger(options?: CreateLoggerOptions): LoggerAPI {
 		setOutputMode(newMode: OutputMode): void {
 			mode = newMode;
 
-			if (newMode === 'verbose') {
-				for (const bufferedMessage of bufferedMessages) {
+			for (const bufferedMessage of bufferedMessages) {
+				if (shouldEmit(bufferedMessage)) {
 					emit(bufferedMessage);
 				}
 			}

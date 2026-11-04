@@ -18,25 +18,50 @@ describe('createLogger', () => {
 		expect(writeMock).not.toHaveBeenCalled();
 	});
 
-	it('WHEN the output mode is set to quiet — discards the buffer and then writes only warning and error messages', () => {
+	it('WHEN the output mode is set to quiet — flushes the buffer in order, keeping only warning and error messages', () => {
 		const writeMock = vi.fn<(lines: string[]) => void>();
 		const writer: LogWriter = { write: writeMock };
 		const logger = createLogger({ writer });
 
 		logger.log(createDebugMessage('buffered debug'));
+		logger.log(createInfoMessage('buffered info'));
 		logger.log(createWarningMessage('buffered warning'));
 		logger.setOutputMode('quiet');
 
-		expect(writeMock).not.toHaveBeenCalled();
+		expect(writeMock).toHaveBeenCalledTimes(1);
+		expect(writeMock).toHaveBeenNthCalledWith(1, ['⚠️ |  | buffered warning | ']);
 
 		logger.log(createDebugMessage('later debug'));
 		logger.log(createInfoMessage('later info'));
 		logger.log(createWarningMessage('later warning'));
 		logger.log(createErrorMessage(new Error('later error')));
 
+		expect(writeMock).toHaveBeenCalledTimes(3);
+		expect(writeMock).toHaveBeenNthCalledWith(2, ['⚠️ |  | later warning | ']);
+		expect(writeMock).toHaveBeenNthCalledWith(3, ['🔴 |  | later error | ']);
+	});
+
+	it('WHEN the output mode is set to normal — flushes the buffer in order, dropping debug, then writes info and above', () => {
+		const writeMock = vi.fn<(lines: string[]) => void>();
+		const writer: LogWriter = { write: writeMock };
+		const logger = createLogger({ writer });
+
+		logger.log(createDebugMessage('buffered debug'));
+		logger.log(createInfoMessage('buffered info'));
+		logger.log(createWarningMessage('buffered warning'));
+		logger.setOutputMode('normal');
+
 		expect(writeMock).toHaveBeenCalledTimes(2);
-		expect(writeMock).toHaveBeenNthCalledWith(1, ['⚠️ |  | later warning | ']);
-		expect(writeMock).toHaveBeenNthCalledWith(2, ['🔴 |  | later error | ']);
+		expect(writeMock).toHaveBeenNthCalledWith(1, ['ℹ️ |  | buffered info | ']);
+		expect(writeMock).toHaveBeenNthCalledWith(2, ['⚠️ |  | buffered warning | ']);
+
+		logger.log(createDebugMessage('later debug'));
+		logger.log(createInfoMessage('later info'));
+		logger.log(createErrorMessage(new Error('later error')));
+
+		expect(writeMock).toHaveBeenCalledTimes(4);
+		expect(writeMock).toHaveBeenNthCalledWith(3, ['ℹ️ |  | later info | ']);
+		expect(writeMock).toHaveBeenNthCalledWith(4, ['🔴 |  | later error | ']);
 	});
 
 	it('WHEN the output mode is set to verbose — flushes the buffer in order and then writes every message', () => {

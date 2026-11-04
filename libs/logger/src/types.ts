@@ -1,6 +1,6 @@
 import type { Message } from './message/types.js';
 
-export type OutputMode = 'quiet' | 'verbose';
+export type OutputMode = 'quiet' | 'normal' | 'verbose';
 
 export type LogFormatter = {
 	format(message: Message): string[];
