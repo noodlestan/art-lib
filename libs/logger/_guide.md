@@ -45,7 +45,7 @@ This package maintains a knowledge base at:
 
 - `knowledge/index.md` — Package knowledge: overview, design, and decision records.
 
-The repository-level knowledge index is at `../../knowledge/index.md`; the repository-level design record for this package is `../../knowledge/design/logger.md`.
+The repository-level knowledge index is at `../../knowledge/index.md`.
 
 ## Conventions
 

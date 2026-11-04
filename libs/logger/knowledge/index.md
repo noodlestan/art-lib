@@ -22,5 +22,4 @@
 
 ## Related Knowledge
 
-- `../../../knowledge/design/logger.md` — repository-level design record: consumer requirements from Art Works and Art MD.
 - `../../../knowledge/design/operations.md` — operations conform to `Message` and forward to the logger.

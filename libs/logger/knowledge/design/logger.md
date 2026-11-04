@@ -48,7 +48,7 @@ CreateMessageOptions { level: MessageLevel; text?: string; error?: MaybeError }
 
 **Every mode flushes; none discards.** The buffer exists because the mode is not yet known — once it is, the rule that governs messages logged afterwards governs the buffered ones too, so arrival time never decides survival and only the level does. `quiet` therefore keeps a pre-mode `warning` or `error` and drops `info`/`debug`, exactly as it treats messages logged after the mode was set.
 
-The mode is optional at construction and required before emission, so a CLI can start logging before its environment is fully resolved.
+The mode is optional at construction and required before emission, so a CLI can start logging before its environment is fully resolved. `normal` is the default choice for `setOutputMode` — the mode to pick when nothing else decides it.
 
 ## Log Line
 
@@ -96,4 +96,4 @@ logger.log(createWarningMessage('cache directory missing')); // written
 logger.log(createInfoMessage('still working')); // dropped
 ```
 
-Without options, the default formatter and the `console.error` writer are used. The message model, the buffering rules, and a consumer-ready walkthrough live in the [README](../../README.md); the consumer requirements behind this design are recorded at the repository level in [`../../../../knowledge/design/logger.md`](../../../../knowledge/design/logger.md).
+Without options, the default formatter and the `console.error` writer are used. The message model, the buffering rules, and a consumer-ready walkthrough live in the [README](../../README.md).

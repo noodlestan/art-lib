@@ -47,7 +47,7 @@ Implement the pure operations model of `@art-lib/operations`: the immutable oper
 
 - plan: `$PROJECT/_backlog/3-now/plan-add-operations/plan.md` — this plan; the iteration Changes list the exact files.
 - design: `$PROJECT/knowledge/design/operations.md` — operation record contract: `message()` semantics (input uri / given message / error reason), `timing()` NaN-while-pending, label-prefixed `errorSerialized()`, and Message conformance (`level` derived from the outcome).
-- design: `$PROJECT/knowledge/design/logger.md` — the `Message` interface operations must satisfy structurally.
+- design: `$PROJECT/libs/logger/knowledge/design/logger.md` — the `Message` type operations must satisfy structurally.
 - knowledge: `$PROJECT/knowledge/index.md` — package layout and publishing conventions.
 
 - RULE: You MUST follow any links under `## Mandatory Reading` sections found in the listed files.

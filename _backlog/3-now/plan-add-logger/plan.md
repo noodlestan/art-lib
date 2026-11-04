@@ -52,7 +52,7 @@ Create `@art-lib/logger` with the `Message` interface and message creators, plus
 
 ### Knowledge
 
-::READ `$PROJECT/knowledge/design/logger.md` (Design) — Consumer requirements from Art Works and Art MD CLIs. Relevant for Planning Work Item.
+::READ `$PROJECT/libs/logger/knowledge/design/logger.md` (Design) — Published surface: message model, buffering contract, output modes. Relevant for Planning Work Item.
 
 ::READ `$PROJECT/knowledge/index.md` (Model) — Package layout and publishing conventions. Relevant for Planning Work Item.
 
@@ -772,7 +772,7 @@ Execute the Changes listed above.
 Before starting:
 
 - Run `npm ci` from the `$WORKSPACE` root, then from `$WORKSPACE/checkouts/art-works`.
-- Read `$ART_LIB/knowledge/design/logger.md` for the three mode semantics.
+- Read `$ART_LIB/libs/logger/knowledge/design/logger.md` for the three mode semantics.
 - Confirm `npm view @art-lib/logger version` returns `0.0.2` before bumping the dependency; if it does not, `REPORT A BLOCKER` and stop.
 
 Validate that:

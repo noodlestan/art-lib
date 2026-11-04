@@ -1,6 +1,6 @@
 # Overview: Art Lib Logger
 
-**Purpose:** Introduce the logger package: what it is, its definitions, its use cases, and how a log works.
+**Purpose:** Introduce the logger package: what it is, its definitions, its principles, its use cases, and how a log works.
 
 ## What
 
@@ -10,8 +10,6 @@
 
 CLIs log while their environment is still resolving: argument parsing, config loading, and command execution all produce messages at different stages. One writer with one line format keeps that output consistent, but a writer that is not ready yet would drop or interleave the early messages. The logger buffers until the output mode is set, then applies the mode — so messages are logged consistently **before and after** the environment is fully resolved.
 
-The logger also stays out of the operation business: it knows only messages, so producers conform to `Message` structurally instead of the logger importing them.
-
 ## Definitions
 
 - **Message** — `{ level, text(), ts }`: severity (`debug` | `info` | `warning` | `error`), the message text (or error reason), and the creation timestamp.
@@ -19,6 +17,12 @@ The logger also stays out of the operation business: it knows only messages, so 
 - **Buffer** — messages logged before the mode is set; flushed against the mode's own rule once it is set (`quiet` writes `warning`/`error`, `normal` writes `info` and above, `verbose` writes everything) and the remainder are dropped.
 - **LogFormatter** — `{ format(message): string[] }`; turns a message into the lines to write.
 - **LogWriter** — `{ write(lines): void }`; receives the formatter's lines. The default wraps `console.error`.
+
+## Principles
+
+- **Messages only.** The logger knows messages and nothing else. Anything that conforms to `Message` can be logged; the logger holds no concept of the producer's domain, so no producer ever becomes a dependency of this package.
+- **Modes filter; they never derive.** A mode decides which levels pass — `verbose` all, `normal` `info` and above, `quiet` `warning`/`error` — and never how a level is derived. Deriving a level belongs to the producer.
+- **Every mode flushes; none discards.** The buffer exists only because the mode is not yet known. Once it is set, that mode's rule governs what was buffered exactly as it governs what follows, so a message survives by its level alone — arrival time never decides survival.
 
 ## Use Cases
 

@@ -12,7 +12,6 @@
 | Document                                     | Purpose                                                                             |
 | -------------------------------------------- | ----------------------------------------------------------------------------------- |
 | [design/operations.md](design/operations.md) | Operation model and operations log: consumer requirements from Art MD and Art Works |
-| [design/logger.md](design/logger.md)         | Buffering logger, output modes, log line, writer: consumer requirements             |
 
 ## Decision Records
 
