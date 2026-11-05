@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## UNRELEASED
+
+### Fixed
+
+- **compileConfig():** Stop esbuild from writing formatted diagnostics to stdout/stderr — builds with `logLevel: 'silent'`; failures still throw with full details in `error.message`.
+
+### Added
+
+- **compileConfig silence tests:** Regression coverage asserting no console/stream output on the failure and success paths, and that `build()` receives `logLevel: 'silent'`.
+
 ## 0.0.1
 
 ### Added
