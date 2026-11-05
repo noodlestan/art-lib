@@ -106,7 +106,7 @@ Execution occurs from `$WORKSPACE/`; project work happens in `$WORKSPACE/checkou
 | Iteration / Instructions                      | Status  |
 | --------------------------------------------- | ------- |
 | Iteration: Pass Silent Log Level `inlined`    | `DONE`  |
-| Iteration: Assert Compile Silence `inlined`   | `READY` |
+| Iteration: Assert Compile Silence `inlined`   | `DONE`  |
 | Iteration: Add Unreleased Changelog `inlined` | `READY` |
 
 ### Iteration: Pass Silent Log Level
@@ -173,7 +173,7 @@ fix(config): Silence esbuild output in compileConfig.
 
 **Id:** `assert-compile-silence`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Lock the silence in with regression tests covering the failure path, the success path, and the argument esbuild receives.
 
@@ -219,9 +219,9 @@ After executing:
 
 #### Commits:
 
-| ID                       | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| ------------------------ | ------------------------------ | ------------ | ------- | ---------- |
-| `assert-compile-silence` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                       | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| ------------------------ | ------------------------------ | ------------ | --------- | ----------- |
+| `assert-compile-silence` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `45525e1` | `COMMITTED` |
 
 ##### Commit: `assert-compile-silence`
 
@@ -312,7 +312,7 @@ docs(config): Add UNRELEASED changelog entry.
 
 ### Next
 
-Delegate Iteration: Assert Compile Silence to a worker, then integrate; after it lands, delegate Iteration: Add Unreleased Changelog.
+Delegate Iteration: Add Unreleased Changelog to a worker, then integrate; after it lands the plan is complete.
 
 ### Blockers
 
@@ -347,6 +347,7 @@ Delegate Iteration: Assert Compile Silence to a worker, then integrate; after it
 - **Single call site** — esbuild's `build()` is imported only by `src/compile/compileConfig.ts` (plus the test's spy wrapper), so one `logLevel` silences the whole package.
 - **Error detail survives silence** — esbuild keeps the full formatted diagnostic in `error.message` at `logLevel: 'silent'`; existing assertions such as `rejects.toThrow(/Could not resolve/)` stay green.
 - **Suite verified quiet** — worker reported commit `bb1f004` (pushed): package suite 16/16 green with no `✘ [ERROR]` block, Verifying Step and `npm run ci` green.
+- **Regression lock landed** — worker reported commit `45525e1` (pushed): `compileConfig.test.ts` added, package suite 18/18 green, zero `✘ [ERROR]` occurrences across full CI log.
 
 ### Findings
 
