@@ -2,7 +2,7 @@
 
 **ID:** `silence-esbuild-output`
 
-**Status:** `WORKING`
+**Status:** `DONE`
 
 **Template:** `$DOMAINS/plans/templates/plan.tart`
 
@@ -103,11 +103,11 @@ Execution occurs from `$WORKSPACE/`; project work happens in `$WORKSPACE/checkou
 
 ## Items:
 
-| Iteration / Instructions                      | Status  |
-| --------------------------------------------- | ------- |
-| Iteration: Pass Silent Log Level `inlined`    | `DONE`  |
-| Iteration: Assert Compile Silence `inlined`   | `DONE`  |
-| Iteration: Add Unreleased Changelog `inlined` | `READY` |
+| Iteration / Instructions                      | Status |
+| --------------------------------------------- | ------ |
+| Iteration: Pass Silent Log Level `inlined`    | `DONE` |
+| Iteration: Assert Compile Silence `inlined`   | `DONE` |
+| Iteration: Add Unreleased Changelog `inlined` | `DONE` |
 
 ### Iteration: Pass Silent Log Level
 
@@ -237,7 +237,7 @@ test(config): Assert compileConfig emits no output.
 
 **Id:** `add-unreleased-changelog`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Record the changes made by this plan in the package changelog as a new `UNRELEASED` entry, so the next release inherits a ready-made section.
 
@@ -294,9 +294,9 @@ After executing:
 
 #### Commits:
 
-| ID                     | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| ---------------------- | ------------------------------ | ------------ | ------- | ---------- |
-| `changelog-unreleased` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                     | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| ---------------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `changelog-unreleased` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `7c96e92` | `COMMITTED` |
 
 ##### Commit: `changelog-unreleased`
 
@@ -312,7 +312,7 @@ docs(config): Add UNRELEASED changelog entry.
 
 ### Next
 
-Delegate Iteration: Add Unreleased Changelog to a worker, then integrate; after it lands the plan is complete.
+All three iterations DONE — plan complete; publishing `@art-lib/config@0.0.2` stays tracked under Follow Ups.
 
 ### Blockers
 
@@ -348,6 +348,7 @@ Delegate Iteration: Add Unreleased Changelog to a worker, then integrate; after 
 - **Error detail survives silence** — esbuild keeps the full formatted diagnostic in `error.message` at `logLevel: 'silent'`; existing assertions such as `rejects.toThrow(/Could not resolve/)` stay green.
 - **Suite verified quiet** — worker reported commit `bb1f004` (pushed): package suite 16/16 green with no `✘ [ERROR]` block, Verifying Step and `npm run ci` green.
 - **Regression lock landed** — worker reported commit `45525e1` (pushed): `compileConfig.test.ts` added, package suite 18/18 green, zero `✘ [ERROR]` occurrences across full CI log.
+- **Changelog prepared** — worker reported commit `7c96e92` (pushed): `CHANGELOG.md` now reads `# CHANGELOG`, `## UNRELEASED` (Fixed/Added bullets matching the two commits), `## 0.0.1` untouched; no version bump; full `npm run ci` green.
 
 ### Findings
 
