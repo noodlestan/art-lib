@@ -2,7 +2,7 @@
 
 **ID:** `add-operations`
 
-**Status:** `READY`
+**Status:** `WORKING`
 
 **Template:** `.agents/domains/plans/templates/plan.tart`
 
@@ -63,7 +63,7 @@ Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (ope
 
 ### Next
 
-- Planning complete: all seven iterations are `READY` with instructions. Delegate Iteration: Scaffold Operations Package (Logger's package exists — `ac059a8`), Iteration: Implement Operations Model, Iteration: Implement Operations Log (Logger's `Message` landed — `b9c7dbb`), Iteration: Apply Noodlestan Conventions (`MANUAL` commit), Iteration: Update Knowledge, Iteration: Publish Operations Package (added 2026-11-02, publishes `@art-lib/operations@0.0.1` and lifts the consumer gate), then Iteration: Integrate in Consumer. Config and Logger may proceed independently.
+- Iteration: Scaffold Operations Package is `DONE` (commit `cbf34d6`, pushed). Delegate Iteration: Implement Operations Model next; then Iteration: Implement Operations Log, Iteration: Apply Noodlestan Conventions (`MANUAL` commit), Iteration: Update Knowledge, Iteration: Publish Operations Package, and Iteration: Integrate in Consumer.
 
 ### Blockers
 
@@ -121,7 +121,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 | Iteration / Instructions                | Status  |
 | --------------------------------------- | ------- |
-| Iteration: Scaffold Operations Package  | `READY` |
+| Iteration: Scaffold Operations Package  | `DONE`  |
 | Iteration: Implement Operations Model   | `READY` |
 | Iteration: Implement Operations Log     | `READY` |
 | Iteration: Apply Noodlestan Conventions | `READY` |
@@ -133,7 +133,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 **Id:** `scaffold-operations-package`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Create the `operations` package skeleton with subpath exports before adding modules.
 
@@ -179,9 +179,9 @@ After executing:
 
 #### Commits:
 
-| ID                    | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| --------------------- | ------------------------------ | ------------ | ------- | ---------- |
-| `scaffold-operations` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                    | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| --------------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `scaffold-operations` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `cbf34d6` | `COMMITTED` |
 
 ##### Commit: `scaffold-operations`
 
@@ -559,6 +559,7 @@ refactor(workspace-cli): Adopt @art-lib/operations in the Workspace Cli.
 ### Evidence
 
 - `@art-lib/operations` builds, lints, and tests green from `$PROJECT/libs/operations`; both subpaths resolve via the exports map.
+- **Scaffold landed** — worker reported commit `cbf34d6` (pushed): manifest with `.`, `./model`, `./log` exports and `@art-lib/logger` dep, configs, placeholder entry points, `_guide.md`, records; package + workspace CI green; no `node_modules` inside the package.
 
 ### Findings
 
@@ -583,4 +584,5 @@ refactor(workspace-cli): Adopt @art-lib/operations in the Workspace Cli.
 
 ### Feedback
 
-- None.
+- **IRRELEVANT updates (recorded by Prepare Delegation, apply on next architect edit)** — (1) `### Blockers` renders `- None.` while `plan.tart` omits the section when empty; (2) no `## Execution Context` section rendered; (3) no `## Resource Kinds in Scope` section rendered; (4) `## Scope` is prose without the structured record/role/changes shape; none of these change what a worker reads, changes, or commits.
+- **Blueprint divergence (delegation follows the instruction files verbatim)** — plan Commit blueprints for `add-operations-model` and `add-operations-log` differ in message text from the self-contained instruction files ("Add operation model and factories." vs "Add immutable operations model."; "Add operations log module." vs "Add operations log store and queries."). Delegation executes the instruction files; sync the plan blueprints on integration review.
