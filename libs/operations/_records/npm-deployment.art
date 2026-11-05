@@ -1,0 +1,17 @@
+# Module
+
+## NPM Package Deployment: Art Lib Operations
+
+**Owner:** Package: Art Lib Operations
+
+**Status:** `PLANNED`
+
+**Build:** Deployment Build: NPM Command
+
+**Deploy:** Deployment Command: NPM Package CLI
+
+**Canonical Name:** `@art-lib/operations`
+
+**Registry:** `https://registry.npmjs.org`
+
+**Access:** `public`

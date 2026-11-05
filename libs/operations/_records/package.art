@@ -1,0 +1,49 @@
+# Module
+
+## Package: Art Lib Operations
+
+**Purpose:** Shared CLI operation model and operations log.
+
+**Description:** Operation outcome types and factories, and an append-only operations log that forwards every operation to the logger.
+
+**Owner:** Project: Art Lib
+
+**Namespace:** Namespace: Art Lib
+
+**Author:** Noodlestan Collective
+
+**Path:** `libs/operations/`
+
+**Canonical Name:** `@art-lib/operations`
+
+**Published:** `false`
+
+**Private:** `false`
+
+**Keywords:**
+
+- library
+- operations
+- cli
+- tooling
+- art
+- terminal-apps
+
+**Language:** TypeScript
+
+**Engines:**
+
+- Node: `>= 22`
+
+**PackageManager:** `npm@10.2.3`
+
+**PackageFile:** `package.json`
+
+**License:** License: Noodlestan 2026 MIT
+
+**Files:**
+
+- `dist`
+- `README.md`
+- `LICENSE-MIT`
+- `CHANGELOG.md`
