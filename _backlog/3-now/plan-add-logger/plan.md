@@ -79,7 +79,7 @@ Create `$PROJECT/libs/logger` exposing the message model (`Message`, creators) a
 
 ### Setting Up
 
-**Purpose:** Prepare the execution environment. Operation of Workflow: Executing Work, defined in `$DOMAINS/work/workflows/executing-work/ops/setting-up.art`.
+**Purpose:** Prepare the execution environment. Operation of Workflow: Executing Work, defined in `$DOMAINS/work/workflows/executing-work/setting-up/operation.art`.
 
 **Instructions:** (From `$WORKSPACE/_guide.md`)
 
@@ -94,7 +94,7 @@ If any of these fail, resolve the issue before proceeding with implementation. D
 
 ### Writing Commit Message
 
-**Purpose:** Write standardized message according to context conventions. Operation of Workflow: Planning Work, defined in `$DOMAINS/work/workflows/planning-work/ops/writing-commit-message.art`.
+**Purpose:** Write standardized message according to context conventions. Operation of Workflow: Planning Work, defined in `$DOMAINS/work/workflows/planning-work/writing-commit-message/operation.art`.
 
 **Instructions:** (From `$WORKSPACE/_guide.md`)
 
@@ -104,7 +104,7 @@ If any of these fail, resolve the issue before proceeding with implementation. D
 
 ### Verifying Completion
 
-**Purpose:** Confirms that the work item has been completed and satisfies its intended outcome. Operation of Workflow: Executing Work, defined in `$DOMAINS/work/workflows/executing-work/ops/verifying-completion.art`.
+**Purpose:** Confirms that the work item has been completed and satisfies its intended outcome. Operation of Workflow: Executing Work, defined in `$DOMAINS/work/workflows/executing-work/verifying-completion/operation.art`.
 
 **Instructions:** (From `$PROJECT/_guide.md`)
 
@@ -208,7 +208,7 @@ Before starting:
 
 - Run `npm ci` from the `$WORKSPACE` root.
 - Read `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md` and `$WORKSPACE/checkouts/management/_ops/keywords/matrix.md` in full — the manifest and keywords must conform to them, not to your prior assumptions.
-- Read `$PROJECT/knowledge/design/logger.md` and `$PROJECT/_guide.md` for what this package must provide.
+- Read `$PROJECT/libs/logger/knowledge/design/logger.md` and `$PROJECT/_guide.md` for what this package must provide.
 
 Validate that:
 
@@ -387,7 +387,7 @@ refactor(logger): Apply Noodlestan conventions.
 - `$PROJECT/knowledge/index.md` — add a Package Knowledge References row linking `libs/logger/knowledge/index.md` (see `$WORKSPACE/checkouts/art-md/knowledge/index.md`).
 - `$PROJECT/_records/project.art` — add `- Package: Art Lib Logger` to Resources.
 - `$PROJECT/_guide.md` — list the package under the repository layout and its knowledge base under Knowledge References.
-- Keep `$PROJECT/knowledge/design/logger.md` as the repository-level design record.
+- ~~Keep `$PROJECT/knowledge/design/logger.md` as the repository-level design record.~~ — **superseded 2026-11-05** by `8cc4620`: the repository-level record was retired and its content consolidated into `$PROJECT/libs/logger/knowledge/`. The package design record is now the single source.
 
 **Instructions:**
 
@@ -454,7 +454,7 @@ docs(logger): Add package knowledge base and README usage.
    - `npm whoami` returns an account permitted to publish `@art-lib/*` (currently `noodlestan`).
    - `npm view @art-lib/logger version` fails with `ENOTFOUND` — `0.0.1` must not already exist. A published version is immutable, so a mistake requires a bump and a new publish.
    - `$PROJECT/libs/logger/package.json` carries `version` `0.0.1`, `private` `false`, `publishConfig` `{ "access": "public" }`, and `files` listing `dist`, `README.md`, `LICENSE-MIT`, `CHANGELOG.md`.
-   - All four `files` entries exist on disk, and the manifest conforms to `$WORKSPACE/checkouts/management/_ops/packages/policy.md`.
+   - All four `files` entries exist on disk, and the manifest conforms to `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md`.
 2. `npm pack --dry-run` from `$PROJECT/libs/logger`, and confirm the tarball contains `package.json`, `dist/index.mjs`, `dist/index.d.ts`, `README.md`, `LICENSE-MIT`, and `CHANGELOG.md`.
 3. `npm publish --access public` from `$PROJECT/libs/logger`. If the registry demands a one-time password for two-factor authentication, **do not retry and do not unpublish** — `REPORT A BLOCKER` that publishing requires an OTP and stop.
 4. Confirm the publish landed: `npm view @art-lib/logger version` returns `0.0.1`, and the description, keywords, and `engines` match `_records/package.art`.
@@ -474,7 +474,7 @@ Execute the Changes listed above.
 Before starting:
 
 - Run `npm ci` from the `$WORKSPACE` root.
-- Read `$WORKSPACE/checkouts/management/_ops/packages/policy.md` — the manifest must already conform before it ships.
+- Read `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md` — the manifest must already conform before it ships.
 
 Validate that:
 
@@ -624,7 +624,7 @@ Execute the Changes listed above.
 Before starting:
 
 - Run `npm ci` from the `$WORKSPACE` root.
-- Read `$PROJECT/knowledge/design/logger.md` and `$PROJECT/libs/logger/knowledge/adr/logger.md` — the ADR's _Buffer Until the Output Mode Is Set_ decision must be updated alongside the code, not after it.
+- Read `$PROJECT/libs/logger/knowledge/design/logger.md` and `$PROJECT/libs/logger/knowledge/adr/logger.md` — the ADR's _Buffer Until the Output Mode Is Set_ decision must be updated alongside the code, not after it.
 
 Validate that:
 
@@ -703,7 +703,7 @@ Execute the Changes listed above.
 Before starting:
 
 - Run `npm ci` from the `$WORKSPACE` root.
-- Read `$WORKSPACE/checkouts/management/_ops/packages/policy.md` — the manifest must conform before it ships.
+- Read `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md` — the manifest must conform before it ships.
 
 Validate that:
 
@@ -879,5 +879,5 @@ refactor(workspace-cli): Adopt the three output modes with a single -o flag.
 - **From the buffering-logger worker (2026-11-02):** the instruction was executed verbatim and was self-sufficient — goals, steps, commit blueprint, and verification commands needed no clarification. Two deliberate non-commits: `package-lock.json` (the setup repair, now `21f3d56`) and this plan's `Feedback` edit, both outside the instruction's single-commit scope; the report file itself is written next to the instruction and is not committed.
 - **The conventions blueprint message is invalid (2026-11-02):** `style(logger): Apply Noodlestan conventions.` uses `style`, which is not in the allowed-types table of `$WORKSPACE/knowledge/conventions/writing-commit-message.art` and has never appeared in history. The worker flagged it instead of committing blind, and the user chose `refactor(logger)`. Correct blueprints against that table before delegating — `Plan: Add Config Package` carries the same `style(config)` defect in its conventions iteration (there it never bit, because the changes rode into `8f2d84e`).
 - **From the conventions worker (2026-11-02):** executed as instructed; the `MANUAL` hold plus the message flag were the right calls. Two notes worth carrying: `$PROJECT/knowledge/design/logger.md` still says "Message interface" (tracked under Follow Ups), and a concurrent session was editing `libs/config` knowledge files in the same working tree — its 12 staged files were kept out of `4408461` by committing the `libs/logger` pathspec only.
-- **The Operating Instructions cite `ops/*.art` paths that do not exist (2026-11-04):** `setting-up`, `writing-commit-message`, and `verifying-completion` are referenced as `$DOMAINS/work/workflows/{planning,executing}-work/ops/*.art`, but the layout is `$DOMAINS/work/workflows/{workflow}/{operation}/operation.art`. The command bodies are inlined in this plan, so no worker is affected — cosmetic; apply the next time this plan is edited.
+- ~~**The Operating Instructions cite `ops/*.art` paths that do not exist (2026-11-04):** `setting-up`, `writing-commit-message`, and `verifying-completion` are referenced as `$DOMAINS/work/workflows/{planning,executing}-work/ops/*.art`, but the layout is `$DOMAINS/work/workflows/{workflow}/{operation}/operation.art`. The command bodies are inlined in this plan, so no worker is affected — cosmetic; apply the next time this plan is edited.~~ — **resolved 2026-11-05:** all three now point at `$DOMAINS/work/workflows/{workflow}/{operation}/operation.art`, alongside the manifest-policy repoint (`management/_ops/packages/policy.md` → `ops/knowledge/design/manifest-policy.md`) and the retired repository-level design record.
 - **The `integrate-logger-in-consumer` blueprint message carries a typo** — "Replace the local local buffering logger with `@art-lib/logger`" — and was committed verbatim as `bf2fc78` because the instruction says to use the blueprint. Correct the doubled "local" before this message is reused.
