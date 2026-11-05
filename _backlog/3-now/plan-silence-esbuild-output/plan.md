@@ -2,7 +2,7 @@
 
 **ID:** `silence-esbuild-output`
 
-**Status:** `READY`
+**Status:** `WORKING`
 
 **Template:** `$DOMAINS/plans/templates/plan.tart`
 
@@ -105,7 +105,7 @@ Execution occurs from `$WORKSPACE/`; project work happens in `$WORKSPACE/checkou
 
 | Iteration / Instructions                      | Status  |
 | --------------------------------------------- | ------- |
-| Iteration: Pass Silent Log Level `inlined`    | `READY` |
+| Iteration: Pass Silent Log Level `inlined`    | `DONE`  |
 | Iteration: Assert Compile Silence `inlined`   | `READY` |
 | Iteration: Add Unreleased Changelog `inlined` | `READY` |
 
@@ -113,7 +113,7 @@ Execution occurs from `$WORKSPACE/`; project work happens in `$WORKSPACE/checkou
 
 **Id:** `pass-silent-log-level`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Stop esbuild from printing its formatted diagnostics by building with `logLevel: 'silent'`, so failures surface only through the thrown error.
 
@@ -155,9 +155,9 @@ After executing:
 
 #### Commits:
 
-| ID                       | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| ------------------------ | ------------------------------ | ------------ | ------- | ---------- |
-| `silence-compile-config` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                       | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| ------------------------ | ------------------------------ | ------------ | --------- | ----------- |
+| `silence-compile-config` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `bb1f004` | `COMMITTED` |
 
 ##### Commit: `silence-compile-config`
 
@@ -312,7 +312,7 @@ docs(config): Add UNRELEASED changelog entry.
 
 ### Next
 
-Delegate Iteration: Pass Silent Log Level to a worker, then integrate; after it lands, delegate Iteration: Assert Compile Silence, then Iteration: Add Unreleased Changelog.
+Delegate Iteration: Assert Compile Silence to a worker, then integrate; after it lands, delegate Iteration: Add Unreleased Changelog.
 
 ### Blockers
 
@@ -346,6 +346,7 @@ Delegate Iteration: Pass Silent Log Level to a worker, then integrate; after it 
 - **Live noise in this checkout** — the pre-commit CI for `cab0558` emitted `✘ [ERROR] Could not resolve "/tmp/art-lib-config-test-TV311N/missing.config.ts"` from `@art-lib/config:ci` while all 16 tests passed — the failure-path fixture `WHEN the config entry is missing` streams esbuild's formatted diagnostic.
 - **Single call site** — esbuild's `build()` is imported only by `src/compile/compileConfig.ts` (plus the test's spy wrapper), so one `logLevel` silences the whole package.
 - **Error detail survives silence** — esbuild keeps the full formatted diagnostic in `error.message` at `logLevel: 'silent'`; existing assertions such as `rejects.toThrow(/Could not resolve/)` stay green.
+- **Suite verified quiet** — worker reported commit `bb1f004` (pushed): package suite 16/16 green with no `✘ [ERROR]` block, Verifying Step and `npm run ci` green.
 
 ### Findings
 
@@ -368,4 +369,4 @@ Delegate Iteration: Pass Silent Log Level to a worker, then integrate; after it 
 
 ### Feedback
 
-- None yet.
+- **IRRELEVANT update (recorded by Prepare Delegation)** — `### Blockers` renders `- None.` while `plan.tart` instructs omitting the section when `work.blockers` is empty; plan owner to drop the section on next edit.
