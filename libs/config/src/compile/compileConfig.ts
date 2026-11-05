@@ -22,6 +22,7 @@ export async function compileConfig(
 		platform: 'node',
 		metafile: true,
 		external: externals,
+		logLevel: 'silent',
 	} satisfies BuildOptions;
 	const buildResult = await build(buildOptions);
 
