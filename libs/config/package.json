@@ -1,6 +1,6 @@
 {
   "name": "@art-lib/config",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Typed config loading with bundle-at-runtime compilation and content-hash cache.",
   "keywords": [
     "library",
