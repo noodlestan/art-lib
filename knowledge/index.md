@@ -26,3 +26,4 @@
 | Config     | [libs/config/knowledge/index.md](../libs/config/knowledge/index.md)         |
 | Logger     | [libs/logger/knowledge/index.md](../libs/logger/knowledge/index.md)         |
 | FS Records | [libs/fs-records/knowledge/index.md](../libs/fs-records/knowledge/index.md) |
+| Operations | [libs/operations/knowledge/index.md](../libs/operations/knowledge/index.md) |

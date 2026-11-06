@@ -24,6 +24,7 @@ knowledge/          — repository-level knowledge
 libs/               — library packages
 libs/config/        — @art-lib/config: typed config loading (bundle-at-runtime, content-hash cache)
 libs/logger/        — @art-lib/logger: message model and buffering logger for CLIs
+libs/operations/    — @art-lib/operations: operation model and append-only operations log for CLIs
 ```
 
 ## Records Management
@@ -42,6 +43,7 @@ This repository maintains knowledge references at:
 - `knowledge/index.md` — Repository-level knowledge.
 - `libs/config/knowledge/index.md` — Config package knowledge.
 - `libs/logger/knowledge/index.md` — Logger package knowledge.
+- `libs/operations/knowledge/index.md` — Operations package knowledge.
 
 ## Conventions
 
