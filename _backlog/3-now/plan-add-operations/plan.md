@@ -63,7 +63,7 @@ Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (ope
 
 ### Next
 
-- Iteration: Scaffold Operations Package and Iteration: Implement Operations Model are `DONE`. Delegate Iteration: Apply Noodlestan Conventions next (`MANUAL` commit — stage and report, do not commit); then Iteration: Update Knowledge, Iteration: Publish Operations Package, and Iteration: Integrate in Consumer.
+- Iterations: Scaffold, Model, Log, Conventions are `DONE` and pushed (`cbf34d6`, `058f194`, `6de5369`, `b0643e1`). Delegate Iteration: Update Knowledge next; then Iteration: Publish Operations Package, then Iteration: Integrate in Consumer.
 
 ### Blockers
 
@@ -124,7 +124,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration: Scaffold Operations Package  | `DONE`  |
 | Iteration: Implement Operations Model   | `DONE`  |
 | Iteration: Implement Operations Log     | `DONE`  |
-| Iteration: Apply Noodlestan Conventions | `READY` |
+| Iteration: Apply Noodlestan Conventions | `DONE`  |
 | Iteration: Update Knowledge             | `READY` |
 | Iteration: Publish Operations Package   | `READY` |
 | Iteration: Integrate in Consumer        | `READY` |
@@ -294,7 +294,7 @@ build(operations): Add operations log module.
 
 **Id:** `apply-noodlestan-conventions`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Align `libs/operations` with the Noodlestan conventions adopted in this workspace.
 
@@ -336,9 +336,9 @@ After executing:
 
 #### Commits:
 
-| ID                             | Repository / Checkout / Branch | Policy   | Hash    | Status     |
-| ------------------------------ | ------------------------------ | -------- | ------- | ---------- |
-| `apply-conventions-operations` | Art Lib / `$PROJECT` / `main`  | `MANUAL` | `(TBD)` | `AUTHORED` |
+| ID                             | Repository / Checkout / Branch | Policy   | Hash      | Status      |
+| ------------------------------ | ------------------------------ | -------- | --------- | ----------- |
+| `apply-conventions-operations` | Art Lib / `$PROJECT` / `main`  | `MANUAL` | `b0643e1` | `COMMITTED` |
 
 ##### Commit: `apply-conventions-operations`
 
@@ -566,6 +566,7 @@ refactor(workspace-cli): Adopt @art-lib/operations in the Workspace Cli.
 - **Scaffold landed** — worker reported commit `cbf34d6` (pushed): manifest with `.`, `./model`, `./log` exports and `@art-lib/logger` dep, configs, placeholder entry points, `_guide.md`, records; package + workspace CI green; no `node_modules` inside the package.
 - **Model landed** — worker reported commit `058f194` (pushed): `src/model/` types + factories, 15 tests (100% coverage), `Message` conformance type-test; lint/build/test green, no storage code; report at `instructions/implement-operations-model__report.md`.
 - **Log landed** — worker reported commit `6de5369` (pushed): `createOperationsLog(logger)` forwarding + finished-only store, `all`/`since`/`latest` queries, 20 tests green; report at `instructions/implement-operations-log__report.md`.
+- **Conventions applied** — worker commit `b0643e1` (pushed, `MANUAL` policy authorized by architect): 16 files under `libs/operations/src` restructured per conventions (model split into per-factory modules + `private/`, test helpers extracted); TypeScript + Unit Tests conventions already installed and declared in `$PROJECT/_guide.md` — no new installs, no guide edit needed; `model/index.ts` export surface unchanged from HEAD; package lint/build/test and workspace `npm run ci` exit 0.
 
 ### Findings
 
