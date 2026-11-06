@@ -63,7 +63,7 @@ Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (ope
 
 ### Next
 
-- Iteration: Scaffold Operations Package is `DONE` (commit `cbf34d6`, pushed). Delegate Iteration: Implement Operations Log next; then Iteration: Apply Noodlestan Conventions (`MANUAL` commit), Iteration: Update Knowledge, Iteration: Publish Operations Package, and Iteration: Integrate in Consumer.
+- Iteration: Scaffold Operations Package and Iteration: Implement Operations Model are `DONE`. Delegate Iteration: Apply Noodlestan Conventions next (`MANUAL` commit — stage and report, do not commit); then Iteration: Update Knowledge, Iteration: Publish Operations Package, and Iteration: Integrate in Consumer.
 
 ### Blockers
 
@@ -123,7 +123,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | --------------------------------------- | ------- |
 | Iteration: Scaffold Operations Package  | `DONE`  |
 | Iteration: Implement Operations Model   | `DONE`  |
-| Iteration: Implement Operations Log     | `READY` |
+| Iteration: Implement Operations Log     | `DONE`  |
 | Iteration: Apply Noodlestan Conventions | `READY` |
 | Iteration: Update Knowledge             | `READY` |
 | Iteration: Publish Operations Package   | `READY` |
@@ -247,7 +247,9 @@ build(operations): Add operation model and factories.
 
 **Id:** `implement-operations-log`
 
-**Status:** `READY`
+**Status:** `DONE`
+
+**Report:** `./plan-add-operations/instructions/implement-operations-log__report.md`
 
 **Purpose:** Add the append-only operations log, created with the logger and forwarding every operation to it.
 
@@ -273,9 +275,9 @@ In `$PROJECT/libs/operations/src/log/`
 
 #### Commits:
 
-| ID                   | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| -------------------- | ------------------------------ | ------------ | ------- | ---------- |
-| `add-operations-log` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                   | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| -------------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `add-operations-log` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `6de5369` | `COMMITTED` |
 
 ##### Commit: `add-operations-log`
 
@@ -563,6 +565,7 @@ refactor(workspace-cli): Adopt @art-lib/operations in the Workspace Cli.
 - `@art-lib/operations` builds, lints, and tests green from `$PROJECT/libs/operations`; both subpaths resolve via the exports map.
 - **Scaffold landed** — worker reported commit `cbf34d6` (pushed): manifest with `.`, `./model`, `./log` exports and `@art-lib/logger` dep, configs, placeholder entry points, `_guide.md`, records; package + workspace CI green; no `node_modules` inside the package.
 - **Model landed** — worker reported commit `058f194` (pushed): `src/model/` types + factories, 15 tests (100% coverage), `Message` conformance type-test; lint/build/test green, no storage code; report at `instructions/implement-operations-model__report.md`.
+- **Log landed** — worker reported commit `6de5369` (pushed): `createOperationsLog(logger)` forwarding + finished-only store, `all`/`since`/`latest` queries, 20 tests green; report at `instructions/implement-operations-log__report.md`.
 
 ### Findings
 
