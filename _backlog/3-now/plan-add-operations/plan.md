@@ -63,12 +63,13 @@ Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (ope
 
 ### Next
 
-- Iterations 1–6 are `DONE` and pushed; `@art-lib/operations@0.0.1` is on the registry. Next: confirm no other delegation is active in `$WORKSPACE/checkouts/art-works`, then delegate Iteration: Integrate in Consumer (its gate has lifted).
+- Iterations 1–6 are `DONE` and pushed; `@art-lib/operations@0.0.1` is on the registry. Iteration: Integrate in Consumer is `BLOCKED` — paused by the art-works activity check (active delegation `discover-config-location`); resume and delegate it7 once that integrates.
 
 ### Blockers
 
 - **Publish Operations Package** — step-1 precondition expects `npm view @art-lib/logger version` to return `0.0.1`, but the registry returns `0.0.2`: Plan: Add Logger Package published out of order (commits `36189e0`, `296e359`) mid-run. Evidence: `npm whoami` = `noodlestan` ✓; `npm view @art-lib/operations version` = ENOTFOUND ✓; pinned dep `@art-lib/logger@0.0.1` remains installable (nested in `libs/operations/node_modules`). Awaiting architect ruling: waive to "dependency resolvable on registry" or amend the precondition. **RESOLVED** — precondition amended per architect ruling (A) in commit `plan(add-operations): Amend it6 preconditions after logger 0.0.2 and policy move.`
 - **Publish Operations Package** — step-1 manifest-conformance reference `$WORKSPACE/checkouts/management/_ops/packages/policy.md` does not exist (management now cloned; `_ops/` holds `conventions/`, `keywords/`, `writing/` only). The actual Package Manifest Policy is `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md`. RELEVANT plan update — architect-owned ref fix required before delegating this iteration. **RESOLVED** — ref amended per architect ruling (A) in commit `plan(add-operations): Amend it6 preconditions after logger 0.0.2 and policy move.`
+- **Integrate in Consumer (paused)** — pre-it7 activity check found an active delegation in `$WORKSPACE/checkouts/art-works`: Plan: Make Art Workspace Cli work from global install (`art-work-cli-global-install`) is `WORKING`, iteration `discover-config-location` is `WORKING` (delegated 2026-11-06 03:44Z, instructions file fresh), with `add-init-command` and `update-art-work-knowledge` queued behind it. it7 paused per directive until that delegation integrates. Logger's `Update Cli Output Flag` is `READY` — not started.
 
 ---
 
@@ -120,15 +121,15 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Items:
 
-| Iteration / Instructions                | Status  |
-| --------------------------------------- | ------- |
-| Iteration: Scaffold Operations Package  | `DONE`  |
-| Iteration: Implement Operations Model   | `DONE`  |
-| Iteration: Implement Operations Log     | `DONE`  |
-| Iteration: Apply Noodlestan Conventions | `DONE`  |
-| Iteration: Update Knowledge             | `DONE`  |
-| Iteration: Publish Operations Package   | `DONE`  |
-| Iteration: Integrate in Consumer        | `READY` |
+| Iteration / Instructions                | Status    |
+| --------------------------------------- | --------- |
+| Iteration: Scaffold Operations Package  | `DONE`    |
+| Iteration: Implement Operations Model   | `DONE`    |
+| Iteration: Implement Operations Log     | `DONE`    |
+| Iteration: Apply Noodlestan Conventions | `DONE`    |
+| Iteration: Update Knowledge             | `DONE`    |
+| Iteration: Publish Operations Package   | `DONE`    |
+| Iteration: Integrate in Consumer        | `BLOCKED` |
 
 ### Iteration: Scaffold Operations Package
 
@@ -493,7 +494,7 @@ release(operations): Publish 0.0.1 to npm.
 
 **Id:** `integrate-in-consumer`
 
-**Status:** `READY`
+**Status:** `BLOCKED`
 
 **Purpose:** Adopt `@art-lib/operations` in the Art Workspace Cli and retire its duplicated implementation.
 
