@@ -63,7 +63,7 @@ Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (ope
 
 ### Next
 
-- Iteration: Scaffold Operations Package is `DONE` (commit `cbf34d6`, pushed). Delegate Iteration: Implement Operations Model next; then Iteration: Implement Operations Log, Iteration: Apply Noodlestan Conventions (`MANUAL` commit), Iteration: Update Knowledge, Iteration: Publish Operations Package, and Iteration: Integrate in Consumer.
+- Iteration: Scaffold Operations Package is `DONE` (commit `cbf34d6`, pushed). Delegate Iteration: Implement Operations Log next; then Iteration: Apply Noodlestan Conventions (`MANUAL` commit), Iteration: Update Knowledge, Iteration: Publish Operations Package, and Iteration: Integrate in Consumer.
 
 ### Blockers
 
@@ -122,7 +122,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration / Instructions                | Status  |
 | --------------------------------------- | ------- |
 | Iteration: Scaffold Operations Package  | `DONE`  |
-| Iteration: Implement Operations Model   | `READY` |
+| Iteration: Implement Operations Model   | `DONE`  |
 | Iteration: Implement Operations Log     | `READY` |
 | Iteration: Apply Noodlestan Conventions | `READY` |
 | Iteration: Update Knowledge             | `READY` |
@@ -198,7 +198,9 @@ scaffold(operations): Scaffold package with subpath exports.
 
 **Id:** `implement-operations-model`
 
-**Status:** `READY`
+**Status:** `DONE`
+
+**Report:** `./plan-add-operations/instructions/implement-operations-model__report.md`
 
 **Purpose:** Add the pure operation outcome model and factories shared by all CLIs.
 
@@ -226,9 +228,9 @@ In `$PROJECT/libs/operations/src/model/`
 
 #### Commits:
 
-| ID                     | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| ---------------------- | ------------------------------ | ------------ | ------- | ---------- |
-| `add-operations-model` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                     | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| ---------------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `add-operations-model` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `058f194` | `COMMITTED` |
 
 ##### Commit: `add-operations-model`
 
@@ -560,6 +562,7 @@ refactor(workspace-cli): Adopt @art-lib/operations in the Workspace Cli.
 
 - `@art-lib/operations` builds, lints, and tests green from `$PROJECT/libs/operations`; both subpaths resolve via the exports map.
 - **Scaffold landed** — worker reported commit `cbf34d6` (pushed): manifest with `.`, `./model`, `./log` exports and `@art-lib/logger` dep, configs, placeholder entry points, `_guide.md`, records; package + workspace CI green; no `node_modules` inside the package.
+- **Model landed** — worker reported commit `058f194` (pushed): `src/model/` types + factories, 15 tests (100% coverage), `Message` conformance type-test; lint/build/test green, no storage code; report at `instructions/implement-operations-model__report.md`.
 
 ### Findings
 
