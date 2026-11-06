@@ -2,7 +2,7 @@
 
 **ID:** `add-operations`
 
-**Status:** `WORKING`
+**Status:** `DONE`
 
 **Template:** `.agents/domains/plans/templates/plan.tart`
 
@@ -63,14 +63,14 @@ Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (ope
 
 ### Next
 
-- Iterations 1–6 are `DONE` and pushed; `@art-lib/operations@0.0.1` is on the registry. Iteration: Integrate in Consumer is `BLOCKED` — window opened and pre-flight passed, but the worker halted on a spec conflict (package contract vs "behaviour identical"); awaiting the architect's pick between the two escalated options.
+- All seven iterations are `DONE` and pushed; plan complete — `@art-lib/operations@0.0.1` published and adopted in Art Works. Architect closes the plan (moves to `1-done`), refreshes the milestone, and records the workspace-records move.
 
 ### Blockers
 
 - **Publish Operations Package** — step-1 precondition expects `npm view @art-lib/logger version` to return `0.0.1`, but the registry returns `0.0.2`: Plan: Add Logger Package published out of order (commits `36189e0`, `296e359`) mid-run. Evidence: `npm whoami` = `noodlestan` ✓; `npm view @art-lib/operations version` = ENOTFOUND ✓; pinned dep `@art-lib/logger@0.0.1` remains installable (nested in `libs/operations/node_modules`). Awaiting architect ruling: waive to "dependency resolvable on registry" or amend the precondition. **RESOLVED** — precondition amended per architect ruling (A) in commit `plan(add-operations): Amend it6 preconditions after logger 0.0.2 and policy move.`
 - **Publish Operations Package** — step-1 manifest-conformance reference `$WORKSPACE/checkouts/management/_ops/packages/policy.md` does not exist (management now cloned; `_ops/` holds `conventions/`, `keywords/`, `writing/` only). The actual Package Manifest Policy is `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md`. RELEVANT plan update — architect-owned ref fix required before delegating this iteration. **RESOLVED** — ref amended per architect ruling (A) in commit `plan(add-operations): Amend it6 preconditions after logger 0.0.2 and policy move.`
-- **Integrate in Consumer (paused)** — pre-it7 activity check found an active delegation in `$WORKSPACE/checkouts/art-works`: Plan: Make Art Workspace Cli work from global install (`art-work-cli-global-install`) is `WORKING`, iteration `discover-config-location` is `WORKING` (delegated 2026-11-06 03:44Z, instructions file fresh), with `add-init-command` and `update-art-work-knowledge` queued behind it. it7 paused per directive until that delegation integrates. Logger's `Update Cli Output Flag` is `READY` — not started. **Re-check 2026-11-06 11:42+0100: still active** — worker landed `1123faa`/`ac0337a`/`e0fbe90`, report `discover-config-location__report.md` + plan edit still uncommitted (pending integration), and the delegator landed `32bd0f8` pre-aligning `add-init-command` instructions (11:42) — a 5-minute poll never showed a clear window. it7 remains paused.
-- **Integrate in Consumer (blocked — spec conflict)** — window granted (pre-flight `17d6629` ✓, tree clean); worker stopped BEFORE any file change: the package contract and "behaviour identical" cannot both hold as written. (a) Package model requires `ts: number` + `level`/`text()`; the 8 command builders emit `ts: new Date()` with neither → `tsc` fails if `types.ts` re-exports package types. (b) Package `createOperationsLog(logger)` requires the logger; local tests call it bare (optional no-op). (c) Package factories drop the CLI's `checkout` field and change `message()`/`errorSerialized()` semantics → `presentOperationsReport.test.ts` output columns change, violating "behaviour identical". Art-works untouched, `17d6629` == origin, single CI window unspent. Two options escalated: (1) edit builders + callers to package contract, accept output changes; (2) adapter — owned files delegate to the package while keeping CLI semantics (identical output, builders in place, types stay CLI-shaped). Awaiting architect pick.
+- **Integrate in Consumer (paused)** — pre-it7 activity check found an active delegation in `$WORKSPACE/checkouts/art-works`: Plan: Make Art Workspace Cli work from global install (`art-work-cli-global-install`) is `WORKING`, iteration `discover-config-location` is `WORKING` (delegated 2026-11-06 03:44Z, instructions file fresh), with `add-init-command` and `update-art-work-knowledge` queued behind it. it7 paused per directive until that delegation integrates. Logger's `Update Cli Output Flag` is `READY` — not started. **Re-check 2026-11-06 11:42+0100: still active** — worker landed `1123faa`/`ac0337a`/`e0fbe90`, report `discover-config-location__report.md` + plan edit still uncommitted (pending integration), and the delegator landed `32bd0f8` pre-aligning `add-init-command` instructions (11:42) — a 5-minute poll never showed a clear window. it7 remains paused. **RESOLVED** — window granted by the architect; it7 executed under ruling (option 2), commit `72537ab`.
+- **Integrate in Consumer (blocked — spec conflict)** — window granted (pre-flight `17d6629` ✓, tree clean); worker stopped BEFORE any file change: the package contract and "behaviour identical" cannot both hold as written. (a) Package model requires `ts: number` + `level`/`text()`; the 8 command builders emit `ts: new Date()` with neither → `tsc` fails if `types.ts` re-exports package types. (b) Package `createOperationsLog(logger)` requires the logger; local tests call it bare (optional no-op). (c) Package factories drop the CLI's `checkout` field and change `message()`/`errorSerialized()` semantics → `presentOperationsReport.test.ts` output columns change, violating "behaviour identical". Art-works untouched, `17d6629` == origin, single CI window unspent. Two options escalated: (1) edit builders + callers to package contract, accept output changes; (2) adapter — owned files delegate to the package while keeping CLI semantics (identical output, builders in place, types stay CLI-shaped). Awaiting architect pick. **RESOLVED** — architect picked (2) with constraint amendment (tests green without assertion changes, byte-identical output, tsc/eslint green, builders editable only as delegation requires); it7 executed as the adapter, commit `72537ab`, all constraints held.
 
 ---
 
@@ -122,15 +122,15 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Items:
 
-| Iteration / Instructions                | Status    |
-| --------------------------------------- | --------- |
-| Iteration: Scaffold Operations Package  | `DONE`    |
-| Iteration: Implement Operations Model   | `DONE`    |
-| Iteration: Implement Operations Log     | `DONE`    |
-| Iteration: Apply Noodlestan Conventions | `DONE`    |
-| Iteration: Update Knowledge             | `DONE`    |
-| Iteration: Publish Operations Package   | `DONE`    |
-| Iteration: Integrate in Consumer        | `BLOCKED` |
+| Iteration / Instructions                | Status |
+| --------------------------------------- | ------ |
+| Iteration: Scaffold Operations Package  | `DONE` |
+| Iteration: Implement Operations Model   | `DONE` |
+| Iteration: Implement Operations Log     | `DONE` |
+| Iteration: Apply Noodlestan Conventions | `DONE` |
+| Iteration: Update Knowledge             | `DONE` |
+| Iteration: Publish Operations Package   | `DONE` |
+| Iteration: Integrate in Consumer        | `DONE` |
 
 ### Iteration: Scaffold Operations Package
 
@@ -495,7 +495,7 @@ release(operations): Publish 0.0.1 to npm.
 
 **Id:** `integrate-in-consumer`
 
-**Status:** `BLOCKED`
+**Status:** `DONE`
 
 **Purpose:** Adopt `@art-lib/operations` in the Art Workspace Cli and retire its duplicated implementation.
 
@@ -539,9 +539,9 @@ After executing:
 
 #### Commits:
 
-| ID                                 | Repository / Checkout / Branch                        | Policy       | Hash    | Status     |
-| ---------------------------------- | ----------------------------------------------------- | ------------ | ------- | ---------- |
-| `integrate-operations-in-consumer` | Art Works / `$WORKSPACE/checkouts/art-works` / `main` | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                                 | Repository / Checkout / Branch                        | Policy       | Hash      | Status      |
+| ---------------------------------- | ----------------------------------------------------- | ------------ | --------- | ----------- |
+| `integrate-operations-in-consumer` | Art Works / `$WORKSPACE/checkouts/art-works` / `main` | `AUTONOMOUS` | `72537ab` | `COMMITTED` |
 
 ##### Commit: `integrate-operations-in-consumer`
 
@@ -572,6 +572,7 @@ refactor(workspace-cli): Adopt @art-lib/operations in the Workspace Cli.
 - **Conventions applied** — worker commit `b0643e1` (pushed, `MANUAL` policy authorized by architect): 16 files under `libs/operations/src` restructured per conventions (model split into per-factory modules + `private/`, test helpers extracted); TypeScript + Unit Tests conventions already installed and declared in `$PROJECT/_guide.md` — no new installs, no guide edit needed; `model/index.ts` export surface unchanged from HEAD; package lint/build/test and workspace `npm run ci` exit 0.
 - **Knowledge wired** — worker reported commit `cf61657` (pushed, rebased onto logger-plan commits): consumer README + package knowledge base (`index`/`overview`/`design`/`adr`), wired into `knowledge/index.md`, `knowledge/components.md` (`IMPLEMENTED`), `_records/project.art`, `_guide.md`; 23 local links resolve, lint/build/test + repo CI green.
 - **Published** — `@art-lib/operations@0.0.1` on the registry (worker commit `4bf2da2`, pushed; records-only: `Published` `true`, deployment `DEPLOYED`): pack dry-run had all six required files (25 files), registry `version`/`dependencies` (`@art-lib/logger: 0.0.1`)/`description`/`keywords`/`engines` byte-identical to `_records/package.art`, no OTP, single attempt, nothing unpublished; workspace `npm run ci` + repo CI green. Anomaly (feedback): a `0.0.0-stage` placeholder appeared on the registry between precondition check and publish (same documented anomaly as the logger plan); sorts below `latest` `0.0.1`, left untouched per never-unpublish.
+- **Adopted in the consumer** — worker commit `72537ab` (Art Works, pushed): adapter design — the five owned files delegate to `@art-lib/operations` (shared outcome/factory/log-store logic) with CLI conventions as thin wrappers (`Date` timestamps, `checkout`, JSON/reason messages, `since(Date)`); 8 files, declared paths only, zero test files touched (assertions unchanged), `@art-lib/operations@0.0.1` declared like `@art-lib/fs-records` (+13 lockfile lines); API resolution verified for `/`, `/model`, `/log`; exactly one manual `npm run ci` exit 0, zero `✘ [ERROR]` (hook CI also zero), tsc/eslint/prettier green; tree clean. Follow-up (their record, outside window): `cli/workspace/_records/package.art` dependency records do not yet list `@art-lib/operations`.
 
 ### Findings
 
