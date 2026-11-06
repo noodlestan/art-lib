@@ -63,12 +63,12 @@ Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (ope
 
 ### Next
 
-- Iterations 1–5 (`scaffold`, `model`, `log`, `conventions`, `knowledge`) are `DONE` and pushed. Iteration: Publish Operations Package is `BLOCKED` on two step-1 precondition findings (logger registry `0.0.2` vs expected `0.0.1`; stale `policy.md` reference) — awaiting architect ruling; Iteration: Integrate in Consumer stays gated behind it.
+- Iterations 1–5 (`scaffold`, `model`, `log`, `conventions`, `knowledge`) are `DONE` and pushed. it6 preconditions amended per architect ruling (A) — re-run step-1 preconditions fresh, then delegate Iteration: Publish Operations Package; Iteration: Integrate in Consumer follows after the art-works activity check.
 
 ### Blockers
 
-- **Publish Operations Package** — step-1 precondition expects `npm view @art-lib/logger version` to return `0.0.1`, but the registry returns `0.0.2`: Plan: Add Logger Package published out of order (commits `36189e0`, `296e359`) mid-run. Evidence: `npm whoami` = `noodlestan` ✓; `npm view @art-lib/operations version` = ENOTFOUND ✓; pinned dep `@art-lib/logger@0.0.1` remains installable (nested in `libs/operations/node_modules`). Awaiting architect ruling: waive to "dependency resolvable on registry" or amend the precondition.
-- **Publish Operations Package** — step-1 manifest-conformance reference `$WORKSPACE/checkouts/management/_ops/packages/policy.md` does not exist (management now cloned; `_ops/` holds `conventions/`, `keywords/`, `writing/` only). The actual Package Manifest Policy is `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md`. RELEVANT plan update — architect-owned ref fix required before delegating this iteration.
+- **Publish Operations Package** — step-1 precondition expects `npm view @art-lib/logger version` to return `0.0.1`, but the registry returns `0.0.2`: Plan: Add Logger Package published out of order (commits `36189e0`, `296e359`) mid-run. Evidence: `npm whoami` = `noodlestan` ✓; `npm view @art-lib/operations version` = ENOTFOUND ✓; pinned dep `@art-lib/logger@0.0.1` remains installable (nested in `libs/operations/node_modules`). Awaiting architect ruling: waive to "dependency resolvable on registry" or amend the precondition. **RESOLVED** — precondition amended per architect ruling (A) in commit `plan(add-operations): Amend it6 preconditions after logger 0.0.2 and policy move.`
+- **Publish Operations Package** — step-1 manifest-conformance reference `$WORKSPACE/checkouts/management/_ops/packages/policy.md` does not exist (management now cloned; `_ops/` holds `conventions/`, `keywords/`, `writing/` only). The actual Package Manifest Policy is `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md`. RELEVANT plan update — architect-owned ref fix required before delegating this iteration. **RESOLVED** — ref amended per architect ruling (A) in commit `plan(add-operations): Amend it6 preconditions after logger 0.0.2 and policy move.`
 
 ---
 
@@ -120,15 +120,15 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Items:
 
-| Iteration / Instructions                | Status    |
-| --------------------------------------- | --------- |
-| Iteration: Scaffold Operations Package  | `DONE`    |
-| Iteration: Implement Operations Model   | `DONE`    |
-| Iteration: Implement Operations Log     | `DONE`    |
-| Iteration: Apply Noodlestan Conventions | `DONE`    |
-| Iteration: Update Knowledge             | `DONE`    |
-| Iteration: Publish Operations Package   | `BLOCKED` |
-| Iteration: Integrate in Consumer        | `READY`   |
+| Iteration / Instructions                | Status  |
+| --------------------------------------- | ------- |
+| Iteration: Scaffold Operations Package  | `DONE`  |
+| Iteration: Implement Operations Model   | `DONE`  |
+| Iteration: Implement Operations Log     | `DONE`  |
+| Iteration: Apply Noodlestan Conventions | `DONE`  |
+| Iteration: Update Knowledge             | `DONE`  |
+| Iteration: Publish Operations Package   | `READY` |
+| Iteration: Integrate in Consumer        | `READY` |
 
 ### Iteration: Scaffold Operations Package
 
@@ -419,7 +419,7 @@ docs(operations): Add package knowledge base and README usage.
 
 **Id:** `publish-operations-package`
 
-**Status:** `BLOCKED`
+**Status:** `READY`
 
 **Purpose:** Publish `@art-lib/operations@0.0.1` to the public registry and record the deployment, lifting `Integrate in Consumer`'s gate.
 
@@ -432,9 +432,9 @@ docs(operations): Add package knowledge base and README usage.
 1. Verify every publish precondition **before** touching the registry. Any failure is a `REPORT A BLOCKER`, not something to work around:
    - `npm whoami` returns an account permitted to publish `@art-lib/*` (currently `noodlestan`).
    - `npm view @art-lib/operations version` fails with `ENOTFOUND` — `0.0.1` must not already exist. A published version is immutable, so a mistake requires a bump and a new publish.
-   - `npm view @art-lib/logger version` returns `0.0.1` — this package depends on `@art-lib/logger` and must not ship before its dependency is on the registry.
+   - `npm view @art-lib/logger@0.0.1 version` returns `0.0.1` — the manifest pins `@art-lib/logger@0.0.1`, and that exact version must be installable from the registry before this package ships. (Latest may be higher — logger `0.0.2` published at `296e359` after this plan was written; consumers resolve the pin, not the latest.)
    - `$PROJECT/libs/operations/package.json` carries `version` `0.0.1`, `private` `false`, `publishConfig` `{ "access": "public" }`, and `files` listing `dist`, `README.md`, `LICENSE-MIT`, `CHANGELOG.md`.
-   - All four `files` entries exist on disk, and the manifest conforms to `$WORKSPACE/checkouts/management/_ops/packages/policy.md`.
+   - All four `files` entries exist on disk, and the manifest conforms to `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md`.
 2. `npm pack --dry-run` from `$PROJECT/libs/operations`, and confirm the tarball contains `package.json`, `dist/index.mjs`, `dist/index.d.ts`, `README.md`, `LICENSE-MIT`, and `CHANGELOG.md`.
 3. `npm publish --access public` from `$PROJECT/libs/operations`. If the registry demands a one-time password for two-factor authentication, **do not retry and do not unpublish** — `REPORT A BLOCKER` that publishing requires an OTP and stop.
 4. Confirm the publish landed: `npm view @art-lib/operations version` returns `0.0.1`, `npm view @art-lib/operations dependencies` shows `@art-lib/logger`, and the description, keywords, and `engines` match `_records/package.art`.
@@ -454,7 +454,7 @@ Execute the Changes listed above.
 Before starting:
 
 - Run `npm ci` from the `$WORKSPACE` root.
-- Read `$WORKSPACE/checkouts/management/_ops/packages/policy.md` — the manifest must already conform before it ships.
+- Read `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md` — the manifest must already conform before it ships.
 
 Validate that:
 
