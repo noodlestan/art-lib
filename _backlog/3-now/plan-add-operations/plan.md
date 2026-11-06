@@ -63,11 +63,12 @@ Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (ope
 
 ### Next
 
-- Iterations 1–5 (`scaffold`, `model`, `log`, `conventions`, `knowledge`) are `DONE` and pushed. Iteration: Publish Operations Package is next — verify every step-1 precondition first; then Iteration: Integrate in Consumer.
+- Iterations 1–5 (`scaffold`, `model`, `log`, `conventions`, `knowledge`) are `DONE` and pushed. Iteration: Publish Operations Package is `BLOCKED` on two step-1 precondition findings (logger registry `0.0.2` vs expected `0.0.1`; stale `policy.md` reference) — awaiting architect ruling; Iteration: Integrate in Consumer stays gated behind it.
 
 ### Blockers
 
-- None.
+- **Publish Operations Package** — step-1 precondition expects `npm view @art-lib/logger version` to return `0.0.1`, but the registry returns `0.0.2`: Plan: Add Logger Package published out of order (commits `36189e0`, `296e359`) mid-run. Evidence: `npm whoami` = `noodlestan` ✓; `npm view @art-lib/operations version` = ENOTFOUND ✓; pinned dep `@art-lib/logger@0.0.1` remains installable (nested in `libs/operations/node_modules`). Awaiting architect ruling: waive to "dependency resolvable on registry" or amend the precondition.
+- **Publish Operations Package** — step-1 manifest-conformance reference `$WORKSPACE/checkouts/management/_ops/packages/policy.md` does not exist (management now cloned; `_ops/` holds `conventions/`, `keywords/`, `writing/` only). The actual Package Manifest Policy is `$WORKSPACE/checkouts/ops/knowledge/design/manifest-policy.md`. RELEVANT plan update — architect-owned ref fix required before delegating this iteration.
 
 ---
 
@@ -119,15 +120,15 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Items:
 
-| Iteration / Instructions                | Status  |
-| --------------------------------------- | ------- |
-| Iteration: Scaffold Operations Package  | `DONE`  |
-| Iteration: Implement Operations Model   | `DONE`  |
-| Iteration: Implement Operations Log     | `DONE`  |
-| Iteration: Apply Noodlestan Conventions | `DONE`  |
-| Iteration: Update Knowledge             | `DONE`  |
-| Iteration: Publish Operations Package   | `READY` |
-| Iteration: Integrate in Consumer        | `READY` |
+| Iteration / Instructions                | Status    |
+| --------------------------------------- | --------- |
+| Iteration: Scaffold Operations Package  | `DONE`    |
+| Iteration: Implement Operations Model   | `DONE`    |
+| Iteration: Implement Operations Log     | `DONE`    |
+| Iteration: Apply Noodlestan Conventions | `DONE`    |
+| Iteration: Update Knowledge             | `DONE`    |
+| Iteration: Publish Operations Package   | `BLOCKED` |
+| Iteration: Integrate in Consumer        | `READY`   |
 
 ### Iteration: Scaffold Operations Package
 
@@ -418,7 +419,7 @@ docs(operations): Add package knowledge base and README usage.
 
 **Id:** `publish-operations-package`
 
-**Status:** `READY`
+**Status:** `BLOCKED`
 
 **Purpose:** Publish `@art-lib/operations@0.0.1` to the public registry and record the deployment, lifting `Integrate in Consumer`'s gate.
 
