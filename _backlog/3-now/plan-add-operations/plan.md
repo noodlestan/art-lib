@@ -63,7 +63,7 @@ Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (ope
 
 ### Next
 
-- Iterations: Scaffold, Model, Log, Conventions are `DONE` and pushed (`cbf34d6`, `058f194`, `6de5369`, `b0643e1`). Delegate Iteration: Update Knowledge next; then Iteration: Publish Operations Package, then Iteration: Integrate in Consumer.
+- Iterations 1–5 (`scaffold`, `model`, `log`, `conventions`, `knowledge`) are `DONE` and pushed. Iteration: Publish Operations Package is next — verify every step-1 precondition first; then Iteration: Integrate in Consumer.
 
 ### Blockers
 
@@ -125,7 +125,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration: Implement Operations Model   | `DONE`  |
 | Iteration: Implement Operations Log     | `DONE`  |
 | Iteration: Apply Noodlestan Conventions | `DONE`  |
-| Iteration: Update Knowledge             | `READY` |
+| Iteration: Update Knowledge             | `DONE`  |
 | Iteration: Publish Operations Package   | `READY` |
 | Iteration: Integrate in Consumer        | `READY` |
 
@@ -354,7 +354,7 @@ style(operations): Apply Noodlestan conventions.
 
 **Id:** `update-knowledge`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Publish the package knowledge base and wire `@art-lib/operations` into the repository artefacts.
 
@@ -399,9 +399,9 @@ After executing:
 
 #### Commits:
 
-| ID                            | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| ----------------------------- | ------------------------------ | ------------ | ------- | ---------- |
-| `update-knowledge-operations` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                            | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| ----------------------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `update-knowledge-operations` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `cf61657` | `COMMITTED` |
 
 ##### Commit: `update-knowledge-operations`
 
@@ -567,6 +567,7 @@ refactor(workspace-cli): Adopt @art-lib/operations in the Workspace Cli.
 - **Model landed** — worker reported commit `058f194` (pushed): `src/model/` types + factories, 15 tests (100% coverage), `Message` conformance type-test; lint/build/test green, no storage code; report at `instructions/implement-operations-model__report.md`.
 - **Log landed** — worker reported commit `6de5369` (pushed): `createOperationsLog(logger)` forwarding + finished-only store, `all`/`since`/`latest` queries, 20 tests green; report at `instructions/implement-operations-log__report.md`.
 - **Conventions applied** — worker commit `b0643e1` (pushed, `MANUAL` policy authorized by architect): 16 files under `libs/operations/src` restructured per conventions (model split into per-factory modules + `private/`, test helpers extracted); TypeScript + Unit Tests conventions already installed and declared in `$PROJECT/_guide.md` — no new installs, no guide edit needed; `model/index.ts` export surface unchanged from HEAD; package lint/build/test and workspace `npm run ci` exit 0.
+- **Knowledge wired** — worker reported commit `cf61657` (pushed, rebased onto logger-plan commits): consumer README + package knowledge base (`index`/`overview`/`design`/`adr`), wired into `knowledge/index.md`, `knowledge/components.md` (`IMPLEMENTED`), `_records/project.art`, `_guide.md`; 23 local links resolve, lint/build/test + repo CI green.
 
 ### Findings
 
