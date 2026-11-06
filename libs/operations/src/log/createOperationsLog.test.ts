@@ -1,4 +1,4 @@
-import type { LoggerAPI, Message } from '@art-lib/logger';
+import type { Message } from '@art-lib/logger';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -6,21 +6,15 @@ import {
 	createOperationFailure,
 	createOperationSuccess,
 } from '../model/index.js';
+import { createLoggerMock } from '../test/helpers/logger/createLoggerMock.js';
 
 import { createOperationsLog } from './createOperationsLog.js';
 import type { OperationsLog } from './types.js';
 
-function createSpyLogger(): { logger: LoggerAPI; logged: Message[] } {
-	const logged: Message[] = [];
-	const logger: LoggerAPI = {
-		log: message => {
-			logged.push(message);
-		},
-		setOutputMode: () => undefined,
-	};
-
-	return { logger, logged };
-}
+type LogHarness = {
+	log: OperationsLog;
+	messages: Message[];
+};
 
 describe('createOperationsLog', () => {
 	let now = 0;
@@ -34,14 +28,14 @@ describe('createOperationsLog', () => {
 		vi.restoreAllMocks();
 	});
 
-	function createLog(): { log: OperationsLog; logged: Message[] } {
-		const { logger, logged } = createSpyLogger();
+	function createLog(): LogHarness {
+		const { logger, messages } = createLoggerMock();
 
-		return { log: createOperationsLog(logger), logged };
+		return { log: createOperationsLog(logger), messages };
 	}
 
-	it('forwards pending AND finished operations to the logger', () => {
-		const { log, logged } = createLog();
+	it('FOR pending and finished operations it forwards them to the logger', () => {
+		const { log, messages } = createLog();
 		const pending = createGenericOperation('clone', { uri: 'repo.art' });
 		const success = createOperationSuccess(pending, 'cloned');
 		const failure = createOperationFailure(pending, new Error('boom'), { label: 'CloneError' });
@@ -50,13 +44,13 @@ describe('createOperationsLog', () => {
 		log.log(success);
 		log.log(failure);
 
-		expect(logged).toHaveLength(3);
-		expect(logged[0]).toBe(pending);
-		expect(logged[1]).toBe(success);
-		expect(logged[2]).toBe(failure);
+		expect(messages).toHaveLength(3);
+		expect(messages[0]).toBe(pending);
+		expect(messages[1]).toBe(success);
+		expect(messages[2]).toBe(failure);
 	});
 
-	it('never stores a pending operation — all/since/latest return only finished ones', () => {
+	it('FOR a pending operation it never stores it — queries return only finished ones', () => {
 		const { log } = createLog();
 		const pending = createGenericOperation('clone', { uri: 'repo.art' });
 
@@ -75,7 +69,7 @@ describe('createOperationsLog', () => {
 		expect(log.latest(1)).toEqual([failure]);
 	});
 
-	it('all() returns a copy in arrival order; mutating it does not affect the store', () => {
+	it('FOR all() it returns a copy in arrival order — mutating it does not affect the store', () => {
 		const { log } = createLog();
 		const first = createOperationSuccess(createGenericOperation('clone', { uri: 'a.art' }));
 		const second = createOperationSuccess(createGenericOperation('push', { uri: 'b.art' }));
@@ -83,17 +77,17 @@ describe('createOperationsLog', () => {
 		log.log(first);
 		log.log(second);
 
-		const all = log.all();
+		const allOperations = log.all();
 
-		expect(all).toEqual([first, second]);
-		expect(all).not.toBe(log.all());
+		expect(allOperations).toEqual([first, second]);
+		expect(allOperations).not.toBe(log.all());
 
-		all.pop();
+		allOperations.pop();
 
 		expect(log.all()).toEqual([first, second]);
 	});
 
-	it('since(timestamp) filters finished operations with ts >= timestamp', () => {
+	it('FOR a timestamp it filters finished operations with ts >= timestamp', () => {
 		const { log } = createLog();
 
 		const early = createOperationSuccess(createGenericOperation('clone', { uri: 'a.art' }));
@@ -112,7 +106,7 @@ describe('createOperationsLog', () => {
 		expect(log.since(4_000)).toEqual([]);
 	});
 
-	it('latest(count) returns the last n finished operations in arrival order', () => {
+	it('FOR a count it returns the last n finished operations in arrival order', () => {
 		const { log } = createLog();
 		const first = createOperationSuccess(createGenericOperation('clone'));
 		const second = createOperationSuccess(createGenericOperation('push'));

@@ -2,7 +2,7 @@ import type { MessageLevel } from '@art-lib/logger';
 
 export type OperationOutcome = 'pending' | 'success' | 'failure';
 
-export interface OperationBase {
+export type OperationBase = {
 	readonly operation: string;
 	readonly ts: number;
 	readonly finishedTs?: number;
@@ -11,22 +11,22 @@ export interface OperationBase {
 	timing(): number; // ms once finished; NaN while pending
 	readonly level: MessageLevel; // derived: pending → debug, success → info, failure → error
 	text(): string; // Message conformance; aliases message()
-}
+};
 
-export interface OperationPending<D = unknown> extends OperationBase {
+export type OperationPending<D = unknown> = OperationBase & {
 	readonly outcome: 'pending';
 	readonly data?: D;
-}
+};
 
-export interface OperationSuccess<D = unknown> extends OperationBase {
+export type OperationSuccess<D = unknown> = OperationBase & {
 	readonly outcome: 'success';
 	readonly data?: D;
 	// the given success text is stored privately by the factory; message() reports it
-}
+};
 
-export interface OperationFailure<D = unknown> extends OperationBase {
+export type OperationFailure<D = unknown> = OperationBase & {
 	readonly outcome: 'failure';
 	readonly data?: D;
 	readonly error: string; // the raw error message
 	errorSerialized(): string; // label-prefixed form
-}
+};
