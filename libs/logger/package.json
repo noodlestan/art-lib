@@ -1,6 +1,6 @@
 {
   "name": "@art-lib/logger",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Create and log messages with a buffering logger: quiet and verbose output modes, an injected formatter, and an injectable log writer.",
   "keywords": [
     "library",
