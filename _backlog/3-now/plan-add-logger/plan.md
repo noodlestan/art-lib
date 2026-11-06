@@ -65,8 +65,8 @@ Create `$PROJECT/libs/logger` exposing the message model (`Message`, creators) a
 ### Next
 
 - **Reopened 2026-11-03.** The package shipped `0.0.1` with a two-mode `OutputMode` (`quiet` | `verbose`) and the CLI adopted it, but the mode model needs a middle tier: `normal` emits `info`/`warning`/`error`, `verbose` adds `debug`, `quiet` keeps only `warning`/`error`. That makes `normal` the CLI's default and lets `@art-lib/operations`' level mapping (`pending → debug`, `success → info`, `failure → error`) work as designed — `normal` shows finished successes, `quiet` shows only problems.
-- **Next: Iteration: Publish Logger 0.0.2** (`READY`) — bump to `0.0.2`, add the `## 0.0.2` CHANGELOG section, refresh the lockfile, publish, and verify; the mode is not in the published `0.0.1`. Then **Update Cli Output Flag**, where the Art Workspace Cli re-installs `0.0.2`, collapses its eleven per-command `-o` flags into one global flag defaulting to `normal`, and extracts `createCommandContext` out of `index.ts`.
-- **Done 2026-11-04: Iteration: Add Normal Output Mode** (`ef5858e`) — `OutputMode` is `'quiet' | 'normal' | 'verbose'`, `shouldEmit` is three-tier, and every mode flushes the buffer and filters it.
+- **Next: Iteration: Update Cli Output Flag** (`READY`) — the Art Workspace Cli re-installs `0.0.2`, collapses its eleven per-command `-o` flags into one global flag defaulting to `normal`, and extracts `createCommandContext` out of `index.ts`. This is the last `READY` row.
+- **Done 2026-11-06: Iteration: Publish Logger 0.0.2** (`296e359`) — `@art-lib/logger@0.0.2` is live on the registry (`dist-tags.latest` → `0.0.2`); the `normal` output mode is now consumable.
 - **Out of scope here:** the `Operation → Message` adapter (`createMessageFromOperation`, and where `levelOf` lives) belongs to `@art-lib/operations` and is tracked on `Plan: Add Operations Package`. This plan must not move that glue.
 
 ### Blockers
@@ -132,7 +132,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration: Publish Logger Package       | `DONE`  |
 | Iteration: Integrate in Consumer        | `DONE`  |
 | Iteration: Add Normal Output Mode       | `DONE`  |
-| Iteration: Publish Logger 0.0.2         | `READY` |
+| Iteration: Publish Logger 0.0.2         | `DONE`  |
 | Iteration: Update Cli Output Flag       | `READY` |
 
 > The first six iterations delivered and shipped `@art-lib/logger@0.0.1`, and the plan was closed — then reopened 2026-11-03 for a third output mode. The reopening scope was three iterations; `Add Normal Output Mode` is now `DONE`, leaving **two** `READY` rows: `Publish Logger 0.0.2` and `Update Cli Output Flag`.
@@ -672,7 +672,9 @@ build(logger): Add normal output mode.
 
 **Id:** `publish-logger-0-0-2`
 
-**Status:** `READY`
+**Status:** `DONE`
+
+**Delegation:** `COMPLETED` — worker session `ses_e516efb5fffeKuRakMGjqCYdlq` (inlined instructions; no instruction file).
 
 **Purpose:** Ship the third output mode as `@art-lib/logger@0.0.2`.
 
@@ -729,9 +731,9 @@ release(logger): 0.0.2
 
 #### Commits:
 
-| ID                     | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| ---------------------- | ------------------------------ | ------------ | ------- | ---------- |
-| `publish-logger-0-0-2` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                     | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| ---------------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `publish-logger-0-0-2` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `296e359` | `COMMITTED` |
 
 ##### Commit: `publish-logger-0-0-2`
 
@@ -742,6 +744,10 @@ release(logger): 0.0.2
 
 - Ship the `normal` output mode.
 ```
+
+**Hash:** `296e359` — pushed to `origin/main`. Carries `libs/logger/package.json` (`version` `0.0.2`), a `## 0.0.2` `### Added` CHANGELOG section, and the refreshed `package-lock.json`.
+
+**Status:** `COMMITTED`
 
 ### Iteration: Update Cli Output Flag
 
@@ -843,8 +849,12 @@ refactor(workspace-cli): Adopt the three output modes with a single -o flag.
 - **Published (2026-11-03).** `@art-lib/logger@0.0.1` is live on `https://registry.npmjs.org` — confirmed by `npm view`: `dist-tags.latest` → `0.0.1`, shasum `9b69f98d42a1e1a15d…` matching `npm pack --dry-run`, `deps: none`, `MIT`, and `description` / `keywords` (`library, logging, messages, art, terminal-apps`) / `engines` (`node >=22`) byte-identical to `_records/package.art`. All four preconditions passed before the registry was touched (whoami `noodlestan`, version absent, policy manifest fields, all four `files` entries on disk); no OTP was demanded. Records flipped to `Published: true` / `DEPLOYED` in `1091288`, which carries only those two edits — `version` and `CHANGELOG.md` untouched. Registry cache lag observed: `npm view` served a cached 404 for ~3 minutes after the publish while a direct `curl` returned 200 immediately.
 - **Consumer integration completed (2026-11-03).** `@art-lib/logger@0.0.1` adopted in `$WORKSPACE/checkouts/art-works/cli/workspace`: declared alongside `@art-lib/fs-records` (plus its lock entry), and `src/private/logger/createLogger.ts` now delegates to the package logger with the CLI's own formatter (`makeOperationLogLine(op, {standalone:true}).join(' | ')`) and an `console.info` writer, mapping outcome → level (`pending→info`, `success→warning`, `failure→error`) so `quiet` still drops pending work; `makeOperationLogLine.ts` stays as the renderer and report row builder. No callers or test helpers needed edits — the local `LoggerAPI` shape is unchanged. Gate verified first (`npm view @art-lib/logger version` → `0.0.1`, documented API present in `dist/index.d.ts`). Verification green: `npm run ci` in `cli/workspace` (prettier/eslint/tsc, build, 347 unit + 26 integration tests) and at the Art Works root, hooks `0-clean`/`1-extract`/`2-ci` green. Behaviour unchanged — baseline vs new build diff over `sanity -o verbose|quiet` and `clone NoSuchRepo -o verbose|quiet` shows identical stdout/stderr; the only diffs were the report's `ms` cell and the repo's own `uncommitted files` state. Commit `bf2fc78` pushed to `origin/main` in the Art Works repository; `$PROJECT` left untouched.
 - **Add Normal Output Mode completed (2026-11-04).** `OutputMode` is `'quiet' | 'normal' | 'verbose'` in `libs/logger/src/types.ts`; `shouldEmit` is three-tier (`verbose` all, `normal` `level !== 'debug'`, `quiet` `warning`/`error`) and `setOutputMode` now runs every buffered message through `shouldEmit` — all modes flush and filter, none discards, so the `quiet`-discards remnant is gone. Tests cover each mode's flush (buffered `warning` survives `quiet`, buffered `info` survives `normal`, buffered `debug` drops) — 24/24 green, no `it.todo`, coverage 100/97.14/100/100; package `lint`/`build` green and `$PROJECT` `npm run ci` green; no `@art-lib/operations` import. The six mode-spec docs were already three-mode in `dc03a01`; the worker's commit fixed the last `quiet`-discards sentence in `knowledge/overview.md`. Commit `ef5858e` pushed to `origin/main` (rebased over `2e520eb`; the push also carried already-local `dc03a01` and `e82909b`). Out of scope and left uncommitted: the workspace root `package.json`/`package-lock.json` carry another session's `@art-works/workspace-cli` `0.3.1` bump, which made the root `npm ci` fail until the worker repaired the lock with `npm install --package-lock-only`.
+- **Published 0.0.2 (2026-11-06).** `@art-lib/logger@0.0.2` is live — `npm view` returns `0.0.2`, `dist-tags.latest` → `0.0.2`, versions now `[0.0.0-stage, 0.0.1, 0.0.2]`. All six preconditions passed before the registry was touched (`whoami` `noodlestan`; logger read `0.0.1` with `0.0.2` → E404; manifest `private`/`publishConfig`/`files` conform; all four `files` entries on disk); no OTP demanded, nothing unpublished. Tarball carries `dist/index.mjs`, `dist/index.d.ts`, `README.md`, `LICENSE-MIT`, `CHANGELOG.md`. Commit `296e359` pushed to `origin/main` — exactly three files: `libs/logger/package.json`, `libs/logger/CHANGELOG.md`, `package-lock.json`. Both records untouched and still `Published: true` / `DEPLOYED`. Verification green: package `lint`/`build`/24 tests, `$PROJECT` `npm run ci` 4/4 (now including `@art-lib/operations`). Registry lag ~90s before `npm view` served the new version.
+- **Lockfile coupling confirmed and accepted (2026-11-06).** `libs/operations/package.json` pins `"@art-lib/logger": "0.0.1"` exactly (from `Plan: Add Operations Package`), so the bump could no longer dedupe: npm nested a registry copy at `libs/operations/node_modules/@art-lib/logger@0.0.1`. Pre-delegation probe verified `npm ci` + `npm run ci` stay green (4/4) with it present; the worker committed the refreshed lock as instructed. **Not fixed here** — the pin belongs to the operations plan, which must move it to `0.0.2` when the Art Workspace Cli adopts the three modes.
 
 ### Findings
+
+- **The package `description` still says "quiet and verbose" at `0.0.2` — stale, and now contradicts the README.** `_records/package.art` and `libs/logger/package.json` both read _"…a buffering logger: quiet and verbose output modes…"_ (unchanged since `ac059a8`/`1091288`), while `README.md`'s tagline — added in `dc03a01` — reads _"quiet, normal, and verbose output modes"_. The plan's own artefact rule says the README tagline and the record description are **one and the same sentence**, so they now disagree, and the npm listing for `0.0.2` advertises a two-mode logger that no longer exists. The iteration's validation checked `README.md` against the three-mode behaviour but never the description against the README, so it shipped. Needs a `## 0.0.3` (or a docs-only correction) plus a `reconcile`/`records` commit updating both carriers — see Follow Ups.
 
 - Art Works and Art MD both implement the same buffering logger (quiet/verbose, buffer until mode set); the only variation is the log-line formatter and the writer target.
 - `libs/logger/package.json` omits the `dependencies` and `devDependencies` keys entirely, whereas `libs/fs-records` and `libs/config` both declare `"devDependencies": {}`. Policy does not require the key when a package has none, so this is not a compliance failure — only a sibling inconsistency. Harmless; align it if a later iteration touches the manifest.
@@ -865,6 +875,9 @@ refactor(workspace-cli): Adopt the three output modes with a single -o flag.
 - Keep the `logger` package entry in `knowledge/components.md` in sync after scaffolding.
 
 ### Follow Ups
+
+- **Reconcile the package `description` with the README tagline** — both carriers must read _"…quiet, normal, and verbose output modes…"_. `libs/logger/_records/package.art` + `libs/logger/package.json` are stale; the README is correct. Because `package.json` is published, the fix needs a version bump and publish (docs-only `0.0.3`), or it waits for the next real release. Do **not** hand-edit `package.json` alone — the record is the source of truth and the manifest is its rendering.
+- **Bump `libs/operations`' logger pin from `0.0.1` to `0.0.2`** — currently forcing a nested registry copy at `libs/operations/node_modules/@art-lib/logger`. Belongs to `Plan: Add Operations Package` (`Update Knowledge` or `Integrate in Consumer`).
 
 - ~~**No iteration in this plan publishes `@art-lib/logger`.**~~ — **resolved 2026-11-02.** `Iteration: Publish Logger Package` (`publish-logger-package`) was added between `Update Knowledge` and `Integrate in Consumer`, mirroring `Plan: Add Config Package`'s `publish-config-package`, and `Integrate in Consumer`'s gate now reads on it instead of on the whole plan being `DONE`.
 - ~~`$PROJECT/knowledge/design/logger.md` still calls `Message` an **interface**~~ — **resolved 2026-11-02** by `Iteration: Update Knowledge` (`7767871`): the wording in `knowledge/design/logger.md` and `knowledge/components.md` now matches the `type` shipped by the conventions iteration; no `interface` wording remains in either. The record stays repository-level.
