@@ -63,7 +63,7 @@ Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (ope
 
 ### Next
 
-- Iterations 1–5 (`scaffold`, `model`, `log`, `conventions`, `knowledge`) are `DONE` and pushed. it6 preconditions amended per architect ruling (A) — re-run step-1 preconditions fresh, then delegate Iteration: Publish Operations Package; Iteration: Integrate in Consumer follows after the art-works activity check.
+- Iterations 1–6 are `DONE` and pushed; `@art-lib/operations@0.0.1` is on the registry. Next: confirm no other delegation is active in `$WORKSPACE/checkouts/art-works`, then delegate Iteration: Integrate in Consumer (its gate has lifted).
 
 ### Blockers
 
@@ -127,7 +127,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration: Implement Operations Log     | `DONE`  |
 | Iteration: Apply Noodlestan Conventions | `DONE`  |
 | Iteration: Update Knowledge             | `DONE`  |
-| Iteration: Publish Operations Package   | `READY` |
+| Iteration: Publish Operations Package   | `DONE`  |
 | Iteration: Integrate in Consumer        | `READY` |
 
 ### Iteration: Scaffold Operations Package
@@ -419,7 +419,7 @@ docs(operations): Add package knowledge base and README usage.
 
 **Id:** `publish-operations-package`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Publish `@art-lib/operations@0.0.1` to the public registry and record the deployment, lifting `Integrate in Consumer`'s gate.
 
@@ -475,9 +475,9 @@ After executing:
 
 #### Commits:
 
-| ID                   | Repository / Checkout / Branch | Policy       | Hash    | Status     |
-| -------------------- | ------------------------------ | ------------ | ------- | ---------- |
-| `publish-operations` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                   | Repository / Checkout / Branch | Policy       | Hash      | Status      |
+| -------------------- | ------------------------------ | ------------ | --------- | ----------- |
+| `publish-operations` | Art Lib / `$PROJECT` / `main`  | `AUTONOMOUS` | `4bf2da2` | `COMMITTED` |
 
 ##### Commit: `publish-operations`
 
@@ -569,6 +569,7 @@ refactor(workspace-cli): Adopt @art-lib/operations in the Workspace Cli.
 - **Log landed** — worker reported commit `6de5369` (pushed): `createOperationsLog(logger)` forwarding + finished-only store, `all`/`since`/`latest` queries, 20 tests green; report at `instructions/implement-operations-log__report.md`.
 - **Conventions applied** — worker commit `b0643e1` (pushed, `MANUAL` policy authorized by architect): 16 files under `libs/operations/src` restructured per conventions (model split into per-factory modules + `private/`, test helpers extracted); TypeScript + Unit Tests conventions already installed and declared in `$PROJECT/_guide.md` — no new installs, no guide edit needed; `model/index.ts` export surface unchanged from HEAD; package lint/build/test and workspace `npm run ci` exit 0.
 - **Knowledge wired** — worker reported commit `cf61657` (pushed, rebased onto logger-plan commits): consumer README + package knowledge base (`index`/`overview`/`design`/`adr`), wired into `knowledge/index.md`, `knowledge/components.md` (`IMPLEMENTED`), `_records/project.art`, `_guide.md`; 23 local links resolve, lint/build/test + repo CI green.
+- **Published** — `@art-lib/operations@0.0.1` on the registry (worker commit `4bf2da2`, pushed; records-only: `Published` `true`, deployment `DEPLOYED`): pack dry-run had all six required files (25 files), registry `version`/`dependencies` (`@art-lib/logger: 0.0.1`)/`description`/`keywords`/`engines` byte-identical to `_records/package.art`, no OTP, single attempt, nothing unpublished; workspace `npm run ci` + repo CI green. Anomaly (feedback): a `0.0.0-stage` placeholder appeared on the registry between precondition check and publish (same documented anomaly as the logger plan); sorts below `latest` `0.0.1`, left untouched per never-unpublish.
 
 ### Findings
 
