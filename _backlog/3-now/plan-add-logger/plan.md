@@ -135,7 +135,7 @@ All steps MUST pass. No `it.todo()` tests may remain.
 | Iteration: Publish Logger 0.0.2         | `READY` |
 | Iteration: Update Cli Output Flag       | `READY` |
 
-> The first six iterations delivered and shipped `@art-lib/logger@0.0.1`, and the plan was closed — then reopened 2026-11-03 for a third output mode. The three `READY` rows are the reopening scope.
+> The first six iterations delivered and shipped `@art-lib/logger@0.0.1`, and the plan was closed — then reopened 2026-11-03 for a third output mode. The reopening scope was three iterations; `Add Normal Output Mode` is now `DONE`, leaving **two** `READY` rows: `Publish Logger 0.0.2` and `Update Cli Output Flag`.
 
 ### Iteration: Scaffold Logger Package
 
