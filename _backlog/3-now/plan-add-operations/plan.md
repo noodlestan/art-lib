@@ -103,7 +103,7 @@ Execution occurs from `$WORKSPACE/`; package work, its test suite, and the relea
 
 ### Next
 
-- Pair session executes `extend-operation-factory` → `conform-cli-operations` (both `WORKING`, verified together through the symlink) and runs `publish-operations-0-0-2` LAST, re-pinning the consumer to `0.0.2` after it lands — all commits `NOPUSH`, the user pushes. Plan stays in `_backlog/3-now/` until all three land; the architect then closes it (moves to `1-done`), refreshes the milestone, and records the workspace-records move.
+- Original order: commit `extend-operation-factories` (art-lib), then the release commit `publish-operations-0-0-2` and publish `@art-lib/operations@0.0.2`; art-works re-installs from the registry (retiring the symlink), retests, then commits `conform-operations-model` — all commits `NOPUSH`, the user pushes. Iterations 8 and 10 are code-complete but uncommitted. Plan stays in `_backlog/3-now/` until all three land; the architect then closes it (moves to `1-done`), refreshes the milestone, and records the workspace-records move.
 
 ### Blockers
 
@@ -680,10 +680,11 @@ In `$PROJECT/libs/operations`
    - `npm view @art-lib/operations version` returns `0.0.1`; `0.0.2` must not exist (a published version is immutable).
    - `package.json` carries `version` `0.0.1` before the bump, `private` `false`, `publishConfig` `{ "access": "public" }`, and `files` listing `dist`, `README.md`, `LICENSE-MIT`, `CHANGELOG.md` — all four on disk.
 2. Bump `version` to `0.0.2`; promote `## UNRELEASED` to `## 0.0.2` in `CHANGELOG.md`. Touch nothing else.
-3. `npm pack --dry-run` — tarball contains `package.json`, `dist/index.mjs`, `dist/index.d.ts`, `README.md`, `LICENSE-MIT`, `CHANGELOG.md`.
-4. `npm publish --access public`. On OTP/2FA demand: `REPORT A BLOCKER`, do not retry, never unpublish.
-5. Confirm: `npm view @art-lib/operations version` returns `0.0.2`; `dependencies` still shows `@art-lib/logger`; `description`/`keywords`/`engines` match `_records/package.art`.
-6. Run workspace `npm run ci` — exit 0, zero `✘ [ERROR]`.
+3. Commit the release state NOW with the blueprint message below — policy `NOPUSH`: create the commit, do NOT push. The release commit precedes the registry action.
+4. `npm pack --dry-run` — tarball contains `package.json`, `dist/index.mjs`, `dist/index.d.ts`, `README.md`, `LICENSE-MIT`, `CHANGELOG.md`.
+5. `npm publish --access public`. On OTP/2FA demand: `REPORT A BLOCKER`, do not retry, never unpublish.
+6. Confirm: `npm view @art-lib/operations version` returns `0.0.2`; `dependencies` still shows `@art-lib/logger`; `description`/`keywords`/`engines` match `_records/package.art`.
+7. Run workspace `npm run ci` — exit 0, zero `✘ [ERROR]`.
 
 **Instructions:**
 
@@ -702,7 +703,7 @@ Validate that:
 After executing:
 
 - Execute the **Verifying Completion** instructions from the Operating Instructions section.
-- Commit `publish-operations-0-0-2` with the blueprint message below — policy `NOPUSH`: create the commit, do NOT push.
+- The release commit was created at step 3, before the publish — do not create a second commit.
 
 **Dependencies:**
 
@@ -747,6 +748,7 @@ In `$WORKSPACE/checkouts/art-works/cli/workspace`
 - `src/private/log/createOperationsLog.ts` — delegate to the package's factory; remove both `as unknown as` casts and the hand-rolled interface; `since` follows the package contract (epoch), callers updated.
 - `src/private/present/presentOperationsReport.ts` — read `op.data?.checkout`; the six headers and every rendered value stay exactly as today.
 - Timestamps: epoch milliseconds everywhere; `timing()` arithmetic lives in the package (`finishedTs - ts`).
+- `package.json` + lockfile — pin `@art-lib/operations` `0.0.2`; the registry install replaces the dev symlink, and the suite must be re-run against the published build before committing.
 - **Logger injection — orientation, not pre-decided:** tests that call `createOperationsLog()` bare must inject a logger. Check first whether `@art-lib/logger` exposes a usable test util, or whether `createLogger` with a no-op/in-memory writer suffices (its exports today: `createLogger`, message factories, types — no dedicated mock). Note `@art-lib/operations` carries an internal `createLoggerMock` under `src/test/helpers/logger/` (not exported) and art-works has its own `test/helpers/`. Pick the cleanest source and report the choice.
 - **HARD GATE:** `src/private/present/presentOperationsReport.test.ts` passes with its EXISTING expectations — same six columns, same values. If conformance forces a single assertion change, `REPORT A BLOCKER` instead of editing it. Call-site updates in other tests are permitted; assertion changes are not.
 - Verify: `npm run ci` from the art-works repo root — exit 0, zero `✘ [ERROR]`, tsc/eslint/prettier green.
@@ -757,14 +759,15 @@ Execute the Changes listed above. This iteration is worked in the pair session (
 
 Before starting:
 
-- Run `npm ci` from the `$WORKSPACE` root; consume `@art-lib/operations@0.0.2` from the registry — Iteration: Publish Operations 0.0.2 must be `DONE`.
+- Iteration: Publish Operations 0.0.2 must be `DONE`. Bump `cli/workspace/package.json` to `@art-lib/operations` `0.0.2` and run `npm ci` in the art-works repo — this retires the dev symlink; re-run the suite against the published build BEFORE committing.
 - Read the HARD GATE above first: output parity is the acceptance criterion, not type parity.
 
 Validate that:
 
 - No local declaration of the five generic types remains; no `as unknown as` cast remains under `src/private/operations|log`; `toSharedPending.ts` is gone.
 - All 8 constructors delegate to the package factory (no local `timing()` implementations remain).
-- The report test passes with untouched assertions.
+- `npm ls @art-lib/operations` in art-works resolves `0.0.2` from the registry — the symlink is gone.
+- The report test passes with untouched assertions, and the suite is green against the published build.
 
 After executing:
 
@@ -773,7 +776,7 @@ After executing:
 
 **Dependencies:**
 
-- Iteration: Publish Operations 0.0.2 — consumes the extended factory API from the registry. Executed pre-publish during the pair session through the local symlink (see Decisions); the registry consume requirement is re-checked after the release re-pins the consumer.
+- Iteration: Publish Operations 0.0.2 — consumes the extended factory API from the registry (re-installed at `0.0.2` before committing).
 
 #### Commits:
 
@@ -824,7 +827,7 @@ refactor(workspace-cli): Conform operations to the shared model types.
 - The buffering logger is split out into the planned `@art-lib/logger` package (effectful, wraps the log writer).
 - Operations conform to the logger's `Message` interface (level derived from outcome); the logger never knows about operations.
 - `createOperationFailure` takes `{ label }` per call — replaces Art Works' hardcoded `errorLabels` map.
-- **Symlink-first execution** — the pair runs iterations 1 → 3 together through `node_modules/@art-lib/operations → ../../../art-lib/libs/operations`, deferring `publish-operations-0-0-2` to last; after the release, the consumer re-pins `@art-lib/operations` to `0.0.2` and `npm ci` retires the symlink.
+- **Original order with registry verification** — commit `extend-operation-factories`, then the release commit `publish-operations-0-0-2` and publish `0.0.2`; art-works then re-installs from the registry (retiring the dev symlink), retests against the published build, and only then commits `conform-operations-model`.
 
 ### Knowledge to Update
 
