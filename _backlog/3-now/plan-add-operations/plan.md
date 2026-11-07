@@ -2,7 +2,7 @@
 
 **ID:** `add-operations`
 
-**Status:** `DONE`
+**Status:** `WORKING`
 
 **Template:** `.agents/domains/plans/templates/plan.tart`
 
@@ -10,7 +10,7 @@
 
 **Purpose:** Provide the shared CLI operation model and operations log extracted from the Art Workspace Cli and the Art MD codec bin.
 
-**Description:** Create the `@art-lib/operations` package with two subpath modules — `/model` (operation types and factories) and `/log` (append-only operations log) — replacing duplicated plumbing in both CLIs. The buffering logger lives in the planned `@art-lib/logger` package.
+**Description:** Create the `@art-lib/operations` package with two subpath modules — `/model` (operation types and factories) and `/log` (append-only operations log) — replacing duplicated plumbing in both CLIs. The buffering logger lives in the planned `@art-lib/logger` package. Reopened 2026-11-07 after the consumer adoption (`72537ab`) preserved a parallel type system instead of conforming: three iterations extend the package factory, publish `0.0.2`, and conform the CLI to the shared model.
 
 ## Mandatory Reading
 
@@ -50,6 +50,15 @@ Create `@art-lib/operations` with subpath modules `/model` and `/log`, extractin
 | --------------------------------------- | ---------------------------------------------------------------------------------- |
 | Domain: Plans `$DOMAINS/plans/index.md` | Planning lifecycle for contextualising, drafting, planning, and integrating plans. |
 
+### Resource Kinds in Scope
+
+- Package – `$DOMAINS/packages/structures/package.art`
+
+### Workflows
+
+- Planning Work – `$DOMAINS/work/workflows/planning-work/workflow.art`
+- Executing Work – `$DOMAINS/work/workflows/executing-work/workflow.art`
+
 ### Knowledge
 
 ::READ `$PROJECT/knowledge/design/operations.md` (Design) — Operation record contract and Operations Log semantics. Relevant for Planning Work Item.
@@ -57,13 +66,44 @@ Create `@art-lib/operations` with subpath modules `/model` and `/log`, extractin
 
 ## Scope
 
-Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (operation types and factories; operations conform to the `Message` interface of `@art-lib/logger`) and `/log` (append-only operations log, created with the logger and forwarding every operation to it) — with tests, package records, and docs mirroring `libs/fs-records` conventions. Adoption refactors in `@art-works/workspace-cli` and `@art-md/bin` are out of scope.
+Create `$PROJECT/libs/operations` exposing two subpath modules — `/model` (operation types and factories; operations conform to the `Message` interface of `@art-lib/logger`) and `/log` (append-only operations log, created with the logger and forwarding every operation to it) — with tests, package records, and docs mirroring `libs/fs-records` conventions. Consumer adoption landed at `72537ab` as an adapter; the reopened scope adds the factory extension, the `0.0.2` release, and the conformance of `$WORKSPACE/checkouts/art-works/cli/workspace` to the shared model. Adoption in `@art-md/bin` remains out of scope.
+
+### (Scope) Package: Art Lib Operations
+
+**Record:** `$PROJECT/libs/operations/_records/package.art`
+
+**Role:** — Changes required.
+
+**Partial:**
+
+- `owner` — Project: Art Lib
+- `path` — `libs/operations`
+- `canonicalName` — `@art-lib/operations`
+- `deployment` — NPM Package Deployment: Art Lib Operations
+
+**Changes:**
+
+— Extend the three model factories with `<D>` generics and a `message?` hook (Iteration: Extend Operation Factory).
+— Publish `@art-lib/operations@0.0.2` carrying the extension (Iteration: Publish Operations 0.0.2).
+— Consume the released API in the consumer (Iteration: Conform CLI Operations, scoped to `$WORKSPACE/checkouts/art-works/cli/workspace`).
+
+**Operations:**
+
+— Run package and workspace verification (`npm run ci`, exit 0, zero `✘ [ERROR]`) before each commit.
+
+**Dependencies:**
+
+- None.
+
+## Execution Context
+
+Execution occurs from `$WORKSPACE/`; package work, its test suite, and the release happen in `$WORKSPACE/checkouts/art-lib/libs/operations/` on branch `main` — commits are `NOPUSH`, pushed by the user. The consumer conformance runs in `$WORKSPACE/checkouts/art-works/cli/workspace/` on branch `main`, with exactly one `npm run ci` per verification.
 
 ## Work
 
 ### Next
 
-- All seven iterations are `DONE` and pushed; plan complete — `@art-lib/operations@0.0.1` published and adopted in Art Works. Architect closes the plan (moves to `1-done`), refreshes the milestone, and records the workspace-records move.
+- Pair session runs `extend-operation-factory` (art-lib side) → `publish-operations-0-0-2` → `conform-cli-operations` (art-works side), in order, all `NOPUSH` — the user pushes. Plan stays in `_backlog/3-now/` until all three land; the architect then closes it (moves to `1-done`), refreshes the milestone, and records the workspace-records move.
 
 ### Blockers
 
@@ -122,15 +162,18 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Items:
 
-| Iteration / Instructions                | Status |
-| --------------------------------------- | ------ |
-| Iteration: Scaffold Operations Package  | `DONE` |
-| Iteration: Implement Operations Model   | `DONE` |
-| Iteration: Implement Operations Log     | `DONE` |
-| Iteration: Apply Noodlestan Conventions | `DONE` |
-| Iteration: Update Knowledge             | `DONE` |
-| Iteration: Publish Operations Package   | `DONE` |
-| Iteration: Integrate in Consumer        | `DONE` |
+| Iteration / Instructions                | Status  |
+| --------------------------------------- | ------- |
+| Iteration: Scaffold Operations Package  | `DONE`  |
+| Iteration: Implement Operations Model   | `DONE`  |
+| Iteration: Implement Operations Log     | `DONE`  |
+| Iteration: Apply Noodlestan Conventions | `DONE`  |
+| Iteration: Update Knowledge             | `DONE`  |
+| Iteration: Publish Operations Package   | `DONE`  |
+| Iteration: Integrate in Consumer        | `DONE`  |
+| Iteration: Extend Operation Factory     | `READY` |
+| Iteration: Publish Operations 0.0.2     | `READY` |
+| Iteration: Conform CLI Operations       | `READY` |
 
 ### Iteration: Scaffold Operations Package
 
@@ -552,6 +595,200 @@ refactor(workspace-cli): Adopt @art-lib/operations in the Workspace Cli.
 
 - Replace the local operations model, stores, and log with @art-lib/operations.
 - Keep CLI behaviour and its test suite green.
+```
+
+### Iteration: Extend Operation Factory
+
+**Id:** `extend-operation-factory`
+
+**Status:** `READY`
+
+**Purpose:** Make the package factories able to carry consumer-specific shape and messages, so consumers delegate fully instead of re-implementing `ts`, `outcome`, and `timing()`.
+
+**Description:** Extends the three model factories with `<D>` generics and an optional `message?: (data: D) => string` hook on `createGenericOperation` — the default preserves today's `readInputUri(data)` semantics so every existing test stays green. Adds the `UNRELEASED` changelog entry for the change. Unblocks Iteration: Conform CLI Operations: the eight CLI constructors become one-line delegations carrying `checkout` in `D`.
+
+**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+
+**Changes:**
+
+In `$PROJECT/libs/operations`
+
+- `src/model/createGenericOperation.ts` — signature `createGenericOperation<D>(name: string, data: D, message?: (data: D) => string): OperationPending<D>`; default message preserves `readInputUri(data)` behaviour; pending `timing()` stays `NaN`; keep `Object.freeze`.
+- `src/model/createOperationSuccess.ts` — `createOperationSuccess<D>(pending: OperationPending<D>, message?: string): OperationSuccess<D>`.
+- `src/model/createOperationFailure.ts` — `createOperationFailure<D>(pending: OperationPending<D>, error: unknown, options?: { label?: string }): OperationFailure<D>`.
+- Export surface unchanged — same three names, back-compatible with `@art-lib/operations@0.0.1` consumers.
+- Tests: add cases for the typed `data` round-trip and the custom message hook; do not modify existing assertions.
+- `CHANGELOG.md` — add `## UNRELEASED` above `## 0.0.1` with an `### Added` bullet describing the extended factories.
+- Verify: package `npm run ci` and workspace `npm run ci` — exit 0, zero `✘ [ERROR]`.
+
+**Instructions:**
+
+Execute the Changes listed above. This iteration is worked in the pair session (art-lib side) — report in chat, no separate delegation record.
+
+Before starting:
+
+- Run `npm ci` from the `$WORKSPACE` root (Operating Instructions: Setting Up).
+
+Validate that:
+
+- All three factories are generic over `D`, and `data` flows type-preserving into success and failure.
+- Default-message behaviour is unchanged (existing `createGenericOperation` tests untouched and green).
+
+After executing:
+
+- Execute the **Verifying Completion** instructions from the Operating Instructions section.
+- Commit `extend-operation-factories` with the blueprint message below — policy `NOPUSH`: create the commit, do NOT push.
+
+**Dependencies:**
+
+- None.
+
+#### Commits:
+
+| ID                           | Repository / Checkout / Branch | Policy   | Hash    | Status     |
+| ---------------------------- | ------------------------------ | -------- | ------- | ---------- |
+| `extend-operation-factories` | Art Lib / `$PROJECT` / `main`  | `NOPUSH` | `(TBD)` | `AUTHORED` |
+
+##### Commit: `extend-operation-factories`
+
+**Message:**
+
+```text
+build(operations): Extend model factories with generics and a message hook.
+
+- Type the three factories over `D` and accept a custom message, defaulting to current behaviour.
+```
+
+### Iteration: Publish Operations 0.0.2
+
+**Id:** `publish-operations-0-0-2`
+
+**Status:** `READY`
+
+**Purpose:** Ship the extended factory API as `@art-lib/operations@0.0.2` so the consumer conformance consumes it from the registry.
+
+**Description:** Bumps `version` 0.0.1 → 0.0.2, promotes the `UNRELEASED` entry to `0.0.2`, and publishes — the same release shape as `@art-lib/config@0.0.2`. No record flips: the package is already `Published: true` / `DEPLOYED`, so the release commit carries only `package.json` + `CHANGELOG.md`. Preconditions apply to the new version; on failure, `REPORT A BLOCKER` — never unpublish.
+
+**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+
+**Changes:**
+
+In `$PROJECT/libs/operations`
+
+1. Verify every precondition **before** touching the registry — any failure is `REPORT A BLOCKER`, not something to work around:
+   - `npm whoami` returns `noodlestan`.
+   - `npm view @art-lib/operations version` returns `0.0.1`; `0.0.2` must not exist (a published version is immutable).
+   - `package.json` carries `version` `0.0.1` before the bump, `private` `false`, `publishConfig` `{ "access": "public" }`, and `files` listing `dist`, `README.md`, `LICENSE-MIT`, `CHANGELOG.md` — all four on disk.
+2. Bump `version` to `0.0.2`; promote `## UNRELEASED` to `## 0.0.2` in `CHANGELOG.md`. Touch nothing else.
+3. `npm pack --dry-run` — tarball contains `package.json`, `dist/index.mjs`, `dist/index.d.ts`, `README.md`, `LICENSE-MIT`, `CHANGELOG.md`.
+4. `npm publish --access public`. On OTP/2FA demand: `REPORT A BLOCKER`, do not retry, never unpublish.
+5. Confirm: `npm view @art-lib/operations version` returns `0.0.2`; `dependencies` still shows `@art-lib/logger`; `description`/`keywords`/`engines` match `_records/package.art`.
+6. Run workspace `npm run ci` — exit 0, zero `✘ [ERROR]`.
+
+**Instructions:**
+
+Execute the Changes listed above. This iteration is worked in the pair session — report in chat, no separate delegation record.
+
+Before starting:
+
+- Run `npm ci` from the `$WORKSPACE` root (Operating Instructions: Setting Up).
+- Iteration: Extend Operation Factory must be `DONE` — its changes are what this release ships.
+
+Validate that:
+
+- The registry serves `@art-lib/operations@0.0.2` with the expected metadata.
+- `version` and the promoted `0.0.2` changelog section are the only content changes.
+
+After executing:
+
+- Execute the **Verifying Completion** instructions from the Operating Instructions section.
+- Commit `publish-operations-0-0-2` with the blueprint message below — policy `NOPUSH`: create the commit, do NOT push.
+
+**Dependencies:**
+
+- Iteration: Extend Operation Factory — the release ships the extended factories.
+
+#### Commits:
+
+| ID                         | Repository / Checkout / Branch | Policy   | Hash    | Status     |
+| -------------------------- | ------------------------------ | -------- | ------- | ---------- |
+| `publish-operations-0-0-2` | Art Lib / `$PROJECT` / `main`  | `NOPUSH` | `(TBD)` | `AUTHORED` |
+
+##### Commit: `publish-operations-0-0-2`
+
+**Message:**
+
+```text
+release(operations): Publish 0.0.2 to npm.
+
+- Promote the `UNRELEASED` entry to `0.0.2` and publish the factory extension.
+```
+
+### Iteration: Conform CLI Operations
+
+**Id:** `conform-cli-operations`
+
+**Status:** `READY`
+
+**Purpose:** Retire the parallel type system in the consumer — conform `cli/workspace` to the package model with `checkout` carried in `D`, keeping report output byte-identical.
+
+**Description:** The adoption at `72537ab` kept both type systems: five duplicated generic types, `Date` vs epoch timestamps, base-level `checkout`, `as unknown as` casts in the log wrapper, and `toSharedPending.ts` — a converter that exists only because the two models disagree. This iteration implements the accepted conformance: local generics are replaced by the package's, the eight payloads become `D` members (each carrying `checkout`), builders delegate timing and shape to the extended factories, the report reads `op.data?.checkout`, and `toSharedPending.ts` is deleted.
+
+**Instructions Mode:** `INSTRUCTIONS_INLINED_IN_ITERATION`
+
+**Changes:**
+
+In `$WORKSPACE/checkouts/art-works/cli/workspace`
+
+- `src/private/operations/types.ts` — delete `OperationOutcome`, `OperationBase`, `OperationPending`, `OperationSuccess`, `OperationFailure`; import them from `@art-lib/operations/model` instead. Keep `CheckoutOp` and `Operation`, and keep only the eight operation payloads as `XxxData` (own fields + `checkout?: Checkout`), e.g. `type PullPending = OperationPending<PullData> & { operation: 'pull' }`.
+- `src/private/commands/operations/*.ts` (8 constructors) — one-line delegations to `createGenericOperation(name, data, message)`; drop `ts: new Date()`, `outcome: 'pending'`, and the copy-pasted `timing()` — the package owns all three.
+- `src/private/operations/createGenericOperation.ts`, `createOperationSuccess.ts`, `createOperationFailure.ts` — thin re-exports of the package's (or delete and import directly, where lint allows); the epoch→`Date` conversions (`new Date(shared.finishedTs ?? Date.now())`) die with them.
+- `src/private/operations/toSharedPending.ts` — DELETE.
+- `src/private/log/createOperationsLog.ts` — delegate to the package's factory; remove both `as unknown as` casts and the hand-rolled interface; `since` follows the package contract (epoch), callers updated.
+- `src/private/present/presentOperationsReport.ts` — read `op.data?.checkout`; the six headers and every rendered value stay exactly as today.
+- Timestamps: epoch milliseconds everywhere; `timing()` arithmetic lives in the package (`finishedTs - ts`).
+- **Logger injection — orientation, not pre-decided:** tests that call `createOperationsLog()` bare must inject a logger. Check first whether `@art-lib/logger` exposes a usable test util, or whether `createLogger` with a no-op/in-memory writer suffices (its exports today: `createLogger`, message factories, types — no dedicated mock). Note `@art-lib/operations` carries an internal `createLoggerMock` under `src/test/helpers/logger/` (not exported) and art-works has its own `test/helpers/`. Pick the cleanest source and report the choice.
+- **HARD GATE:** `src/private/present/presentOperationsReport.test.ts` passes with its EXISTING expectations — same six columns, same values. If conformance forces a single assertion change, `REPORT A BLOCKER` instead of editing it. Call-site updates in other tests are permitted; assertion changes are not.
+- Verify: `npm run ci` from the art-works repo root — exit 0, zero `✘ [ERROR]`, tsc/eslint/prettier green.
+
+**Instructions:**
+
+Execute the Changes listed above. This iteration is worked in the pair session (art-works side) — report in chat, no separate delegation record.
+
+Before starting:
+
+- Run `npm ci` from the `$WORKSPACE` root; consume `@art-lib/operations@0.0.2` from the registry — Iteration: Publish Operations 0.0.2 must be `DONE`.
+- Read the HARD GATE above first: output parity is the acceptance criterion, not type parity.
+
+Validate that:
+
+- No local declaration of the five generic types remains; no `as unknown as` cast remains under `src/private/operations|log`; `toSharedPending.ts` is gone.
+- All 8 constructors delegate to the package factory (no local `timing()` implementations remain).
+- The report test passes with untouched assertions.
+
+After executing:
+
+- Execute the **Verifying Completion** instructions from the Operating Instructions section.
+- Commit `conform-operations-model` with the blueprint message below — policy `NOPUSH`: create the commit, do NOT push.
+
+**Dependencies:**
+
+- Iteration: Publish Operations 0.0.2 — consumes the extended factory API from the registry.
+
+#### Commits:
+
+| ID                         | Repository / Checkout / Branch                        | Policy   | Hash    | Status     |
+| -------------------------- | ----------------------------------------------------- | -------- | ------- | ---------- |
+| `conform-operations-model` | Art Works / `$WORKSPACE/checkouts/art-works` / `main` | `NOPUSH` | `(TBD)` | `AUTHORED` |
+
+##### Commit: `conform-operations-model`
+
+**Message:**
+
+```text
+refactor(workspace-cli): Conform operations to the shared model types.
+
+- Carry `checkout` in the generic data, adopt epoch timestamps, retire the parallel types.
 ```
 
 ---
