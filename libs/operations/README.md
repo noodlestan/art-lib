@@ -6,9 +6,9 @@ This package is part of the [Art Lib toolkit](../../README.md).
 
 ## Design
 
-The package publishes two subpath modules. **`/model`** is the pure operation model: one unit of work in a command invocation with a `pending`, `success`, or `failure` outcome, plus the factories that move a pending operation to a finished one. **`/log`** is the append-only operations log: created with the logger, it forwards every operation to it and keeps the finished ones queryable.
+The package defines the operation model: one unit of work in a command invocation, carrying a pending, success, or failure outcome. Factories build the pending operation and then derive the finished one from it. The package also provides a thin, append-only operations log. Created alongside a logger, it forwards every operation to that logger and keeps the finished ones queryable.
 
-Operations conform to the `Message` interface of [`@art-lib/logger`](../logger/README.md) structurally — the level is derived from the outcome (`pending` → `debug`, `success` → `info`, `failure` → `error`) — so the logger never learns about operations. The logger is this package's only dependency.
+Every operation doubles as a log message for [`@art-lib/logger`](../logger/README.md). It carries a level derived from its outcome — pending logs as debug, success as info, failure as error — so the logger consumes operations directly without ever learning what they are. That logger is the package's only dependency.
 
 See also:
 
@@ -76,16 +76,16 @@ operations.latest(5); // the last five finished operations
 
 ### Options
 
-| Function                                     | Arguments                                         | Returns            | Notes                                                                      |
-| -------------------------------------------- | ------------------------------------------------- | ------------------ | -------------------------------------------------------------------------- |
-| `createGenericOperation(name, data?)`        | operation name, optional payload                  | `OperationPending` | frozen; `message()` reports `data.uri` when present; `timing()` is `NaN`   |
-| `createOperationSuccess(pending, message?)`  | a pending operation, optional success message     | `OperationSuccess` | `message()` falls back to `pending.message()`                              |
-| `createOperationFailure(pending, error, o?)` | a pending operation, any error-shaped value, `o?` | `OperationFailure` | `o.label` prefixes `errorSerialized()`; without it the raw message is used |
-| `createOperationsLog(logger, options?)`      | a `LoggerAPI`, reserved options                   | `OperationsLog`    | forwards every operation; stores finished operations only                  |
+| Function                                           | Arguments                                            | Returns            | Notes                                                               |
+| -------------------------------------------------- | ---------------------------------------------------- | ------------------ | ------------------------------------------------------------------- |
+| `createGenericOperation(name, data?, text?)`       | operation name, optional payload, optional text      | `OperationPending` | frozen; reports the payload as JSON by default; `timing()` is `NaN` |
+| `createOperationSuccess(pending, text?)`           | a pending operation, optional success text           | `OperationSuccess` | falls back to the pending's own text                                |
+| `createOperationFailure(pending, error, options?)` | a pending operation, any error-shaped value, options | `OperationFailure` | the options carry a label that prefixes `errorSerialized()`         |
+| `createOperationsLog(logger, options?)`            | a logger, reserved options                           | `OperationsLog`    | forwards every operation; stores finished operations only           |
 
-- **`data`** — carried on the operation untouched and read back by the factory closures; a `uri` string property becomes `message()` until a success message overrides it.
-- **`options`** — `createOperationsLog` accepts and deliberately ignores it; it is reserved for a future iteration.
-- **`OperationsLog`** — `log(operation)`, `all()`, `since(timestamp)`, and `latest(count)`; queries return copies, never the internal buffer.
+- **Payload** — carried on the operation untouched, from pending through to success or failure. By default the payload is serialised to JSON as the operation's text, until a success text overrides it.
+- **Options** — the log accepts a second argument and deliberately ignores it; it is reserved for a future iteration.
+- **Operations log** — offers `log`, `all`, `since` and `latest`. The query methods return copies, never the internal buffer.
 
 ## Development
 

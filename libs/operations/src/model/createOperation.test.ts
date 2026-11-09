@@ -17,24 +17,35 @@ describe('createGenericOperation', () => {
 		expect(pending.data).toEqual({ uri: 'repo.art' });
 	});
 
-	it('WHEN data exposes a uri — message returns the input uri', () => {
+	it('WHEN data is given — text reports it as JSON', () => {
 		const pending = createGenericOperation('clone', { uri: 'repo.art' });
 
-		expect(pending.message()).toBe('repo.art');
+		expect(pending.text()).toBe('{"uri":"repo.art"}');
 	});
 
-	it('WHEN data carries no uri — message returns an empty string', () => {
-		expect(createGenericOperation('clone').message()).toBe('');
-		expect(createGenericOperation('clone', { repo: 'repo.art' }).message()).toBe('');
-		expect(createGenericOperation('clone', null).message()).toBe('');
-		expect(createGenericOperation('clone', { uri: 42 }).message()).toBe('');
+	it('WHEN there is no data — text returns an empty string', () => {
+		expect(createGenericOperation('clone').text()).toBe('');
+		expect(createGenericOperation('clone', null).text()).toBe('');
 	});
 
-	it('WHEN pending — timing is NaN and text aliases message', () => {
+	it('WHEN pending — timing is NaN', () => {
 		const pending = createGenericOperation('clone', { uri: 'repo.art' });
 
 		expect(Number.isNaN(pending.timing())).toBe(true);
-		expect(pending.text()).toBe(pending.message());
+	});
+
+	it('WHEN a text hook is given it replaces the default payload text', () => {
+		const pending = createGenericOperation('pull', { checkout: 'art-lib' }, data => {
+			return `pull ${data.checkout}`;
+		});
+
+		expect(pending.text()).toBe('pull art-lib');
+	});
+
+	it('WHEN no text hook is given the default reports the payload as JSON', () => {
+		const pending = createGenericOperation('clone', { repo: 'repo.art' });
+
+		expect(pending.text()).toBe('{"repo":"repo.art"}');
 	});
 });
 
@@ -58,20 +69,19 @@ describe('createOperationSuccess', () => {
 		expect(success.timing()).toBe(Number(success.finishedTs) - success.ts);
 	});
 
-	it('WHEN a message is given it reports it, otherwise it falls back to the pending input uri', () => {
+	it('WHEN a text is given it reports it, otherwise it falls back to the pending text', () => {
 		const pending = createGenericOperation('push', { uri: 'repo.art' });
 
-		expect(createOperationSuccess(pending, 'pushed').message()).toBe('pushed');
-		expect(createOperationSuccess(pending).message()).toBe('repo.art');
+		expect(createOperationSuccess(pending, 'pushed').text()).toBe('pushed');
+		expect(createOperationSuccess(pending).text()).toBe('{"uri":"repo.art"}');
 	});
 
-	it('WHEN finished it copies operation and data from the pending and aliases text with message', () => {
+	it('WHEN finished it copies operation and data from the pending', () => {
 		const pending = createGenericOperation('push', { uri: 'repo.art' });
 		const success = createOperationSuccess(pending, 'pushed');
 
 		expect(success.operation).toBe('push');
 		expect(success.data).toEqual({ uri: 'repo.art' });
-		expect(success.text()).toBe(success.message());
 	});
 });
 
@@ -90,10 +100,9 @@ describe('createOperationFailure', () => {
 		expect(failure.data).toEqual({ uri: 'notes.art' });
 	});
 
-	it('WHEN failed it reports the error reason and text aliases it', () => {
+	it('WHEN failed it reports the error reason', () => {
 		const failure = createOperationFailure(createPendingOperation(), new Error('bad input'));
 
-		expect(failure.message()).toBe('bad input');
 		expect(failure.text()).toBe('bad input');
 		expect(Number.isFinite(failure.timing())).toBe(true);
 	});
@@ -133,6 +142,33 @@ describe('createOperationFailure', () => {
 		);
 		expect(createOperationFailure(createPendingOperation(), null).error).toBe('');
 		expect(createOperationFailure(createPendingOperation(), undefined).error).toBe('');
+	});
+});
+
+describe('typed data round-trip', () => {
+	const data = { checkout: 'art-lib' };
+
+	it('WHEN data is typed it flows into success and failure preserving the type', () => {
+		const pending = createGenericOperation('pull', data);
+
+		expectTypeOf(pending.data).toEqualTypeOf<typeof data | undefined>();
+
+		const success = createOperationSuccess(pending);
+		const failure = createOperationFailure(pending, new Error('boom'));
+
+		expectTypeOf(success.data).toEqualTypeOf<typeof data | undefined>();
+		expectTypeOf(failure.data).toEqualTypeOf<typeof data | undefined>();
+		expect(success.data).toEqual(data);
+		expect(failure.data).toEqual(data);
+	});
+
+	it('WHEN a hook is given the success default reports the hook output and the failure keeps the error', () => {
+		const pending = createGenericOperation('pull', data, given => {
+			return `pull ${given.checkout}`;
+		});
+
+		expect(createOperationSuccess(pending).text()).toBe('pull art-lib');
+		expect(createOperationFailure(pending, new Error('boom')).text()).toBe('boom');
 	});
 });
 

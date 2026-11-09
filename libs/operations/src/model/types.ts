@@ -7,10 +7,9 @@ export type OperationBase = {
 	readonly ts: number;
 	readonly finishedTs?: number;
 	readonly outcome: OperationOutcome;
-	message(): string; // domain name; what to show
+	text(): string; // domain name; what to show; the logger's own member
 	timing(): number; // ms once finished; NaN while pending
 	readonly level: MessageLevel; // derived: pending → debug, success → info, failure → error
-	text(): string; // Message conformance; aliases message()
 };
 
 export type OperationPending<D = unknown> = OperationBase & {
@@ -21,7 +20,7 @@ export type OperationPending<D = unknown> = OperationBase & {
 export type OperationSuccess<D = unknown> = OperationBase & {
 	readonly outcome: 'success';
 	readonly data?: D;
-	// the given success text is stored privately by the factory; message() reports it
+	// the given success text is stored privately by the factory; text() reports it
 };
 
 export type OperationFailure<D = unknown> = OperationBase & {

@@ -1,17 +1,14 @@
-import type { LoggerAPI, Message } from '@art-lib/logger';
+import type { LoggableOperation, LoggerInterface } from '../../../log/types.js';
 
 import type { LoggerMock } from './types.js';
 
-/** @mocks LoggerAPI */
+/** @mocks the logger the operations log forwards to */
 export function createLoggerMock(): LoggerMock {
-	const messages: Message[] = [];
+	const messages: LoggableOperation[] = [];
 
-	const logger: LoggerAPI = {
-		log(message): void {
-			messages.push(message);
-		},
-		setOutputMode(): void {
-			// no-op: tests never switch the output mode
+	const logger: LoggerInterface = {
+		log(operation): void {
+			messages.push(operation);
 		},
 	};
 

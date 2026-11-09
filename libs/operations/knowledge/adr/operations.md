@@ -18,7 +18,7 @@
 
 **Context:** Operations must reach the logger, but the logger is shared by producers that only ever log a plain string. Teaching the logger about operations would tie every consumer to this package.
 
-**Decision:** An operation structurally satisfies the `Message` interface of `@art-lib/logger` — `level` is derived from the outcome (`pending` → `debug`, `success` → `info`, `failure` → `error`) and `text()` aliases `message()` — and the logger never learns about operations.
+**Decision:** An operation structurally satisfies the `Message` interface of `@art-lib/logger`. Its level is derived from the outcome — pending, success and failure log as debug, info and error — and the text an operation reports is the very member the logger reads. The logger therefore consumes operations directly and never learns what they are.
 
 **Consequences:** The dependency runs one way: operations → logger, never the reverse, and no cycle exists between the packages. Operation-specific columns (`operation`, `timing`) ride on the message for formatters to consume; the default logger formatter already renders them.
 
@@ -44,6 +44,6 @@
 
 **Decision:** `createOperationFailure(pending, error, { label? })` takes the label at the call site. `error` keeps the raw message; `errorSerialized()` prefixes the label only when one was given.
 
-**Consequences:** The label travels with the failure instead of a lookup table, new commands need no registry entry, and consumers that want no prefix simply omit the option. The model carries no command vocabulary of its own.
+**Consequences:** The label travels with the failure, so new commands need no registry entry and consumers that want no prefix simply omit the option. The model carries no command vocabulary of its own.
 
 **Source:** Plan: Add Operations (`_backlog/3-now/plan-add-operations/plan.md`), Decisions.

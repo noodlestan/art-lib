@@ -2,7 +2,7 @@
 
 **Purpose:** Describe what a CLI needs from `@art-lib/operations` — the operation model and the operations log — as evidenced by the Art MD bin and Art Workspace Cli consumers.
 
-**Planned package:** `@art-lib/operations` — `_backlog/3-now/plan-add-operations/plan.md`
+**Package:** `@art-lib/operations` — `_backlog/3-now/plan-add-operations/plan.md`
 
 ## Operation
 
@@ -11,7 +11,7 @@ An operation records one unit of work in a command invocation:
 - `operation` — its name, such as `clone`, `push`, `parse`, `serialize`, or `command`.
 - `ts` and `finishedTs` — creation and completion times.
 - `outcome` — `pending`, `success`, or `failure`.
-- `message()` — what to show: an input uri, a given message, or the error reason.
+- `text()` — what to show: the payload as JSON, a given text, or the error reason.
 - `timing()` — duration in milliseconds once finished; `NaN` while pending.
 
 Failures add `error` (the raw error message) and `errorSerialized()`, which prefixes a caller-supplied label (`ParseError`, `CloneError`, …).
@@ -21,8 +21,8 @@ Failures add `error` (the raw error message) and `errorSerialized()`, which pref
 ## Creators
 
 - `createGenericOperation(name, data?)` — builds a pending operation; used for the `command` operation that opens each invocation.
-- `createOperationSuccess(pending, message?)` — moves a pending operation to success.
-- `createOperationFailure(pending, error, { label? })` — moves a pending operation to failure; the per-call `label` replaces the hardcoded per-command error-label maps consumers used to carry.
+- `createOperationSuccess(pending, text?)` — moves a pending operation to success.
+- `createOperationFailure(pending, error, { label? })` — moves a pending operation to failure. The label is supplied at the call site, so the model carries no command vocabulary of its own.
 
 Success and failure are derived generically from the pending instance — consumers never write per-kind factories.
 

@@ -2,11 +2,11 @@ import { LEVELS } from './private/constants.js';
 import { readRawErrorMessage } from './private/readRawErrorMessage.js';
 import type { OperationFailure, OperationPending } from './types.js';
 
-export function createOperationFailure(
-	pending: OperationPending,
+export function createOperationFailure<D>(
+	pending: OperationPending<D>,
 	error: unknown,
 	options?: { label?: string },
-): OperationFailure {
+): OperationFailure<D> {
 	const finishedTs = Date.now();
 	const rawError = readRawErrorMessage(error);
 	const label = options?.label;
@@ -19,7 +19,7 @@ export function createOperationFailure(
 		return label ? `${label}: ${rawError}` : rawError;
 	}
 
-	const failure: OperationFailure = {
+	const failure: OperationFailure<D> = {
 		operation: pending.operation,
 		ts: pending.ts,
 		finishedTs,
@@ -27,11 +27,10 @@ export function createOperationFailure(
 		level: LEVELS.failure,
 		data: pending.data,
 		error: rawError,
-		message: report,
+		text: report,
 		timing(): number {
 			return finishedTs - pending.ts;
 		},
-		text: report,
 		errorSerialized,
 	};
 

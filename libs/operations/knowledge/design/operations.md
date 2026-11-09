@@ -6,83 +6,37 @@ Install with `npm install @art-lib/operations`.
 
 ## Public Surface
 
-The root export re-exports both subpaths; each subpath entry point is also reachable on its own:
+The package exposes two entry points: `@art-lib/operations/model` for the operation types and factories, and `@art-lib/operations/log` for the log. The package root re-exports both, so consumers can import from either.
 
-```ts
-// @art-lib/operations — both modules
-// @art-lib/operations/model — the operation model
-// @art-lib/operations/log — the operations log
+### Factories
 
-type OperationOutcome = 'pending' | 'success' | 'failure';
+These four functions are the only values the package exports. Everything else is a type.
 
-type OperationBase = {
-  readonly operation: string;
-  readonly ts: number;
-  readonly finishedTs?: number;
-  readonly outcome: OperationOutcome;
-  message(): string;
-  timing(): number; // ms once finished; NaN while pending
-  readonly level: MessageLevel; // pending → debug, success → info, failure → error
-  text(): string; // aliases message(): Message conformance
-};
+| Function                                           | What it does                                                                                                          |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `createGenericOperation(name, data?, text?)`       | Opens a pending operation. By default its text is the payload serialised to JSON, unless a text function is supplied. |
+| `createOperationSuccess(pending, text?)`           | Finishes a pending operation as a success, optionally overriding the text.                                            |
+| `createOperationFailure(pending, error, options?)` | Finishes a pending operation as a failure. The options carry a label for `errorSerialized()`.                         |
+| `createOperationsLog(logger, options?)`            | Creates the per-invocation log around a logger. The second argument is reserved and ignored.                          |
 
-type OperationPending<D = unknown> = OperationBase & {
-  readonly outcome: 'pending';
-  readonly data?: D;
-};
+### Types worth knowing
 
-type OperationSuccess<D = unknown> = OperationBase & {
-  readonly outcome: 'success';
-  readonly data?: D;
-};
+- **`OperationPending<D>`, `OperationSuccess<D>`, `OperationFailure<D>`** — the three states of a single operation. Each is generic over its payload, so the data handed to a pending operation comes back typed on the finished one. A failure additionally carries the raw error text and a labelled `errorSerialized()`.
+- **`OperationsLog`** — what the log exposes: `log`, `all`, `since`, and `latest`, described in the log contract below.
+- **`LoggableOperation`** — the argument type of `log`. It is a logger message that also carries an outcome, which is exactly what an operation is.
+- **`AnyFinishedOperation`** — what the queries return: a success or a failure. Pending operations never reach them.
 
-type OperationFailure<D = unknown> = OperationBase & {
-  readonly outcome: 'failure';
-  readonly data?: D;
-  readonly error: string;
-  errorSerialized(): string;
-};
-
-function createGenericOperation(name: string, data?: unknown): OperationPending;
-
-function createOperationSuccess(pending: OperationPending, message?: string): OperationSuccess;
-
-function createOperationFailure(
-  pending: OperationPending,
-  error: unknown,
-  options?: { label?: string },
-): OperationFailure;
-
-type AnyFinishedOperation = OperationSuccess | OperationFailure;
-type LoggableOperation = Message & { outcome: string };
-
-type OperationsLog = {
-  log(operation: LoggableOperation): void;
-  all(): AnyFinishedOperation[];
-  since(timestamp: number): AnyFinishedOperation[];
-  latest(count: number): AnyFinishedOperation[];
-};
-
-type OperationsLogOptions = unknown; // reserved; ignored
-
-function createOperationsLog(logger: LoggerAPI, options?: OperationsLogOptions): OperationsLog;
-```
-
-- `createGenericOperation` — the pending opener for a unit of work; `message()` reports `data.uri` when the payload carries one, otherwise `''`.
-- `createOperationSuccess` / `createOperationFailure` — derive the finished operation from the pending one: same `operation`, `ts`, and `data`; new `finishedTs`, `outcome`, and level.
-- `createOperationsLog` — the per-invocation log; `@art-lib/logger`'s `LoggerAPI` is its only input.
-
-`OperationOutcome`, `OperationBase`, `OperationPending`, `OperationSuccess`, `OperationFailure`, `AnyFinishedOperation`, `LoggableOperation`, `OperationsLog`, and `OperationsLogOptions` are types, not values — the value surface is the four factory functions.
+An operation is a flat record: its name, creation time, optional completion time, outcome, level, the text to show, and a `timing()` that reports the duration once finished and `NaN` while pending. The payload travels along in `data`.
 
 ## Model Contract
 
-| Rule                         | Behaviour                                                                                        |
-| ---------------------------- | ------------------------------------------------------------------------------------------------ |
-| Frozen                       | Every factory returns `Object.freeze(...)`; operations are immutable once created.               |
-| Derived level                | `pending → debug`, `success → info`, `failure → error` — the producer derives, never the logger. |
-| `text()` aliases `message()` | Structural conformance to `Message` of `@art-lib/logger`; the logger needs no adapter.           |
-| `timing()`                   | `finishedTs - ts` once finished; `NaN` while pending.                                            |
-| Failure label                | `error` is always the raw message; `errorSerialized()` prefixes `label` only when given.         |
+| Rule          | Behaviour                                                                                                       |
+| ------------- | --------------------------------------------------------------------------------------------------------------- |
+| Frozen        | Every factory returns `Object.freeze(...)`; operations are immutable once created.                              |
+| Derived level | `pending → debug`, `success → info`, `failure → error` — the producer derives, never the logger.                |
+| Reported text | An operation's text is the member the logger reads, so an operation is logged as a message without translation. |
+| `timing()`    | `finishedTs - ts` once finished; `NaN` while pending.                                                           |
+| Failure label | `error` is always the raw message; `errorSerialized()` prefixes `label` only when given.                        |
 
 Success and failure are derived generically from the pending instance — consumers never write per-kind factories, and the payload (`data`) travels across the transition untouched.
 

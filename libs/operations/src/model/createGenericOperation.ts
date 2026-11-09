@@ -1,26 +1,30 @@
 import { LEVELS } from './private/constants.js';
-import { readInputUri } from './private/readInputUri.js';
+import { formatData } from './private/formatData.js';
 import type { OperationPending } from './types.js';
 
-export function createGenericOperation(name: string, data?: unknown): OperationPending {
+export function createGenericOperation<N extends string, D = unknown>(
+	name: N,
+	data?: D,
+	toText?: (data: D) => string,
+): OperationPending<D> & { operation: N } {
 	const ts = Date.now();
+	const resolveToText: (value: D) => string = toText ?? formatData;
 
-	function message(): string {
-		return readInputUri(data);
+	function readText(): string {
+		return resolveToText(data as D);
 	}
 
-	const pending: OperationPending = {
+	const pending: OperationPending<D> = {
 		operation: name,
 		ts,
 		outcome: 'pending',
 		level: LEVELS.pending,
 		data,
-		message,
+		text: readText,
 		timing(): number {
 			return Number.NaN;
 		},
-		text: message,
 	};
 
-	return Object.freeze(pending);
+	return Object.freeze(pending) as OperationPending<D> & { operation: N };
 }

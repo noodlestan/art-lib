@@ -1,10 +1,13 @@
-import type { LoggerAPI } from '@art-lib/logger';
-
 import { isFinished } from './private/isFinished.js';
-import type { AnyFinishedOperation, OperationsLog, OperationsLogOptions } from './types.js';
+import type {
+	AnyFinishedOperation,
+	LoggerInterface,
+	OperationsLog,
+	OperationsLogOptions,
+} from './types.js';
 
 export function createOperationsLog(
-	logger: LoggerAPI,
+	logger: LoggerInterface,
 	options?: OperationsLogOptions,
 ): OperationsLog {
 	// Reserved for a future iteration: accepted, deliberately not read here.
