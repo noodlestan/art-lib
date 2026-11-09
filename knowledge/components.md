@@ -23,7 +23,7 @@ The shared CLI operation plumbing, extracted from `@art-works/workspace-cli` and
 - `/model` — operation outcome types and factories (`OperationPending`/`Success`/`Failure`); operations conform to the `Message` type of `@art-lib/logger`.
 - `/log` — append-only operations log with `all`/`since`/`latest` queries; created with the logger and forwarding every operation to it.
 
-Implemented by `_backlog/3-now/plan-add-operations/plan.md`. See the package knowledge at [libs/operations/knowledge/index.md](../libs/operations/knowledge/index.md).
+Implemented by `_backlog/1-done/plan-add-operations/plan.md`. See the package knowledge at [libs/operations/knowledge/index.md](../libs/operations/knowledge/index.md).
 
 ### Logger (`@art-lib/logger`)
 

@@ -10,7 +10,7 @@
 
 **Consequences:** One version surface and one changelog for ~185 lines of dedup; consumers install a single package and import either subpath. Separate version surfaces for the model and the log would cost more to maintain than the dedup saves.
 
-**Source:** Plan: Add Operations (`_backlog/3-now/plan-add-operations/plan.md`), Decisions.
+**Source:** Plan: Add Operations (`_backlog/1-done/plan-add-operations/plan.md`), Decisions.
 
 ## Decision: Operations Conform to `Message`
 
@@ -22,7 +22,7 @@
 
 **Consequences:** The dependency runs one way: operations → logger, never the reverse, and no cycle exists between the packages. Operation-specific columns (`operation`, `timing`) ride on the message for formatters to consume; the default logger formatter already renders them.
 
-**Source:** Plan: Add Operations (`_backlog/3-now/plan-add-operations/plan.md`), Decisions; `knowledge/design/operations.md`.
+**Source:** Plan: Add Operations (`_backlog/1-done/plan-add-operations/plan.md`), Decisions; `knowledge/design/operations.md`.
 
 ## Decision: Created With the Logger, Forward Every Operation
 
@@ -34,7 +34,7 @@
 
 **Consequences:** One source of truth — the logger sees every operation the log sees, at the moment it is recorded — and the store keeps finished operations only, so `all()`/`since()`/`latest()` answer "what finished" without pending noise. The one-way dependency keeps the log testable against a mock `LoggerAPI`.
 
-**Source:** Plan: Add Operations (`_backlog/3-now/plan-add-operations/plan.md`), Findings; `knowledge/design/operations.md`.
+**Source:** Plan: Add Operations (`_backlog/1-done/plan-add-operations/plan.md`), Findings; `knowledge/design/operations.md`.
 
 ## Decision: Per-Call Failure Label
 
@@ -46,4 +46,4 @@
 
 **Consequences:** The label travels with the failure, so new commands need no registry entry and consumers that want no prefix simply omit the option. The model carries no command vocabulary of its own.
 
-**Source:** Plan: Add Operations (`_backlog/3-now/plan-add-operations/plan.md`), Decisions.
+**Source:** Plan: Add Operations (`_backlog/1-done/plan-add-operations/plan.md`), Decisions.
