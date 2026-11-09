@@ -2,7 +2,7 @@
 
 **ID:** `add-logger`
 
-**Status:** `WORKING`
+**Status:** `DONE`
 
 **Template:** `.agents/domains/plans/templates/plan.tart`
 
@@ -65,7 +65,7 @@ Create `$PROJECT/libs/logger` exposing the message model (`Message`, creators) a
 ### Next
 
 - **Reopened 2026-11-03.** The package shipped `0.0.1` with a two-mode `OutputMode` (`quiet` | `verbose`) and the CLI adopted it, but the mode model needs a middle tier: `normal` emits `info`/`warning`/`error`, `verbose` adds `debug`, `quiet` keeps only `warning`/`error`. That makes `normal` the CLI's default and lets `@art-lib/operations`' level mapping (`pending → debug`, `success → info`, `failure → error`) work as designed — `normal` shows finished successes, `quiet` shows only problems.
-- **Next: Iteration: Update Cli Output Flag** (`READY`) — the Art Workspace Cli re-installs `0.0.2`, collapses its eleven per-command `-o` flags into one global flag defaulting to `normal`, and extracts `createCommandContext` out of `index.ts`. This is the last `READY` row.
+- All iterations are `DONE` — plan complete (`update-cli-output-flag` landed in Art Works as `4a100fb`: single program-level `-o` defaulting to `normal`, `createCommandContext` extracted to `private/context`, mode typed as `OutputMode`, `@art-lib/logger@0.0.2` re-installed). Architect closes the plan and refreshes the milestone.
 - **Done 2026-11-06: Iteration: Publish Logger 0.0.2** (`296e359`) — `@art-lib/logger@0.0.2` is live on the registry (`dist-tags.latest` → `0.0.2`); the `normal` output mode is now consumable.
 - **Out of scope here:** the `Operation → Message` adapter (`createMessageFromOperation`, and where `levelOf` lives) belongs to `@art-lib/operations` and is tracked on `Plan: Add Operations Package`. This plan must not move that glue.
 
@@ -123,17 +123,17 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Items:
 
-| Iteration / Instructions                | Status  |
-| --------------------------------------- | ------- |
-| Iteration: Scaffold Logger Package      | `DONE`  |
-| Iteration: Implement Buffering Logger   | `DONE`  |
-| Iteration: Apply Noodlestan Conventions | `DONE`  |
-| Iteration: Update Knowledge             | `DONE`  |
-| Iteration: Publish Logger Package       | `DONE`  |
-| Iteration: Integrate in Consumer        | `DONE`  |
-| Iteration: Add Normal Output Mode       | `DONE`  |
-| Iteration: Publish Logger 0.0.2         | `DONE`  |
-| Iteration: Update Cli Output Flag       | `READY` |
+| Iteration / Instructions                | Status |
+| --------------------------------------- | ------ |
+| Iteration: Scaffold Logger Package      | `DONE` |
+| Iteration: Implement Buffering Logger   | `DONE` |
+| Iteration: Apply Noodlestan Conventions | `DONE` |
+| Iteration: Update Knowledge             | `DONE` |
+| Iteration: Publish Logger Package       | `DONE` |
+| Iteration: Integrate in Consumer        | `DONE` |
+| Iteration: Add Normal Output Mode       | `DONE` |
+| Iteration: Publish Logger 0.0.2         | `DONE` |
+| Iteration: Update Cli Output Flag       | `DONE` |
 
 > The first six iterations delivered and shipped `@art-lib/logger@0.0.1`, and the plan was closed — then reopened 2026-11-03 for a third output mode. The reopening scope was three iterations; `Add Normal Output Mode` is now `DONE`, leaving **two** `READY` rows: `Publish Logger 0.0.2` and `Update Cli Output Flag`.
 
@@ -753,7 +753,7 @@ release(logger): 0.0.2
 
 **Id:** `update-cli-output-flag`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Adopt the three output modes in the Art Workspace Cli with a single global `-o` flag that defaults to `normal`.
 
@@ -815,9 +815,9 @@ refactor(workspace-cli): Adopt the three output modes with a single -o flag.
 
 #### Commits:
 
-| ID                       | Repository / Checkout / Branch    | Policy       | Hash    | Status     |
-| ------------------------ | --------------------------------- | ------------ | ------- | ---------- |
-| `update-cli-output-flag` | Art Works / `$ART_WORKS` / `main` | `AUTONOMOUS` | `(TBD)` | `AUTHORED` |
+| ID                       | Repository / Checkout / Branch    | Policy       | Hash      | Status      |
+| ------------------------ | --------------------------------- | ------------ | --------- | ----------- |
+| `update-cli-output-flag` | Art Works / `$ART_WORKS` / `main` | `AUTONOMOUS` | `4a100fb` | `COMMITTED` |
 
 ##### Commit: `update-cli-output-flag`
 
