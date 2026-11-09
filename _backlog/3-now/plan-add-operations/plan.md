@@ -2,7 +2,7 @@
 
 **ID:** `add-operations`
 
-**Status:** `WORKING`
+**Status:** `DONE`
 
 **Template:** `.agents/domains/plans/templates/plan.tart`
 
@@ -103,7 +103,7 @@ Execution occurs from `$WORKSPACE/`; package work, its test suite, and the relea
 
 ### Next
 
-- Original order: commit `extend-operation-factories` (art-lib), then the release commit `publish-operations-0-0-2` and publish `@art-lib/operations@0.0.2`; art-works re-installs from the registry (retiring the symlink), retests, then commits `conform-operations-model` — all commits `NOPUSH`, the user pushes. Iterations 8 and 10 are code-complete but uncommitted. Plan stays in `_backlog/3-now/` until all three land; the architect then closes it (moves to `1-done`), refreshes the milestone, and records the workspace-records move.
+- All ten iterations are `DONE`; `@art-lib/operations@0.0.2` is published and adopted by the consumer from the registry. Architect closes the plan (moves to `1-done`), refreshes the milestone, and records the workspace-records move; the user pushes both repos (art-lib ahead 5, art-works ahead 1).
 
 ### Blockers
 
@@ -162,18 +162,18 @@ All steps MUST pass. No `it.todo()` tests may remain.
 
 ## Items:
 
-| Iteration / Instructions                | Status    |
-| --------------------------------------- | --------- |
-| Iteration: Scaffold Operations Package  | `DONE`    |
-| Iteration: Implement Operations Model   | `DONE`    |
-| Iteration: Implement Operations Log     | `DONE`    |
-| Iteration: Apply Noodlestan Conventions | `DONE`    |
-| Iteration: Update Knowledge             | `DONE`    |
-| Iteration: Publish Operations Package   | `DONE`    |
-| Iteration: Integrate in Consumer        | `DONE`    |
-| Iteration: Extend Operation Factory     | `WORKING` |
-| Iteration: Publish Operations 0.0.2     | `READY`   |
-| Iteration: Conform CLI Operations       | `WORKING` |
+| Iteration / Instructions                | Status |
+| --------------------------------------- | ------ |
+| Iteration: Scaffold Operations Package  | `DONE` |
+| Iteration: Implement Operations Model   | `DONE` |
+| Iteration: Implement Operations Log     | `DONE` |
+| Iteration: Apply Noodlestan Conventions | `DONE` |
+| Iteration: Update Knowledge             | `DONE` |
+| Iteration: Publish Operations Package   | `DONE` |
+| Iteration: Integrate in Consumer        | `DONE` |
+| Iteration: Extend Operation Factory     | `DONE` |
+| Iteration: Publish Operations 0.0.2     | `DONE` |
+| Iteration: Conform CLI Operations       | `DONE` |
 
 ### Iteration: Scaffold Operations Package
 
@@ -601,7 +601,7 @@ refactor(workspace-cli): Adopt @art-lib/operations in the Workspace Cli.
 
 **Id:** `extend-operation-factory`
 
-**Status:** `WORKING`
+**Status:** `DONE`
 
 **Purpose:** Make the package factories able to carry consumer-specific shape and messages, so consumers delegate fully instead of re-implementing `ts`, `outcome`, and `timing()`.
 
@@ -663,7 +663,7 @@ build(operations): Extend model factories with generics and a message hook.
 
 **Id:** `publish-operations-0-0-2`
 
-**Status:** `READY`
+**Status:** `DONE`
 
 **Purpose:** Ship the extended factory API as `@art-lib/operations@0.0.2` so the consumer conformance consumes it from the registry.
 
@@ -729,7 +729,7 @@ release(operations): Publish 0.0.2 to npm.
 
 **Id:** `conform-cli-operations`
 
-**Status:** `WORKING`
+**Status:** `DONE`
 
 **Purpose:** Retire the parallel type system in the consumer — conform `cli/workspace` to the package model with `checkout` carried in `D`, keeping report output byte-identical.
 
@@ -814,7 +814,8 @@ refactor(workspace-cli): Conform operations to the shared model types.
 - **Published** — `@art-lib/operations@0.0.1` on the registry (worker commit `4bf2da2`, pushed; records-only: `Published` `true`, deployment `DEPLOYED`): pack dry-run had all six required files (25 files), registry `version`/`dependencies` (`@art-lib/logger: 0.0.1`)/`description`/`keywords`/`engines` byte-identical to `_records/package.art`, no OTP, single attempt, nothing unpublished; workspace `npm run ci` + repo CI green. Anomaly (feedback): a `0.0.0-stage` placeholder appeared on the registry between precondition check and publish (same documented anomaly as the logger plan); sorts below `latest` `0.0.1`, left untouched per never-unpublish.
 - **Adopted in the consumer** — worker commit `72537ab` (Art Works, pushed): adapter design — the five owned files delegate to `@art-lib/operations` (shared outcome/factory/log-store logic) with CLI conventions as thin wrappers (`Date` timestamps, `checkout`, JSON/reason messages, `since(Date)`); 8 files, declared paths only, zero test files touched (assertions unchanged), `@art-lib/operations@0.0.1` declared like `@art-lib/fs-records` (+13 lockfile lines); API resolution verified for `/`, `/model`, `/log`; exactly one manual `npm run ci` exit 0, zero `✘ [ERROR]` (hook CI also zero), tsc/eslint/prettier green; tree clean. Follow-up (their record, outside window): `cli/workspace/_records/package.art` dependency records do not yet list `@art-lib/operations`.
 - **Iteration `extend-operation-factory` — code complete, uncommitted (pair session, art-lib):** `createGenericOperation<N extends string, D>(name, data?, text?)` returns `OperationPending<D> & { operation: N }` (literal operation type; hook named `text` to align with `Message`); default text = new `private/formatData.ts` (JSON) replacing the deleted `readInputUri.ts`; `createOperationSuccess`/`createOperationFailure` generic over `D`; `types.ts`, the log (`createOperationsLog`, `log/types`), and `createLoggerMock` helpers updated; `createOperation.test.ts` +68 covering generics and the hook; `CHANGELOG.md` gains `## UNRELEASED` with the `### Added` bullet; knowledge synced (README, package `knowledge/adr|design|overview`, root `knowledge/design/operations.md` — design record −96 lines to the new API).
-- **Iteration `conform-cli-operations` — code complete, uncommitted (pair session, art-works, via symlink):** five local generics removed (`operations/types.ts` −99); the 8 constructors are one-line `createGenericOperation('op', { …, checkout }, () => …)` delegations (e.g. pull: `return createGenericOperation('pull', { branch, checkout }, () => \`from origin/${branch}\`)`); `toSharedPending.ts`, `createGenericOperation.ts(+test)`, `createOperationSuccess.ts(+test)`deleted;`createOperationFailure.ts`and`createOperationsLog.ts`reduced to thin delegations (both`as unknown as`casts gone); the report reads`checkout`from`op.data`via new`present/private/readCheckout.ts`and renders`op.text()`; ~40 callers/tests updated to epoch timestamps and `text()`; `presentOperationsReport.test.ts`fixture switched to the package factory — **assertions untouched, HARD GATE holds pending the run**; knowledge`_pseudo.md`/`operations-log.md` synced.
+- **Iteration `conform-cli-operations` — code complete, uncommitted (pair session, art-works, via symlink):** five local generics removed (`operations/types.ts` −99); the 8 constructors are one-line `createGenericOperation('op', { …, checkout }, () => …)` delegations (e.g. pull: `return createGenericOperation('pull', { branch, checkout }, () => \`from origin/${branch}\`)`); `toSharedPending.ts`, `createGenericOperation.ts(+test)`, `createOperationSuccess.ts(+test)`deleted; `createOperationFailure.ts`and`createOperationsLog.ts`reduced to thin delegations (both`as unknown as`casts gone); the report reads`checkout`from`op.data`via new`present/private/readCheckout.ts`and renders`op.text()`; ~40 callers/tests updated to epoch timestamps and `text()`; `presentOperationsReport.test.ts`fixture switched to the package factory — **assertions untouched, HARD GATE holds pending the run**; knowledge`_pseudo.md`/`operations-log.md` synced.
+- **All three reopened iterations delivered (2026-11-09):** art-lib `adb6661` (factories) + `31c0048` (release state); `@art-lib/operations@0.0.2` on the registry — version/deps/description/keywords/engines byte-identical to `_records/package.art`, tarball served; workspace `npm run ci` exit 0. Art-works re-installed from the registry (symlink retired, `npm ls` → `0.0.2`, lock integrity updated) and retested: 340+31+31 tests green, zero `✘ [ERROR]`; conform commit `877bbb6` (70 files, +318/−569, report-test assertions untouched) — one transient hook failure was the documented vitest parallel-load flake (direct rerun green). Commits `NOPUSH`, awaiting the user's push.
 
 ### Findings
 
