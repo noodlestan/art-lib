@@ -10,7 +10,7 @@
 
 **Consequences:** No dependency and no cycle between the packages; any producer that structurally conforms to `Message` can be logged. Operation-specific columns (name, timing) ride on the message as optional properties, consumed by formatters rather than by the logger.
 
-**Source:** Plan: Add Logger (`_backlog/3-now/plan-add-logger/plan.md`), Decisions.
+**Source:** Plan: Add Logger (`_backlog/1-done/plan-add-logger/plan.md`), Decisions.
 
 ## Decision: Split From `@art-lib/operations`
 
@@ -22,7 +22,7 @@
 
 **Consequences:** Two small packages with a one-way relationship: operations use the logger, never the reverse. Split per the milestone decision recorded in `_roadmap/3-now/milestone-art-lib-one/milestone.md`.
 
-**Source:** Plan: Add Logger (`_backlog/3-now/plan-add-logger/plan.md`), Decisions.
+**Source:** Plan: Add Logger (`_backlog/1-done/plan-add-logger/plan.md`), Decisions.
 
 ## Decision: Buffer Until the Output Mode Is Set
 
@@ -42,7 +42,7 @@
 
 **Consequences:** Messages are logged consistently before and after the environment is fully resolved, with one code path for both — and whether a message is kept depends only on its level, never on when it arrived. Setting the mode twice applies the same rule to an empty buffer; nothing is re-emitted.
 
-**Source:** Plan: Add Logger (`_backlog/3-now/plan-add-logger/plan.md`), Decisions.
+**Source:** Plan: Add Logger (`_backlog/1-done/plan-add-logger/plan.md`), Decisions.
 
 ## Decision: Three Output Modes
 
@@ -54,7 +54,7 @@
 
 **Consequences:** `normal` shows finished successes, `quiet` shows only problems, and `verbose` adds pending work, with no producer-side remapping. Consumers get a usable default that does not require choosing between noise and silence. The package gains a third value in a public union type, so this ships as `0.0.2` rather than a patch.
 
-**Source:** Plan: Add Logger (`_backlog/3-now/plan-add-logger/plan.md`), Decisions.
+**Source:** Plan: Add Logger (`_backlog/1-done/plan-add-logger/plan.md`), Decisions.
 
 ## Decision: Injectable Formatter and Writer
 
@@ -66,4 +66,4 @@
 
 **Consequences:** Tests inject a mock writer and never touch `console.error`; consumers swap columns or sinks without forking the logger. The defaults are usable out of the box for a standard CLI.
 
-**Source:** Plan: Add Logger (`_backlog/3-now/plan-add-logger/plan.md`), Decisions.
+**Source:** Plan: Add Logger (`_backlog/1-done/plan-add-logger/plan.md`), Decisions.

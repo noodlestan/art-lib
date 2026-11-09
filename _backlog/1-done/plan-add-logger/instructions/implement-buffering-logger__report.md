@@ -52,5 +52,5 @@
 ### Notes
 
 - **`package-lock.json` is modified but intentionally left uncommitted.** `npm ci` from `$PROJECT` failed during setup: the lock file had no entry for the `libs/logger` workspace added by `Iteration: Scaffold Logger Package`, so `npm ci` reported `Missing: @art-lib/logger@0.0.1 from lock file`. It was repaired with `npm install --package-lock-only` (a 12-line additive diff) so the prescribed setup could run. This instruction prescribes exactly one commit scoped to `libs/logger/src/`, so the lock fix was kept out of `b9c7dbb`. It needs its own commit, e.g. `fix(art-lib): Sync package-lock with package.json so npm ci works.` (same fix as `20ac101`).
-- **`_backlog/3-now/plan-add-logger/plan.md` is modified but untouched by this worker.** The change was already in the working tree when the instruction started (two `### Feedback` entries added by the delegator) and was deliberately not staged.
+- **`_backlog/1-done/plan-add-logger/plan.md` is modified but untouched by this worker.** The change was already in the working tree when the instruction started (two `### Feedback` entries added by the delegator) and was deliberately not staged.
 - The rendered report file itself is written next to the instruction and is not committed, per the worker's commit-scope rules.

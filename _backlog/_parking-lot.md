@@ -13,6 +13,7 @@ WIP tracker, structured like the session parking lot: **ACTIONABLE** (in progres
 ## ACTIONABLE
 
 - **`createRunner` entry point (Art Lib candidate)** — `createRunner(logger, options).run(handler => …)`: graceful interruption/crash handling plus `handler.shutdown()`/`handler.onShutdown()` hooks; watcher lifecycle stays with each CLI. Surfaced via `ART_LIB` on the Art Boards board. No plan drafted yet — needs `write-plan` or an explicit deferral.
+- **`Operation → Message` adapter is homeless** — `levelOf`/`toMessage`/`OperationMessage` still live in `$WORKSPACE/checkouts/art-works/cli/workspace/src/private/logger/createLogger.ts`; the logger plan (×2) and the milestone pointed at `Plan: Add Operations Package`, which closed `DONE` without taking it. Either move it into `@art-lib/operations` (new iteration + `0.0.3`) or re-point every reference — needs `write-plan` or an explicit deferral.
 
 ## PENDING
 
