@@ -1,6 +1,6 @@
 {
   "name": "@art-lib/operations",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Operation outcome types and factories, and an append-only operations log that forwards every operation to the logger.",
   "keywords": [
     "library",
