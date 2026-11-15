@@ -1,11 +1,10 @@
 # CHANGELOG
 
-## 0.0.2
+## 0.0.3
 
 ### Added
 
-- The `normal` output mode: flushes the buffer, then writes `info`, `warning`, and `error`, dropping `debug`.
-
-## 0.0.1
-
-### Added
+- Add `createLogger()` with `log()` and `setOutputMode()` for buffering messages until the output mode is selected.
+- Add `quiet`, `normal`, and `verbose` modes to filter `debug`, `info`, `warning`, and `error` messages.
+- Allow injecting a `LogWriter`; default to writing each message to the matching console method.
+- Export the `Message`, `MessageLevel`, `OutputMode`, `LoggerOptions`, `LogWriter`, and `LoggerAPI` types.

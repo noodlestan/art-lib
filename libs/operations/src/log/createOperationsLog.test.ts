@@ -1,3 +1,4 @@
+import type { Message } from '@art-lib/logger';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -8,11 +9,11 @@ import {
 import { createLoggerMock } from '../test/helpers/logger/createLoggerMock.js';
 
 import { createOperationsLog } from './createOperationsLog.js';
-import type { LoggableOperation, OperationsLog } from './types.js';
+import type { OperationsLog } from './types.js';
 
 type LogHarness = {
 	log: OperationsLog;
-	messages: LoggableOperation[];
+	messages: Message[];
 };
 
 describe('createOperationsLog', () => {

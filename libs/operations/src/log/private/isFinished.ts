@@ -1,5 +1,6 @@
-import type { AnyFinishedOperation, LoggableOperation } from '../types.js';
+import type { OperationBase } from '../../model/types.js';
+import type { AnyFinishedOperation } from '../types.js';
 
-export function isFinished(operation: LoggableOperation): operation is AnyFinishedOperation {
+export function isFinished(operation: OperationBase): operation is AnyFinishedOperation {
 	return operation.outcome !== 'pending';
 }

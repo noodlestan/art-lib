@@ -1,6 +1,8 @@
-import type { LoggableOperation, LoggerInterface } from '../../../log/types.js';
+import type { Message } from '@art-lib/logger';
+
+import type { LoggerInterface } from '../../../log/types.js';
 
 export type LoggerMock = {
 	logger: LoggerInterface;
-	messages: LoggableOperation[];
+	messages: Message[];
 };

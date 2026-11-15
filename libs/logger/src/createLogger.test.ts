@@ -1,190 +1,142 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createLogger } from './createLogger.js';
-import { createDebugMessage } from './message/createDebugMessage.js';
-import { createErrorMessage } from './message/createErrorMessage.js';
-import { createInfoMessage } from './message/createInfoMessage.js';
-import { createWarningMessage } from './message/createWarningMessage.js';
-import type { LogFormatter, LogWriter } from './types.js';
+import type { Message } from './types.js';
+
+const writeMock = vi.fn<(message: Message) => void>();
+
+beforeEach(() => {
+	vi.spyOn(console, 'debug').mockImplementation(() => {});
+	vi.spyOn(console, 'info').mockImplementation(() => {});
+	vi.spyOn(console, 'warn').mockImplementation(() => {});
+	vi.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+afterEach(() => {
+	writeMock.mockClear();
+	vi.restoreAllMocks();
+});
 
 describe('createLogger', () => {
-	it('WHEN a message is logged before the output mode is set — buffers it and writes nothing', () => {
-		const writeMock = vi.fn<(lines: string[]) => void>();
-		const writer: LogWriter = { write: writeMock };
-		const logger = createLogger({ writer });
+	it('WHEN a message is logged before the output mode is set, it is buffered without being written', () => {
+		const logger = createLogger({ writer: writeMock });
+		const message: Message = { level: 'info', text: 'buffered', ts: 123 };
 
-		logger.log(createInfoMessage('early'));
+		logger.log(message);
 
 		expect(writeMock).not.toHaveBeenCalled();
 	});
 
-	it('WHEN the output mode is set to quiet — flushes the buffer in order, keeping only warning and error messages', () => {
-		const writeMock = vi.fn<(lines: string[]) => void>();
-		const writer: LogWriter = { write: writeMock };
-		const logger = createLogger({ writer });
+	it('WHEN the output mode is set to quiet, it flushes buffered warnings and errors in order', () => {
+		const logger = createLogger({ writer: writeMock });
+		const messages: Message[] = [
+			{ level: 'debug', text: 'debug', ts: 1 },
+			{ level: 'info', text: 'info', ts: 2 },
+			{ level: 'warning', text: 'warning', ts: 3 },
+			{ level: 'error', text: 'error', ts: 4 },
+		];
+		messages.forEach(message => logger.log(message));
 
-		logger.log(createDebugMessage('buffered debug'));
-		logger.log(createInfoMessage('buffered info'));
-		logger.log(createWarningMessage('buffered warning'));
 		logger.setOutputMode('quiet');
 
-		expect(writeMock).toHaveBeenCalledTimes(1);
-		expect(writeMock).toHaveBeenNthCalledWith(1, ['⚠️ |  | buffered warning | ']);
-
-		logger.log(createDebugMessage('later debug'));
-		logger.log(createInfoMessage('later info'));
-		logger.log(createWarningMessage('later warning'));
-		logger.log(createErrorMessage(new Error('later error')));
-
-		expect(writeMock).toHaveBeenCalledTimes(3);
-		expect(writeMock).toHaveBeenNthCalledWith(2, ['⚠️ |  | later warning | ']);
-		expect(writeMock).toHaveBeenNthCalledWith(3, ['🔴 |  | later error | ']);
+		expect(writeMock.mock.calls).toEqual([[messages[2]], [messages[3]]]);
 	});
 
-	it('WHEN the output mode is set to normal — flushes the buffer in order, dropping debug, then writes info and above', () => {
-		const writeMock = vi.fn<(lines: string[]) => void>();
-		const writer: LogWriter = { write: writeMock };
-		const logger = createLogger({ writer });
+	it('WHEN the output mode is set to normal, it flushes buffered messages in order and drops debug', () => {
+		const logger = createLogger({ writer: writeMock });
+		const messages: Message[] = [
+			{ level: 'debug', text: 'debug', ts: 1 },
+			{ level: 'info', text: 'info', ts: 2 },
+			{ level: 'warning', text: 'warning', ts: 3 },
+			{ level: 'error', text: 'error', ts: 4 },
+		];
+		messages.forEach(message => logger.log(message));
 
-		logger.log(createDebugMessage('buffered debug'));
-		logger.log(createInfoMessage('buffered info'));
-		logger.log(createWarningMessage('buffered warning'));
 		logger.setOutputMode('normal');
 
-		expect(writeMock).toHaveBeenCalledTimes(2);
-		expect(writeMock).toHaveBeenNthCalledWith(1, ['ℹ️ |  | buffered info | ']);
-		expect(writeMock).toHaveBeenNthCalledWith(2, ['⚠️ |  | buffered warning | ']);
-
-		logger.log(createDebugMessage('later debug'));
-		logger.log(createInfoMessage('later info'));
-		logger.log(createErrorMessage(new Error('later error')));
-
-		expect(writeMock).toHaveBeenCalledTimes(4);
-		expect(writeMock).toHaveBeenNthCalledWith(3, ['ℹ️ |  | later info | ']);
-		expect(writeMock).toHaveBeenNthCalledWith(4, ['🔴 |  | later error | ']);
+		expect(writeMock.mock.calls).toEqual([[messages[1]], [messages[2]], [messages[3]]]);
 	});
 
-	it('WHEN the output mode is set to verbose — flushes the buffer in order and then writes every message', () => {
-		const writeMock = vi.fn<(lines: string[]) => void>();
-		const writer: LogWriter = { write: writeMock };
-		const logger = createLogger({ writer });
+	it('WHEN the output mode is set to verbose, it flushes every buffered message in order', () => {
+		const logger = createLogger({ writer: writeMock });
+		const messages: Message[] = [
+			{ level: 'debug', text: 'debug', ts: 1 },
+			{ level: 'info', text: 'info', ts: 2 },
+			{ level: 'warning', text: 'warning', ts: 3 },
+			{ level: 'error', text: 'error', ts: 4 },
+		];
+		messages.forEach(message => logger.log(message));
 
-		logger.log(createDebugMessage('buffered debug'));
-		logger.log(createInfoMessage('buffered info'));
 		logger.setOutputMode('verbose');
-		logger.log(createWarningMessage('later warning'));
 
-		expect(writeMock).toHaveBeenCalledTimes(3);
-		expect(writeMock).toHaveBeenNthCalledWith(1, ['⏳ |  | buffered debug | ']);
-		expect(writeMock).toHaveBeenNthCalledWith(2, ['ℹ️ |  | buffered info | ']);
-		expect(writeMock).toHaveBeenNthCalledWith(3, ['⚠️ |  | later warning | ']);
+		expect(writeMock.mock.calls).toEqual(messages.map(message => [message]));
 	});
 
-	it('WHEN the output mode is set twice — the second setting applies the same rule to an empty buffer', () => {
-		const writeMock = vi.fn<(lines: string[]) => void>();
-		const writer: LogWriter = { write: writeMock };
-		const logger = createLogger({ writer });
-
+	it('WHEN messages are logged in quiet mode, it writes only warnings and errors', () => {
+		const logger = createLogger({ writer: writeMock });
+		const messages: Message[] = [
+			{ level: 'debug', text: 'debug', ts: 1 },
+			{ level: 'info', text: 'info', ts: 2 },
+			{ level: 'warning', text: 'warning', ts: 3 },
+			{ level: 'error', text: 'error', ts: 4 },
+		];
 		logger.setOutputMode('quiet');
-		logger.log(createInfoMessage('quiet info'));
-		logger.setOutputMode('verbose');
-		logger.log(createDebugMessage('verbose debug'));
 
-		expect(writeMock).toHaveBeenCalledTimes(1);
-		expect(writeMock).toHaveBeenCalledWith(['⏳ |  | verbose debug | ']);
+		messages.forEach(message => logger.log(message));
+
+		expect(writeMock.mock.calls).toEqual([[messages[2]], [messages[3]]]);
 	});
 
-	it('WHEN a formatter and a writer are injected — the writer receives the formatter lines', () => {
-		const mocks = {
-			format: vi.fn(() => ['first line', 'second line']),
-			write: vi.fn<(lines: string[]) => void>(),
-		};
-		const formatter: LogFormatter = { format: mocks.format };
-		const writer: LogWriter = { write: mocks.write };
-		const logger = createLogger({ formatter, writer });
+	it('WHEN messages are logged in normal mode, it writes info, warnings, and errors', () => {
+		const logger = createLogger({ writer: writeMock });
+		const messages: Message[] = [
+			{ level: 'debug', text: 'debug', ts: 1 },
+			{ level: 'info', text: 'info', ts: 2 },
+			{ level: 'warning', text: 'warning', ts: 3 },
+			{ level: 'error', text: 'error', ts: 4 },
+		];
+		logger.setOutputMode('normal');
 
-		logger.setOutputMode('verbose');
-		logger.log(createInfoMessage('hello'));
+		messages.forEach(message => logger.log(message));
 
-		expect(mocks.format).toHaveBeenCalledTimes(1);
-		expect(mocks.write).toHaveBeenCalledWith(['first line', 'second line']);
+		expect(writeMock.mock.calls).toEqual([[messages[1]], [messages[2]], [messages[3]]]);
 	});
 
-	it('WHEN no formatter is injected — the default formatter produces the four cells', () => {
-		const writeMock = vi.fn<(lines: string[]) => void>();
-		const writer: LogWriter = { write: writeMock };
-		const logger = createLogger({ writer });
-
-		const base = createInfoMessage('checkouts/art-works');
-		const message = {
-			...base,
-			operation: 'clone',
-			timing() {
-				return 8;
-			},
-		};
-
+	it('WHEN messages are logged in verbose mode, it writes every message', () => {
+		const logger = createLogger({ writer: writeMock });
+		const messages: Message[] = [
+			{ level: 'debug', text: 'debug', ts: 1 },
+			{ level: 'info', text: 'info', ts: 2 },
+			{ level: 'warning', text: 'warning', ts: 3 },
+			{ level: 'error', text: 'error', ts: 4 },
+		];
 		logger.setOutputMode('verbose');
+
+		messages.forEach(message => logger.log(message));
+
+		expect(writeMock.mock.calls).toEqual(messages.map(message => [message]));
+	});
+
+	it('WHEN the output mode is set twice, it applies the latest mode to later messages', () => {
+		const logger = createLogger({ writer: writeMock });
+		const bufferedMessage: Message = { level: 'warning', text: 'buffered', ts: 1 };
+		logger.log(bufferedMessage);
+		logger.setOutputMode('quiet');
+		logger.setOutputMode('verbose');
+		const laterMessage: Message = { level: 'debug', text: 'later debug', ts: 2 };
+
+		logger.log(laterMessage);
+
+		expect(writeMock.mock.calls).toEqual([[bufferedMessage], [laterMessage]]);
+	});
+
+	it('WHEN a writer is injected, it receives the logged message', () => {
+		const logger = createLogger({ writer: writeMock });
+		logger.setOutputMode('normal');
+		const message: Message = { level: 'info', text: 'foo', ts: 123 };
+
 		logger.log(message);
 
-		expect(writeMock).toHaveBeenCalledWith(['ℹ️ | clone | checkouts/art-works | (8ms)']);
-	});
-
-	it('WHEN the message carries no name and no timing — the default formatter leaves those cells empty', () => {
-		const writeMock = vi.fn<(lines: string[]) => void>();
-		const writer: LogWriter = { write: writeMock };
-		const logger = createLogger({ writer });
-
-		logger.setOutputMode('verbose');
-		logger.log(createInfoMessage('hello'));
-
-		expect(writeMock).toHaveBeenCalledWith(['ℹ️ |  | hello | ']);
-	});
-
-	it('WHEN the message timing is not finite — the default formatter leaves the timing cell empty', () => {
-		const writeMock = vi.fn<(lines: string[]) => void>();
-		const writer: LogWriter = { write: writeMock };
-		const logger = createLogger({ writer });
-
-		const base = createInfoMessage('pending');
-		const message = {
-			...base,
-			timing() {
-				return Number.NaN;
-			},
-		};
-
-		logger.setOutputMode('verbose');
-		logger.log(message);
-
-		expect(writeMock).toHaveBeenCalledWith(['ℹ️ |  | pending | ']);
-	});
-
-	it('WHEN a custom formatter is injected — its output reaches the writer verbatim', () => {
-		const writeMock = vi.fn<(lines: string[]) => void>();
-		const writer: LogWriter = { write: writeMock };
-		const formatter: LogFormatter = {
-			format(): string[] {
-				return ['custom', 'cells'];
-			},
-		};
-		const logger = createLogger({ formatter, writer });
-
-		logger.setOutputMode('verbose');
-		logger.log(createInfoMessage('hello'));
-
-		expect(writeMock).toHaveBeenCalledWith(['custom', 'cells']);
-	});
-
-	it('WHEN no writer is injected — the default writer writes the formatted line to console.error', () => {
-		const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-		const logger = createLogger();
-
-		logger.setOutputMode('verbose');
-		logger.log(createInfoMessage('hello'));
-
-		expect(consoleErrorSpy).toHaveBeenCalledWith('ℹ️ |  | hello | ');
-
-		consoleErrorSpy.mockRestore();
+		expect(writeMock).toHaveBeenCalledExactlyOnceWith(message);
 	});
 });
