@@ -1,7 +1,7 @@
 {
   "name": "@art-lib/operations",
-  "version": "0.0.2",
-  "description": "Operation outcome types and factories, and an append-only operations log that forwards every operation to the logger.",
+  "version": "0.0.3",
+  "description": "Shared operation model and formatted operations log for CLI workflows.",
   "keywords": [
     "library",
     "operations",
@@ -23,6 +23,7 @@
   },
   "files": [
     "dist",
+    "src/test/helpers",
     "README.md",
     "LICENSE-MIT",
     "CHANGELOG.md"
@@ -37,14 +38,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs"
     },
-    "./model": {
-      "types": "./dist/model/index.d.ts",
-      "import": "./dist/model/index.mjs"
-    },
-    "./log": {
-      "types": "./dist/log/index.d.ts",
-      "import": "./dist/log/index.mjs"
-    }
+    "./test/helpers/*": "./src/test/helpers/*.ts"
   },
   "scripts": {
     "dev": "esbuild-cli-watch",
@@ -58,7 +52,9 @@
     "ci": "npm run lint && npm run build && npm run test:ci"
   },
   "dependencies": {
-    "@art-lib/logger": "0.0.1"
+    "@art-lib/logger": "0.0.4"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "vitest": "5.0.5"
+  }
 }
