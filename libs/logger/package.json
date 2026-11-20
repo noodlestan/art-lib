@@ -1,6 +1,6 @@
 {
   "name": "@art-lib/logger",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Create and log messages with a buffering logger: quiet and verbose output modes, an injected formatter, and an injectable log writer.",
   "keywords": [
     "library",
@@ -22,6 +22,7 @@
   },
   "files": [
     "dist",
+    "src/test/helpers",
     "README.md",
     "LICENSE-MIT",
     "CHANGELOG.md"
@@ -35,7 +36,8 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs"
-    }
+    },
+    "./test/helpers/*": "./src/test/helpers/*.ts"
   },
   "scripts": {
     "dev": "esbuild-cli-watch",
@@ -47,5 +49,8 @@
     "test:ci": "vitest run --coverage",
     "test:watch": "vitest",
     "ci": "npm run lint && npm run build && npm run test:ci"
+  },
+  "devDependencies": {
+    "vitest": "5.0.5"
   }
 }

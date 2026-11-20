@@ -1,4 +1,4 @@
-export { createLogger } from './createLogger.js';
+export { createLogger } from './logger/createLogger.js';
 export type {
 	LoggerOptions,
 	MessageLevel,

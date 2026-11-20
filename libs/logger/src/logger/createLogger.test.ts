@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { Message } from '../types.js';
+
 import { createLogger } from './createLogger.js';
-import type { Message } from './types.js';
 
 const writeMock = vi.fn<(message: Message) => void>();
 
@@ -35,6 +36,7 @@ describe('createLogger', () => {
 			{ level: 'warning', text: 'warning', ts: 3 },
 			{ level: 'error', text: 'error', ts: 4 },
 		];
+
 		messages.forEach(message => logger.log(message));
 
 		logger.setOutputMode('quiet');
@@ -50,6 +52,7 @@ describe('createLogger', () => {
 			{ level: 'warning', text: 'warning', ts: 3 },
 			{ level: 'error', text: 'error', ts: 4 },
 		];
+
 		messages.forEach(message => logger.log(message));
 
 		logger.setOutputMode('normal');
@@ -65,6 +68,7 @@ describe('createLogger', () => {
 			{ level: 'warning', text: 'warning', ts: 3 },
 			{ level: 'error', text: 'error', ts: 4 },
 		];
+
 		messages.forEach(message => logger.log(message));
 
 		logger.setOutputMode('verbose');
@@ -120,6 +124,7 @@ describe('createLogger', () => {
 	it('WHEN the output mode is set twice, it applies the latest mode to later messages', () => {
 		const logger = createLogger({ writer: writeMock });
 		const bufferedMessage: Message = { level: 'warning', text: 'buffered', ts: 1 };
+
 		logger.log(bufferedMessage);
 		logger.setOutputMode('quiet');
 		logger.setOutputMode('verbose');

@@ -1,5 +1,5 @@
-import { defaultWriter } from './private/defaultWriter.js';
-import type { LoggerAPI, LoggerOptions, Message, OutputMode } from './types.js';
+import { defaultWriter } from '../private/defaultWriter.js';
+import type { LoggerAPI, LoggerOptions, Message, OutputMode } from '../types.js';
 
 export function createLogger(options?: LoggerOptions): LoggerAPI {
 	const writer = options?.writer ?? defaultWriter;

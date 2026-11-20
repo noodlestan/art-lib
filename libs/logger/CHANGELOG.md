@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.0.4
+
+### Tested
+
+- Cover logger buffering, output-mode filtering, and injected writers.
+
 ## 0.0.3
 
 ### Added
