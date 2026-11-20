@@ -15,16 +15,29 @@ compileConfig(entryPath: string, options?: LoadConfigOptions): Promise<CompiledC
 findReusableBundle(cacheDir: string, baseDir: string): Promise<string | null>;
 importConfigModule<T>(bundlePath: string): Promise<T>;
 
-LoadConfigOptions {
+type LoadConfigOptions = {
   cacheDir?: string;    // bundle + metadata live here; omit to compile without caching
   cache?: boolean;      // false = bypass reuse, rebuild, refresh (default true)
   baseDir?: string;     // base for recording input paths (default: the entry's directory)
   externals?: string[]; // extra esbuild externals, merged over the package defaults
 }
 
-CompiledConfig { bundlePath: string; metafile?: esbuild.Metafile }
-ConfigCacheInput { path: string; hash: string }
-ConfigCacheMeta { version: number; compiledAt: string; manifest: string; inputs: ConfigCacheInput[] }
+type CompiledConfig = {
+  bundlePath: string;
+  metafile?: esbuild.Metafile;
+}
+
+type ConfigCacheInput = {
+  path: string;
+  hash: string;
+}
+
+type ConfigCacheMeta = {
+  version: number;
+  compiledAt: string;
+  manifest: string;
+  inputs: ConfigCacheInput[];
+}
 ```
 
 - `loadConfigModule` — the one-call orchestrator: reuse or compile, then import.

@@ -1,125 +1,142 @@
-import type { Message } from '@art-lib/logger';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { createLoggerMock } from '@art-lib/logger/test/helpers/logger/createLoggerMock';
+import { describe, expect, it } from 'vitest';
 
-import {
-	createGenericOperation,
-	createOperationFailure,
-	createOperationSuccess,
-} from '../model/index.js';
-import { createLoggerMock } from '../test/helpers/logger/createLoggerMock.js';
+import { makeFailureOperationFixture } from '../test/helpers/model/makeFailureOperationFixture.js';
+import { makePendingOperationFixture } from '../test/helpers/model/makePendingOperationFixture.js';
+import { makeSuccessOperationFixture } from '../test/helpers/model/makeSuccessOperationFixture.js';
 
 import { createOperationsLog } from './createOperationsLog.js';
-import type { OperationsLog } from './types.js';
-
-type LogHarness = {
-	log: OperationsLog;
-	messages: Message[];
-};
 
 describe('createOperationsLog', () => {
-	let now = 0;
+	it('WHEN a pending operation is logged, it forwards a debug message and keeps no history', () => {
+		const logger = createLoggerMock();
+		const operations = createOperationsLog(logger, { formatter: operation => operation.text() });
+		const pending = makePendingOperationFixture();
 
-	beforeEach(() => {
-		now = 1_000;
-		vi.spyOn(Date, 'now').mockImplementation(() => now);
+		operations.log(pending);
+
+		expect(logger.log).toHaveBeenCalledExactlyOnceWith({
+			level: 'debug',
+			text: 'from origin/main',
+			ts: pending.ts,
+		});
+		expect(operations.all()).toEqual([]);
 	});
 
-	afterEach(() => {
-		vi.restoreAllMocks();
+	it('WHEN a success is logged, it forwards an info message and retains the completion', () => {
+		const logger = createLoggerMock();
+		const operations = createOperationsLog(logger, { formatter: operation => operation.text() });
+		const success = makeSuccessOperationFixture();
+
+		operations.log(success);
+
+		expect(logger.log).toHaveBeenCalledExactlyOnceWith({
+			level: 'info',
+			text: 'from origin/main',
+			ts: success.ts,
+		});
+		expect(operations.all()).toEqual([success]);
 	});
 
-	function createLog(): LogHarness {
-		const { logger, messages } = createLoggerMock();
+	it('WHEN a failure is logged, it forwards an error message and retains the completion', () => {
+		const logger = createLoggerMock();
+		const operations = createOperationsLog(logger, { formatter: operation => operation.text() });
+		const failure = makeFailureOperationFixture();
 
-		return { log: createOperationsLog(logger), messages };
-	}
+		operations.log(failure);
 
-	it('FOR pending and finished operations it forwards them to the logger', () => {
-		const { log, messages } = createLog();
-		const pending = createGenericOperation('clone', { uri: 'repo.art' });
-		const success = createOperationSuccess(pending, 'cloned');
-		const failure = createOperationFailure(pending, new Error('boom'), { label: 'CloneError' });
-
-		log.log(pending);
-		log.log(success);
-		log.log(failure);
-
-		expect(messages).toHaveLength(3);
-		expect(messages[0]).toBe(pending);
-		expect(messages[1]).toBe(success);
-		expect(messages[2]).toBe(failure);
+		expect(logger.log).toHaveBeenCalledExactlyOnceWith({
+			level: 'error',
+			text: 'remote unavailable',
+			ts: failure.ts,
+		});
+		expect(operations.all()).toEqual([failure]);
 	});
 
-	it('FOR a pending operation it never stores it — queries return only finished ones', () => {
-		const { log } = createLog();
-		const pending = createGenericOperation('clone', { uri: 'repo.art' });
+	it('WHEN a formatter is injected, it supplies the logger message text', () => {
+		const logger = createLoggerMock();
+		const operations = createOperationsLog(logger, {
+			formatter: operation => `Operation: ${operation.text()}`,
+		});
+		const pending = makePendingOperationFixture();
 
-		log.log(pending);
+		operations.log(pending);
 
-		expect(log.all()).toEqual([]);
-		expect(log.since(0)).toEqual([]);
-		expect(log.latest(10)).toEqual([]);
-
-		const failure = createOperationFailure(pending, new Error('boom'));
-
-		log.log(failure);
-
-		expect(log.all()).toEqual([failure]);
-		expect(log.since(0)).toEqual([failure]);
-		expect(log.latest(1)).toEqual([failure]);
+		expect(logger.log).toHaveBeenCalledExactlyOnceWith({
+			level: 'debug',
+			text: 'Operation: from origin/main',
+			ts: pending.ts,
+		});
 	});
 
-	it('FOR all() it returns a copy in arrival order — mutating it does not affect the store', () => {
-		const { log } = createLog();
-		const first = createOperationSuccess(createGenericOperation('clone', { uri: 'a.art' }));
-		const second = createOperationSuccess(createGenericOperation('push', { uri: 'b.art' }));
+	it('WHEN completed operations are queried, it returns them in arrival order', () => {
+		const logger = createLoggerMock();
+		const operations = createOperationsLog(logger, { formatter: operation => operation.text() });
+		const success = makeSuccessOperationFixture();
+		const failure = makeFailureOperationFixture();
 
-		log.log(first);
-		log.log(second);
+		operations.log(success);
+		operations.log(failure);
 
-		const allOperations = log.all();
-
-		expect(allOperations).toEqual([first, second]);
-		expect(allOperations).not.toBe(log.all());
-
-		allOperations.pop();
-
-		expect(log.all()).toEqual([first, second]);
+		expect(operations.all()).toEqual([success, failure]);
 	});
 
-	it('FOR a timestamp it filters finished operations with ts >= timestamp', () => {
-		const { log } = createLog();
+	it('WHEN the history is returned, it is a copy of the stored operations', () => {
+		const logger = createLoggerMock();
+		const operations = createOperationsLog(logger, { formatter: operation => operation.text() });
+		const success = makeSuccessOperationFixture();
 
-		const early = createOperationSuccess(createGenericOperation('clone', { uri: 'a.art' }));
-		now = 2_000;
-		const mid = createOperationSuccess(createGenericOperation('clone', { uri: 'b.art' }));
-		now = 3_000;
-		const late = createOperationFailure(createGenericOperation('push'), new Error('boom'));
+		operations.log(success);
 
-		log.log(early);
-		log.log(mid);
-		log.log(late);
+		const firstRead = operations.all();
+		const secondRead = operations.all();
 
-		expect(log.since(1_000)).toEqual([early, mid, late]);
-		expect(log.since(2_000)).toEqual([mid, late]);
-		expect(log.since(3_000)).toEqual([late]);
-		expect(log.since(4_000)).toEqual([]);
+		expect(firstRead).not.toBe(secondRead);
+		expect(firstRead).toEqual([success]);
+		expect(secondRead).toEqual([success]);
 	});
 
-	it('FOR a count it returns the last n finished operations in arrival order', () => {
-		const { log } = createLog();
-		const first = createOperationSuccess(createGenericOperation('clone'));
-		const second = createOperationSuccess(createGenericOperation('push'));
-		const third = createOperationFailure(createGenericOperation('parse'), new Error('boom'));
+	it('WHEN since is given a timestamp, it includes operations at that timestamp and later', () => {
+		const logger = createLoggerMock();
+		const operations = createOperationsLog(logger, { formatter: operation => operation.text() });
+		const early = makeSuccessOperationFixture(1_000, 1_010);
+		const boundary = makeFailureOperationFixture(2_000, 2_010);
 
-		log.log(first);
-		log.log(second);
-		log.log(third);
+		operations.log(early);
+		operations.log(boundary);
 
-		expect(log.latest(1)).toEqual([third]);
-		expect(log.latest(2)).toEqual([second, third]);
-		expect(log.latest(5)).toEqual([first, second, third]);
-		expect(log.latest(0)).toEqual([]);
-		expect(log.latest(-3)).toEqual([]);
+		expect(operations.since(2_000)).toEqual([boundary]);
+	});
+
+	it('WHEN latest is given a positive count, it returns the last matching operations', () => {
+		const logger = createLoggerMock();
+		const operations = createOperationsLog(logger, { formatter: operation => operation.text() });
+		const first = makeSuccessOperationFixture();
+		const second = makeFailureOperationFixture();
+
+		operations.log(first);
+		operations.log(second);
+
+		expect(operations.latest(1)).toEqual([second]);
+	});
+
+	it('WHEN latest is given zero, it returns an empty list', () => {
+		const logger = createLoggerMock();
+		const operations = createOperationsLog(logger, { formatter: operation => operation.text() });
+		const success = makeSuccessOperationFixture();
+
+		operations.log(success);
+
+		expect(operations.latest(0)).toEqual([]);
+	});
+
+	it('WHEN latest is given a negative count, it returns an empty list', () => {
+		const logger = createLoggerMock();
+		const operations = createOperationsLog(logger, { formatter: operation => operation.text() });
+		const success = makeSuccessOperationFixture();
+
+		operations.log(success);
+
+		expect(operations.latest(-1)).toEqual([]);
 	});
 });

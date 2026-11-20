@@ -1,110 +1,114 @@
 # @art-lib/operations
 
-> Operation outcome types and factories, and an append-only operations log that forwards every operation to the logger.
+> Model CLI operations and forward their formatted messages to `@art-lib/logger`.
 
 This package is part of the [Art Lib toolkit](../../README.md).
 
-## Design
-
-The package defines the operation model: one unit of work in a command invocation, carrying a pending, success, or failure outcome. Factories build the pending operation and then derive the finished one from it. The package also provides a thin, append-only operations log. Created alongside a logger, it forwards every operation to that logger and keeps the finished ones queryable.
-
-Every operation doubles as a log message for [`@art-lib/logger`](../logger/README.md). It carries a level derived from its outcome — pending logs as debug, success as info, failure as error — so the logger consumes operations directly without ever learning what they are. That logger is the package's only dependency.
-
-See also:
-
-- [package knowledge](knowledge/index.md) — overview, design, and decision records
-- [repository design record](../../knowledge/design/operations.md) — what a CLI needs from the package
-
-## Usage
-
-### Install
+## Install
 
 ```bash
 npm install @art-lib/operations
 ```
 
-`@art-lib/logger` arrives as a dependency; import it wherever you create the logger.
+Import public operations APIs from `@art-lib/operations`.
 
-### Configure
+## Use the generic operation model
 
-Create one operations log per command invocation, right after the logger. Every operation logged through it is forwarded to the logger, so resolve the output mode first:
+The generic factory creates a pending operation from a name, typed data, and an optional function that supplies its detail text. Shared factories create its success or failure state.
 
 ```ts
 import { createLogger } from '@art-lib/logger';
-import { createOperationsLog } from '@art-lib/operations/log';
-
-const logger = createLogger();
-
-// Buffered messages flush as soon as the mode is resolved.
-logger.setOutputMode(process.env.VERBOSE ? 'verbose' : 'normal');
-
-// One log per command invocation; discard it when the invocation ends.
-export const operations = createOperationsLog(logger);
-```
-
-The package root re-exports both subpaths, so `import { ... } from '@art-lib/operations'` works as well.
-
-### Example
-
-```ts
 import {
   createGenericOperation,
   createOperationFailure,
   createOperationSuccess,
+  createOperationsLog,
+  createPipeSeparatedFormatter,
 } from '@art-lib/operations';
-import { operations } from './log.js';
 
-const startedAt = Date.now();
+const logger = createLogger();
+logger.setOutputMode('normal');
 
-const pending = createGenericOperation('clone', { repo });
-operations.log(pending); // forwarded as `debug`; pending operations are not stored
+const operations = createOperationsLog(logger, {
+  formatter: createPipeSeparatedFormatter(operation => [operation.operation, operation.text()]),
+});
+
+const uri = 'notes.art';
+const pending = createGenericOperation('parse', { uri }, () => uri);
+operations.log(pending);
 
 try {
-  const path = await clone(pending.data.repo);
-
-  operations.log(createOperationSuccess(pending, `cloned ${path}`)); // stored
+  const document = await parse(uri);
+  operations.log(createOperationSuccess(pending, `parsed ${document.name}`));
 } catch (error) {
-  // The label prefixes `errorSerialized()` only — `error` stays the raw message.
-  operations.log(createOperationFailure(pending, error, { label: 'CloneError' })); // stored
+  operations.log(createOperationFailure(pending, error));
 }
-
-// The log keeps finished operations only, in order:
-operations.all(); // every finished operation
-operations.since(startedAt); // created at or after `startedAt`
-operations.latest(5); // the last five finished operations
 ```
 
-### Options
+The formatter callback returns the ordered field values for an operation. The default pipe-separated formatter adds an outcome symbol and, for completed operations, the elapsed time. The operations log derives the logger level from the outcome—`pending` to `debug`, `success` to `info`, and `failure` to `error`—then forwards a `{ level, text, ts }` message to the injected logger.
 
-| Function                                           | Arguments                                            | Returns            | Notes                                                               |
-| -------------------------------------------------- | ---------------------------------------------------- | ------------------ | ------------------------------------------------------------------- |
-| `createGenericOperation(name, data?, text?)`       | operation name, optional payload, optional text      | `OperationPending` | frozen; reports the payload as JSON by default; `timing()` is `NaN` |
-| `createOperationSuccess(pending, text?)`           | a pending operation, optional success text           | `OperationSuccess` | falls back to the pending's own text                                |
-| `createOperationFailure(pending, error, options?)` | a pending operation, any error-shaped value, options | `OperationFailure` | the options carry a label that prefixes `errorSerialized()`         |
-| `createOperationsLog(logger, options?)`            | a logger, reserved options                           | `OperationsLog`    | forwards every operation; stores finished operations only           |
+## Define CLI-specific operations
 
-- **Payload** — carried on the operation untouched, from pending through to success or failure. By default the payload is serialised to JSON as the operation's text, until a success text overrides it.
-- **Options** — the log accepts a second argument and deliberately ignores it; it is reserved for a future iteration.
-- **Operations log** — offers `log`, `all`, `since` and `latest`. The query methods return copies, never the internal buffer.
+A CLI can define a typed pending operation and one factory for each operation kind. Each factory specialises the shared model with a literal operation name, a typed data shape, and operation-specific detail text. The shared success and failure factories handle completion for all operation kinds.
+
+```ts
+import {
+  createGenericOperation,
+  type OperationPending,
+  type OperationSuccess,
+  type OperationFailure,
+} from '@art-lib/operations';
+
+export type PullData = {
+  checkout?: Checkout;
+  branch: string;
+};
+
+export type PullPending = OperationPending<PullData> & {
+  operation: 'pull';
+};
+
+export function createPullOperation(checkout: Checkout, branch: string): PullPending {
+  const data = { checkout, branch };
+  const toText = () => `from origin/${branch}`;
+
+  return createGenericOperation('pull', data, toText);
+}
+
+export type Operation = PullPending | OperationPending | OperationSuccess | OperationFailure;
+```
+
+A CLI's complete `Operation` union combines its specific pending types—such as `ClonePending`, `PushPending`, and `PullPending`—with the common pending, success, and failure types. Its formatter callback selects the fields for the CLI's standard output layout.
+
+## Operations log
+
+Create one operations log with a logger and formatter for each command invocation. Every logged operation is converted to a logger message and forwarded. Completed operations are retained for `all()`, `since(timestamp)`, and `latest(count)` queries; pending operations are forwarded as well.
+
+The standard pipe-separated format can produce output such as:
+
+```text
+⏳ | Art MD | art-md | pull | from origin/main |
+🔴 | Workspace Tooling | workspace-tooling | pull | Could not read from remote repository. | (1224ms)
+⏳ | Art MD | art-md | scan-checkout-state | art-md |
+🟢 | Art MD | art-md | pull | from origin/main | (3317ms)
+```
 
 ## Development
 
-Make sure you read the [Art Lib README](../../README.md) first.
+Read the [Art Lib README](../../README.md) before contributing.
 
-### Build Targets
+This package targets Node.js and uses `esbuild` for its entry point.
 
-This package is meant for use in Node.js environments. The entry point is built using `esbuild` pre-configured by [Workspace Tooling](https://github.com/noodlestan/workspace-tooling).
+Available scripts:
 
-### Scripts
-
-- **$** `npm run dev` — Watch mode for development
-- **$** `npm run lint` — Check formatting, lint, and type check
-- **$** `npm run lint:fix` — Fix formatting and lint issues
-- **$** `npm run build` — Build the package
-- **$** `npm run build:clean` — Remove build artifacts
-- **$** `npm run test` — Run tests
-- **$** `npm run ci` — Run CI pipeline
+- `npm run dev` — Watch for changes
+- `npm run lint` — Check formatting, lint and types
+- `npm run lint:fix` — Fix formatting and lint issues
+- `npm run build` — Build the package
+- `npm run build:clean` — Remove build artefacts
+- `npm run test` — Run tests
+- `npm run ci` — Run the CI pipeline
 
 ## Copyright (c) 2026 [Noodlestan](https://noodlestan.org/).
 
-Published under a [MIT license](https://noodlestan.mit-license.org/).
+Published under the [MIT licence](https://noodlestan.mit-license.org/).

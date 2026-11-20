@@ -1,4 +1,3 @@
-import { LEVELS } from './private/constants.js';
 import type { OperationPending, OperationSuccess } from './types.js';
 
 export function createOperationSuccess<D>(
@@ -17,7 +16,6 @@ export function createOperationSuccess<D>(
 		ts: pending.ts,
 		finishedTs,
 		outcome: 'success',
-		level: LEVELS.success,
 		data: pending.data,
 		text: report,
 		timing(): number {

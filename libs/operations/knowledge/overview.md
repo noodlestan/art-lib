@@ -1,42 +1,41 @@
 # Overview: Art Lib Operations
 
-**Purpose:** Introduce the operations package: what it is, its definitions, its use cases, and how an operation runs.
+**Purpose:** Introduce the operation model, its relationship to CLI-owned operation types, and how the operations log forwards and records work.
 
 ## What
 
-The package defines the operation model: one unit of work in a command invocation, carrying a pending, success, or failure outcome. Factories build the pending operation and then derive the finished one from it. The package also provides a thin, append-only operations log. Created alongside a logger, it forwards every operation to that logger and keeps the finished ones queryable.
+`@art-lib/operations` provides a common lifecycle model and operations log for CLI work. A CLI defines typed pending operations for its own commands, using the base model and generic factory. Completion factories create success and failure states.
+
+The operations log adapts these operation states into `@art-lib/logger` messages. It derives the message level from the outcome, uses a formatter to produce the text, forwards every message to an injected logger, and keeps completed operations available for queries.
 
 ## Why
 
-Every CLI invocation performs units of work that deserve a consistent record: when they started, whether they succeeded, what to show, and how long they took. The Art Workspace Cli and the Art MD bin each carried roughly 60% identical plumbing for this — outcome types, pending/success/failure factories, a per-command log — and diverged in the details, such as hardcoded error-label maps and different query helpers. One shared model keeps those semantics identical across consumers, and one log gives them the same query vocabulary.
+CLI commands perform domain-specific work but share the same lifecycle: work starts, then succeeds or fails. The package supplies common state and logging behaviour, while each CLI keeps ownership of its operation names, data, and display fields. This gives consumers consistent lifecycle semantics without making the logger understand operations.
 
 ## Definitions
 
-- **Operation** — one unit of work in a command invocation. It records when it started, when it finished, whether it succeeded, what to show the user, and how long it took. The duration is not available while it is still pending.
-- **Outcome** — pending, success, or failure. The level the logger shows is derived from it: pending logs as debug, success as info, failure as error.
-- **Pending operation** — built by `createGenericOperation`. It carries the payload untouched, and the log never stores it.
-- **Failure label** — an optional per-call prefix such as `CloneError` or `ParseError`, applied by `errorSerialized()`. The failure's own error always keeps the raw message.
-- **Operations log** — an append-only store for one command invocation. It is created with the logger, forwards every operation to it, and keeps only the finished ones.
+- **Operation** — a unit of CLI work with an operation name, data, start timestamp, and outcome.
+- **Pending operation** — the initial state created by a CLI-specific factory built on the generic factory. Its `toText` function supplies operation-specific detail.
+- **Completed operation** — a success or failure state created by a completion factory from a pending operation.
+- **Operation formatter** — converts an operation into ordered display fields and a log string. The default pipe-separated formatter adds the outcome symbol and elapsed time.
+- **Operations log** — a per-command record that forwards every operation to the logger and retains completed operations for querying.
 
 ## Use Cases
 
-| #   | Use case           | Behaviour                                                                                      |
-| --- | ------------------ | ---------------------------------------------------------------------------------------------- |
-| 1   | **Open work**      | `createGenericOperation('clone', { repo })` builds the pending operation; log it as `debug`.   |
-| 2   | **Record success** | `createOperationSuccess(pending, text?)` finishes it; logged as `info` and stored.             |
-| 3   | **Record failure** | `createOperationFailure(pending, error, { label })` finishes it; logged as `error` and stored. |
-| 4   | **Show a reason**  | `text()` reports the given text, or the payload as JSON; `errorSerialized()` adds the label.   |
-| 5   | **Time the work**  | `timing()` returns `finishedTs - ts` once finished, `NaN` while pending.                       |
-| 6   | **Query the run**  | `all()`, `since(timestamp)`, and `latest(count)` read the finished operations, in order.       |
+| Use case        | Behaviour                                                                                                                      |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Create work     | A CLI-specific factory sets the operation name and typed data, then returns a pending operation.                               |
+| Report progress | Logging the pending operation sends a `debug` message through the logger.                                                      |
+| Complete work   | A completion factory creates a success (`info`) or failure (`error`) state from the pending operation.                         |
+| Format output   | The CLI supplies one callback that returns the ordered fields; the default formatter renders the standard pipe-separated line. |
+| Query a run     | The operations log retains completed states for `all()`, `since(timestamp)`, and `latest(count)` queries.                      |
 
 ## How It Works
 
-An operation runs in three steps:
+1. The CLI creates a typed pending operation with its own factory and logs it.
+2. The operations log maps the outcome to a logger level and formats the operation into a string.
+3. The log forwards `{ level, text, ts }` to the injected logger.
+4. The CLI completes the operation with a success or failure factory and logs the resulting state.
+5. The operations log forwards the completed state and stores it for queries.
 
-1. **Create** — the factory `createGenericOperation(name, data?)` stamps the creation time, derives a debug level, and freezes a pending operation.
-2. **Finish** — the success or failure factories — `createOperationSuccess` and `createOperationFailure` — stamp the completion time, derives the level, and freezes the finished operation.
-3. **Log** — every `log(operation)` reaches the logger first; finished ones are then appended to the store. Pending operations pass through but are never stored.
-
-Queries read the store only: `all` returns a copy of every finished operation, `since` filters on creation time, and `latest` returns the last few entries — an empty list for a non-positive count.
-
-The published surface behind these cases is documented in [`design/operations.md`](design/operations.md).
+See the [design](design/operations.md) for component responsibilities and the [ADRs](adr/operations.md) for the key decisions.

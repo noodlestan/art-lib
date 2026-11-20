@@ -1,7 +1,7 @@
 export type {
 	OperationBase,
-	OperationFailure,
 	OperationOutcome,
+	OperationFailure,
 	OperationPending,
 	OperationSuccess,
 } from './types.js';

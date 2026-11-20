@@ -1,4 +1,3 @@
-import { LEVELS } from './private/constants.js';
 import { formatData } from './private/formatData.js';
 import type { OperationPending } from './types.js';
 
@@ -14,11 +13,10 @@ export function createGenericOperation<N extends string, D = unknown>(
 		return resolveToText(data as D);
 	}
 
-	const pending: OperationPending<D> = {
+	const pending: OperationPending<D> & { operation: N } = {
 		operation: name,
 		ts,
 		outcome: 'pending',
-		level: LEVELS.pending,
 		data,
 		text: readText,
 		timing(): number {
@@ -26,5 +24,5 @@ export function createGenericOperation<N extends string, D = unknown>(
 		},
 	};
 
-	return Object.freeze(pending) as OperationPending<D> & { operation: N };
+	return Object.freeze(pending);
 }

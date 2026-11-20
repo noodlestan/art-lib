@@ -1,31 +1,33 @@
+import type { LoggerAPI } from '@art-lib/logger';
+
+import type { OperationBase } from '../model/index.js';
+
+import { OUTCOME_LEVELS } from './private/constants.js';
 import { isFinished } from './private/isFinished.js';
-import type {
-	AnyFinishedOperation,
-	LoggerInterface,
-	OperationsLog,
-	OperationsLogOptions,
-} from './types.js';
+import type { AnyFinishedOperation, OperationsLog, OperationsLogOptions } from './types.js';
 
-export function createOperationsLog(
-	logger: LoggerInterface,
-	options?: OperationsLogOptions,
-): OperationsLog {
-	// Reserved for a future iteration: accepted, deliberately not read here.
-	// eslint-disable-next-line no-void
-	void options;
-
+export function createOperationsLog<TOperation extends OperationBase = OperationBase>(
+	logger: LoggerAPI,
+	options: OperationsLogOptions<TOperation>,
+): OperationsLog<TOperation> {
 	const storedOperations: AnyFinishedOperation[] = [];
 
 	return {
 		log(operation): void {
-			logger.log(operation); // every operation is a message: pending and finished alike
+			const message = {
+				level: OUTCOME_LEVELS[operation.outcome],
+				text: options.formatter(operation),
+				ts: operation.ts,
+			};
+
+			logger.log(message);
 
 			if (isFinished(operation)) {
-				storedOperations.push(operation); // finished operations only
+				storedOperations.push(operation);
 			}
 		},
 		all(): AnyFinishedOperation[] {
-			return [...storedOperations]; // a copy — never leak the internal buffer
+			return [...storedOperations];
 		},
 		since(timestamp: number): AnyFinishedOperation[] {
 			return storedOperations.filter(operation => operation.ts >= timestamp);

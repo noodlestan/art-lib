@@ -1,2 +1,8 @@
 export { createOperationsLog } from './createOperationsLog.js';
-export type { AnyFinishedOperation, OperationsLog, OperationsLogOptions } from './types.js';
+export { createPipeSeparatedFormatter } from './createPipeSeparatedFormatter.js';
+export type {
+	AnyFinishedOperation,
+	OperationFormatter,
+	OperationsLog,
+	OperationsLogOptions,
+} from './types.js';

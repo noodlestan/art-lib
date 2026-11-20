@@ -1,84 +1,27 @@
 # Design: Operations
 
-**Purpose:** The published surface of `@art-lib/operations` — what it exports, the contracts it guarantees, and how a consumer calls it.
+**Purpose:** Describe the ownership boundaries and lifecycle that connect CLI operations to the logger.
 
-Install with `npm install @art-lib/operations`.
+`@art-lib/operations` provides a shared lifecycle model for CLI work and an operations log that adapts that model to `@art-lib/logger`.
 
-## Public Surface
+## Operation model
 
-The package exposes two entry points: `@art-lib/operations/model` for the operation types and factories, and `@art-lib/operations/log` for the log. The package root re-exports both, so consumers can import from either.
+The package supplies a base model, a generic pending factory, and success and failure types and factories. A CLI defines a typed pending variant for each operation kind, including its literal operation name and data shape. Its factory specialises the generic factory and may supply a `toText` function for the operation-specific detail.
 
-### Factories
+The CLI also defines an `Operation` union from its specific pending variants and the common pending, success, and failure types. This keeps command-specific data typed while using the same completion and logging lifecycle for every operation.
 
-These four functions are the only values the package exports. Everything else is a type.
+Operation data and detail text remain client-owned. A CLI factory defines the information carried by an operation; the formatter decides which fields appear in the final log line and in what order.
 
-| Function                                           | What it does                                                                                                          |
-| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `createGenericOperation(name, data?, text?)`       | Opens a pending operation. By default its text is the payload serialised to JSON, unless a text function is supplied. |
-| `createOperationSuccess(pending, text?)`           | Finishes a pending operation as a success, optionally overriding the text.                                            |
-| `createOperationFailure(pending, error, options?)` | Finishes a pending operation as a failure. The options carry a label for `errorSerialized()`.                         |
-| `createOperationsLog(logger, options?)`            | Creates the per-invocation log around a logger. The second argument is reserved and ignored.                          |
+## Logger boundary
 
-### Types worth knowing
+The operations log receives a logger instance and formatter. It converts each operation into a logger `Message` rather than passing operation objects through as messages. The outcome determines the level: `pending` → `debug`, `success` → `info`, and `failure` → `error`. The formatter produces the message's string `text`, and the operation's start timestamp supplies `ts`.
 
-- **`OperationPending<D>`, `OperationSuccess<D>`, `OperationFailure<D>`** — the three states of a single operation. Each is generic over its payload, so the data handed to a pending operation comes back typed on the finished one. A failure additionally carries the raw error text and a labelled `errorSerialized()`.
-- **`OperationsLog`** — what the log exposes: `log`, `all`, `since`, and `latest`, described in the log contract below.
-- **`LoggableOperation`** — the argument type of `log`. It is a logger message that also carries an outcome, which is exactly what an operation is.
-- **`AnyFinishedOperation`** — what the queries return: a success or a failure. Pending operations never reach them.
+The default formatter produces the ecosystem's pipe-separated line. One callback returns the ordered field values for an operation; the formatter adds the outcome symbol and, for completed states, elapsed time. A client can inject another formatter when it needs a different output format. The dependency remains one-way: operations uses the logger, while the logger has no operation-specific behaviour.
 
-An operation is a flat record: its name, creation time, optional completion time, outcome, level, the text to show, and a `timing()` that reports the duration once finished and `NaN` while pending. The payload travels along in `data`.
+## Operation history
 
-## Model Contract
+Each command invocation owns an operations log. The log forwards every operation state to the logger and retains completed states for querying. Pending states are forwarded as they occur and are excluded from the completed-operation history.
 
-| Rule          | Behaviour                                                                                                       |
-| ------------- | --------------------------------------------------------------------------------------------------------------- |
-| Frozen        | Every factory returns `Object.freeze(...)`; operations are immutable once created.                              |
-| Derived level | `pending → debug`, `success → info`, `failure → error` — the producer derives, never the logger.                |
-| Reported text | An operation's text is the member the logger reads, so an operation is logged as a message without translation. |
-| `timing()`    | `finishedTs - ts` once finished; `NaN` while pending.                                                           |
-| Failure label | `error` is always the raw message; `errorSerialized()` prefixes `label` only when given.                        |
+The log exposes `all()`, `since(timestamp)`, and `latest(count)` over completed states. Queries preserve event order and return copies, keeping the internal history private.
 
-Success and failure are derived generically from the pending instance — consumers never write per-kind factories, and the payload (`data`) travels across the transition untouched.
-
-## Log Contract
-
-| Member             | Semantics                                                         |
-| ------------------ | ----------------------------------------------------------------- |
-| `log(operation)`   | forwards to `logger.log(...)`; appends when `outcome` is finished |
-| `all()`            | every finished operation, in order — a copy of the store          |
-| `since(timestamp)` | finished operations with `ts >= timestamp`                        |
-| `latest(count)`    | the last `count` finished operations; `[]` when `count <= 0`      |
-
-The log is created with the logger and has a one-way dependency: operations → logger. Pending operations pass through to the logger (buffered there until the output mode is set) but are not stored; the store keeps finished operations only. Queries always return copies, so callers can never mutate the internal buffer.
-
-## Usage
-
-```ts
-import { createLogger } from '@art-lib/logger';
-import {
-  createGenericOperation,
-  createOperationFailure,
-  createOperationSuccess,
-  createOperationsLog,
-} from '@art-lib/operations';
-
-const logger = createLogger();
-logger.setOutputMode('normal');
-
-const operations = createOperationsLog(logger);
-
-const pending = createGenericOperation('parse', { uri: 'notes.art' });
-operations.log(pending); // forwarded as debug; not stored
-
-try {
-  const document = await parse(pending.data.uri);
-
-  operations.log(createOperationSuccess(pending, `parsed ${pending.data.uri}`)); // info + stored
-} catch (error) {
-  operations.log(createOperationFailure(pending, error, { label: 'ParseError' })); // error + stored
-}
-
-operations.latest(1); // the parse operation, finished
-```
-
-The repository-level requirements this design answers live in [`../../../../knowledge/design/operations.md`](../../../../knowledge/design/operations.md); the reasoning behind the shape is recorded in [`../adr/operations.md`](../adr/operations.md).
+See the [README](../../README.md) for installation and usage, and the [ADRs](../adr/operations.md) for the design decisions.
